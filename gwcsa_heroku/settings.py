@@ -1,4 +1,5 @@
 # Django settings for gwcsa_heroku project.
+import os
 import dj_database_url
 
 DEBUG = True
@@ -44,7 +45,6 @@ USE_L10N = True
 USE_TZ = True
 
 # static asset configuration
-import os
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 STATIC_ROOT = 'staticfiles'
 STATIC_URL = '/static/'
