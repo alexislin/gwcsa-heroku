@@ -1,0 +1,64 @@
+{% load static from staticfiles %}
+<html>
+  <head>
+    <title>GWCSA Work Shift Sign-Up</title>
+    <script type="text/javascript" language="javascript" src="/static/js/jquery-1.7.js"></script>
+    <script type="text/javascript" language="javascript" src="/static/js/jquery.tipsy.js"></script>
+    <script type="text/javascript" language="javascript" src="/static/js/jquery-ui-1.8.16.custom.min.js"></script>
+
+    <link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Varela">
+    <link rel="stylesheet" type="text/css" href="/static/css/style.css?cache_buster={% now "YmdHis" %}" />
+    <link rel="stylesheet" type="text/css" href="/static/css/tipsy.css" />
+    <link rel="stylesheet" type="text/css" href="/static/css/ui-lightness/jquery-ui-1.8.16.custom.css" />
+    <link rel="stylesheet" type="text/css" href="/static/css/blueprint/screen.css" media="screen, projection">
+    <link rel="stylesheet" type="text/css" href="/static/css/blueprint/print.css" media="print">
+    <!--[if lt IE 8]><link rel="stylesheet" href="/static/css/blueprint/ie.css" type="text/css" media="screen, projection"><![endif]-->
+
+    <!--[if !IE 7]>
+      <style type="text/css">
+        div#wrapper { display:table; height:100% }
+      </style>
+    <![endif]-->
+
+    {% block header %}{% endblock %}
+  </head>
+  <body>
+    <div id="wrapper">
+
+      <div id="banner">
+        <div class="container">
+          <div id="top" class="span-24 last">
+            <div id="logo">
+              <img src="{% static "images/GWCSA_logo.png" %}">
+            </div>
+            <div id="titles">
+              {% block title %}Member Work Shifts <strong>!!2014!!</strong>{% endblock %} <br />
+              <span class="italic" style="font-size: 14px">{% block subtitle %}{% endblock %}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {% block nav %}{% endblock %}
+
+      <div id="content">
+        <div class="container showgrid">
+          {% block content %}{% endblock %}
+        </div>
+      </div>
+
+    </div><!-- end wrapper -->
+
+    <!-- used footer example here: http://www.cssstickyfooter.com/using-sticky-footer-code.html -->
+    <div id="footer">
+      <div class="container">
+        <div class="span-24 last">
+          <div id="footer-links">
+            <a href="/contact">contact us</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
+

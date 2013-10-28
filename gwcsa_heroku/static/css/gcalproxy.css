@@ -1,0 +1,27 @@
+body {
+  background-color: rgb(237,232,219) !important;
+}
+
+h1, .date, .event-time {
+  color: rgb(78,41,16) !important;
+}
+
+.view-container-border {
+  background-color: rgb(222,217,204);
+}
+
+.event-link {
+  color: #fb8200 !important;
+}
+
+.event-time {
+  width: 4em !important;
+}
+
+#month-tab, #agenda-tab, #nav-today {
+  display: none;
+}
+
+#logo-link {
+  display: none;
+}

@@ -1,0 +1,62 @@
+* { margin: 0; }
+html, body { height: 100%; }
+body { font-family: 'Varela'; font-size: 16px; }
+
+/*Opera Fix*/
+body:before { content: ""; height: 100%; float: left; width: 0; margin-top: -32767px; }
+
+div { text-shadow: 0 1px 1px rgba(255, 255, 255, 0.4); }
+
+div#wrapper { min-height: 100%; background-color: #FFF; }
+
+div#banner, div#footer { background-color: #E8DBB3; box-shadow: 1px 1px 10px rgba(0, 0, 0, 0.2) inset; }
+div#banner { width: 100%; }
+  div#banner div#top { font-family: 'Varela'; color: #5B330C; font-weight: bold; }
+    div#banner div#top div#logo { padding: 10px 0px; float: left; width: 285px; height: 150px; }
+    div#banner div#top div#titles { font-size: 2.2em; float:left; padding: 45px 0px 0px 45px; }
+
+div#admin-nav { width: 100%; background-color: #AEBDA2; padding: 6px 0px; font-size: 1.3em; box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1) inset; }
+  div#admin-nav a, span.separator { color: #522E0B; }
+  div#admin-nav a { text-decoration: none; font-weight: bold; }
+  div#admin-nav span.separator { padding: 0px 10px; }
+
+div#content { overflow: auto; padding-top: 32px; padding-bottom: 60px; }
+
+div#footer { width: 100%; position: relative; margin-top: -60px; height: 60px; }
+  div#footer-links { float: right; padding: 10px; }
+  div#footer-links a { text-decoration: none; font-family: 'Varela'; color: rgb(91, 51, 12); }
+  div#footer-links a:hover { color: rgb(199, 130, 44); }
+
+.selected { background-color: #E8E5DD; box-shadow: 2px 2px 5px rgba(0,0,0,0.3); -moz-box-shadow: 2px 2px 5px rgba(0,0,0,0.3); -webkit-box-shadow: 2px 2px 5px rgba(0,0,0,0.3); }
+
+.title { font-size: 2em; font-weight: bold; }
+.title2 { font-size: 1.6em; font-weight: bold; }
+.title3 { font-size: 1.2em; font-weight: bold; }
+
+.text-massive { font-size: 4em; }
+.text-medium { font-size: 1.1em; }
+.text-vsmall { font-size: 0.8em; }
+.italic { font-style: italic; }
+.underline { text-decoration: underline; }
+
+input[type="submit"] { font-size: 1.4em; border-radius:5px; border:1px solid #333; background-color: #AEBDA2; color:#000; font-weight:bold; padding: 10px 15px; }
+  input[type="submit"].next-button { float: right; }
+  input[type="submit"].small-button { font-size: 1em; padding: 3px 4px; }
+
+div.below-8 { padding-bottom: 8px; }
+div.below-16 { padding-bottom: 16px; }
+div.below-32 { padding-bottom: 32px; }
+
+/*** Work Shifts Page ***/
+div.shift { border: 1px solid gray; border-radius: 12px; -moz-border-radius 12px; padding: 20px; }
+  div.shift-dates div.shift-date { display: inline-block; margin-right: 10px; }
+    div.shift-dates div.shift-date label { font-weight: normal; }
+    div.shift-dates div.shift-date select, div.shift-dates div.shift-date input[type="text"] { margin: 0em; }
+  div.shift div.shift-note { text-size: 0.8em; font-style: italic; }
+
+.invalid-shift-date { text-decoration: line-through; }
+
+hr { background-color: black !important; color: black !important; }
+
+
+
