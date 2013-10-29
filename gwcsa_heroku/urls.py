@@ -9,6 +9,8 @@ urlpatterns = patterns('',
 
     url(r'^$', 'gwcsa_heroku.views.index', name='index'),
 
+    url(r'^workshift_selection$', 'gwcsa_heroku.views.workshift_selection', name='workshift_selection'),
+
     # Examples:
     # url(r'^gwcsa_heroku/', include('gwcsa_heroku.foo.urls')),
 

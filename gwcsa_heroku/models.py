@@ -4,6 +4,9 @@ class TimestampedModel(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True, auto_now_add=True)
 
+    class Meta:
+        abstract = True
+
 DAYS = (
     ('W', 'Wednesday'),
     ('S', 'Saturday'),
@@ -17,7 +20,7 @@ SEASONS = (
 CURRENT_SEASON = SEASONS[0][0]
 
 class Season(TimestampedModel):
-    year = models.CharField(max_length=6,null=False,choices=SEASONS,default=CURRENT_SEASON)
+    name = models.CharField(max_length=6,null=False,choices=SEASONS,default=CURRENT_SEASON)
 
 class WorkShift(TimestampedModel):
     season = models.ForeignKey(Season,null=False)
@@ -47,7 +50,7 @@ class Member(TimestampedModel):
     email = models.EmailField(max_length=254,null=False)
     phone = models.CharField(max_length=20,null=False,default='')
     day = models.CharField(max_length=2,choices=DAYS)
-    farmigo_signup_date = models.DateTimeField()
+    farmigo_signup_date = models.DateTimeField(null=True)
     farmigo_share_description = models.TextField(null=False,default='')
     is_weekly = models.BooleanField(null=False,default=False)
     is_biweekly = models.BooleanField(null=False,default=False)
@@ -66,6 +69,35 @@ class Member(TimestampedModel):
             return ""
         return self.farmigo_signup_date.strftime("%m/%d/%Y %H:%M")
     formatted_signup_date = property(get_formatted_signup_date)
+
+    @staticmethod
+    def get_or_create_member(first_name, last_name, email):
+        if not first_name or not last_name or not email:
+            raise Exception("Must provide first name, last name and email.")
+
+        # always use lowercase only for emails
+        email = email.lower()
+
+        try:
+            member = Member.objects.get(season=Season.objects.get(name=CURRENT_SEASON),email=email)
+
+            if not first_name.lower() == member.first_name.lower() or \
+                not last_name.lower() == member.last_name.lower():
+                raise Exception(
+                    "The email address '%s' is already in use by %s %s." % \
+                    (email, member.first_name, member.last_name))
+
+            return member
+
+        except Member.DoesNotExist:
+            member = Member.objects.create(
+                season=Season.objects.get(name=CURRENT_SEASON),
+                first_name=first_name,
+                last_name=last_name,
+                email=email
+            )
+            return member
+
 
 class MemberWorkShift(TimestampedModel):
     member = models.ForeignKey(Member,null=False)
