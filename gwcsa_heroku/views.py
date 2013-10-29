@@ -11,7 +11,11 @@ from gwcsa_heroku.request_util import *
 @handle_view_exception
 def index(request):
     foo = get_required_parameter(request, "foo")
-    return render_to_response("base.html", RequestContext(request, {}))
+    return render_to_response("base.html",
+        RequestContext(request, {
+            "current_season": CURRENT_SEASON,
+        })
+    )
 
 @handle_view_exception
 def workshift_selection(request):
@@ -42,6 +46,7 @@ def workshift_selection(request):
         member = get_member(request)
         return render_to_response("workshift_selection.html",
             RequestContext(request, {
+                "current_season": CURRENT_SEASON,
                 "workshifts": shifts,
                 "member": member,
                 "shift_id": shift_id,
