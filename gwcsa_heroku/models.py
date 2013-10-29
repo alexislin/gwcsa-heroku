@@ -28,6 +28,7 @@ class WorkShift(TimestampedModel):
     name = models.CharField(max_length=60,null=False)
     location = models.CharField(max_length=120,null=False)
     location2 = models.CharField(max_length=120,null=False,default='')
+    note = models.CharField(max_length=200,null=False,default='')
     num_required_per_member = models.PositiveIntegerField(null=False)
 
 class WorkShiftDateTime(TimestampedModel):
@@ -37,13 +38,15 @@ class WorkShiftDateTime(TimestampedModel):
     end_time = models.TimeField(null=False)
     num_members_required = models.PositiveIntegerField(null=False)
 
-class Member(TimestampedModel):
-    WEEK = (
-        ('A', 'A Week'),
-        ('B', 'B Week'),
-        ('W', 'Weekly'),
-    )
+WEEK = (
+    ('A', 'A Week'),
+    ('B', 'B Week'),
+    ('W', 'Weekly'),
+)
+A_WEEK = WEEK[0][0]
+B_WEEK = WEEK[1][0]
 
+class Member(TimestampedModel):
     season = models.ForeignKey(Season,null=False)
     first_name = models.CharField(max_length=100,null=False)
     last_name = models.CharField(max_length=100,null=False)
