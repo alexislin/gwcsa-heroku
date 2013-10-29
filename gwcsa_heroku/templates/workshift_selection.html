@@ -1,7 +1,37 @@
 {% extends "base.html" %}
 
+{% block header %}
+  <script type="text/javascript" language="javascript" src="js/workshifts.js?cache_buster={% now "YmdHis" %}""></script>
+  <script type="text/javascript">
+    var gAvailableDatesAsStringsByShiftId = {{ available_dates_by_shift_id|safe }};
+  </script>
+{% endblock %}
+
 {% block content %}
-  <div class="span-24 last">
-    <span class="title">{{member.first_name}} {{member.last_name}} {{member.id}}</span>
+  <div id="shift-selection" class="span-24 last below-16">
+    <div class="span-24 last below-8">
+      <span class="title">Wednesday</span>
+    </div>
+    {% for workshift in workshifts %}
+      {% if workshift.day == "Wednesday" %}
+        <div class="span-24 last below-16">
+          {% include "workshift_row.html" %}
+        </div>
+      {% endif %}
+    {% endfor %}
+  </div>
+
+  <div id="shift-selection" class="span-24 last below-16">
+    <div class="span-24 last below-8">
+      <span class="title">Saturday</span>
+    </div>
+    {% for workshift in workshifts %}
+      {% if workshift.day == "Saturday" %}
+        <div class="span-24 last below-16">
+          {% include "workshift_row.html" %}
+        </div>
+      {% endif %}
+    {% endfor %}
   </div>
 {% endblock %}
+

@@ -1,3 +1,5 @@
+import json
+
 from django.http import HttpResponse
 from django.template import RequestContext
 from django.shortcuts import render_to_response
@@ -18,9 +20,34 @@ def workshift_selection(request):
         return render_to_response("base.html")
     else:
         member = get_member(request)
+
+        shift_id = None
+        shift_dates = []
+        shift_times = []
+
+        for shift in MemberWorkShift.objects.filter(member=member):
+            shift_id = shift.get_id()
+            shift_dates.append(shift.date.strftime("%m/%d/%Y"))
+            shift_times.append(shift.shift_time.start.strftime("%H%M"))
+
+        shifts = WorkShift.objects.filter(season=Season.objects.get(name=CURRENT_SEASON))
+
+        available_dates_by_shift_id = {}
+        for shift in shifts:
+            #dates = [d.strftime("%m%d%Y") \
+            #    for d in shift.get_available_dates_for_member(member.key().id())]
+            dates = [s.date.strftime("%m%d%Y") for s in WorkShiftDateTime.objects.filter(shift=shift)]
+            available_dates_by_shift_id[shift.id] = dates
+
+        member = get_member(request)
         return render_to_response("workshift_selection.html",
             RequestContext(request, {
-                "member" : member,
+                "workshifts": shifts,
+                "member": member,
+                "shift_id": shift_id,
+                "shift_dates": shift_dates,
+                "shift_times": shift_times,
+                "available_dates_by_shift_id": json.dumps(available_dates_by_shift_id),
             })
         )
 

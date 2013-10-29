@@ -1,0 +1,76 @@
+{% load gwcsa_filters %}
+
+<form name="shift-form" action="/workshifts" method="POST">
+  <input type="hidden" name="member_id" value="{{member.key.id}}" />
+  <input type="hidden" name="shift_id" value="{{workshift.key.id}}" />
+  <div class="span-14 last shift {% if workshift.key.id == shift_id %}selected{% endif %}">
+    <div class="span-8">
+      <span class="title2">{{workshift.name}}</span>
+      <div>
+        <span class="text-medium">
+          {{workshift.location}}<br />
+          {{workshift.location2}}
+        </span>
+      </div>
+    </div>
+    <div class="span-4">
+      <span class="text-medium">
+        {% if workshift.times|length > 1 %}
+          any of:
+        {% endif %}
+        {% for time in workshift.times %}
+          <br />
+          {{time.start}}
+          {% if time.end%}
+            - {{time.end}}
+          {% endif %}
+        {% endfor %}
+      </span>
+    </div>
+    <div class="span-2 last">
+      <span class="text-massive">x {{workshift.num_required_per_member}}</span>
+    </div>
+    {% if workshift.note %}
+      <div class="span-20 last shift-note">
+        <strong>note</strong>: {{workshift.note}}
+      </div>
+    {% endif %}
+    <div class="span-20 last shift-date-selection">
+      <hr />
+      <div class="span-20 last shift-dates">
+        {% for i in 2 %}
+          <div class="shift-date">
+            <label for="shift-datepicker-{{i}}">Select date:
+              <br />
+              <input type="hidden" name="shift-day" value="{{workshift.day}}" />
+              <input type="text"
+                id="{{workshift.key.id}}-shift-datepicker-{{i}}"
+                name="shift-datepicker-{{i}}"
+                readonly="readonly"
+                value="{% if workshift.key.id == shift_id %}{{shift_dates|get_at_index:i}}{% endif %}"
+              />
+            </label>
+            {% if workshift.times|length > 1 %}
+              <select id="shift-timepicker-{{i}}" name="shift-timepicker-{{i}}">
+                {% for time in workshift.times %}
+                  <option
+                    value="{{time.start|get_formatted_time}}"
+                    {% if workshift.key.id == shift_id and time.start|get_formatted_time == shift_times|get_at_index:i %}
+                      selected="selected"
+                    {% endif %}
+                  >{{time.start}}</option>
+                {% endfor %}
+              </select>
+            {% else %}
+              {% for time in workshift.times %}
+                at {{time.start}}
+                <input type="hidden" id="shift-timepicker-{{i}}" name="shift-timepicker-{{i}}" value="{{time.start|get_formatted_time}}" />
+              {% endfor %}
+            {% endif %}
+          </div>
+        {% endfor %}
+        <input type="submit" value="confirm >" class="next-button" />
+      </div>
+    </div>
+  </div>
+</form>
