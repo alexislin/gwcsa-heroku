@@ -31,12 +31,28 @@ class WorkShift(TimestampedModel):
     note = models.CharField(max_length=200,null=False,default='')
     num_required_per_member = models.PositiveIntegerField(null=False)
 
+# TODO: filter out the first two weeks of distro shifts
+    def get_available_dates(self):
+        return [s.date for s in WorkShiftDateTime.objects.filter(shift=self) if not s.is_full()]
+
+    def get_available_dates_for_member(self, member):
+        dates = self.get_available_dates()
+        dates.extend([ms.workshift_date_time.date for ms in \
+            MemberWorkShift.objects.filter(workshift_date_time__shift=self).filter(member=member)])
+        return sorted(dates)
+
+
 class WorkShiftDateTime(TimestampedModel):
     shift = models.ForeignKey(WorkShift,null=False)
     date = models.DateField(null=False)
     start_time = models.TimeField(null=False)
     end_time = models.TimeField(null=False)
     num_members_required = models.PositiveIntegerField(null=False)
+
+    def is_full(self):
+        n = WorkShiftDateTime.objects.filter(shift=self.shift) \
+            .filter(start_time=self.start_time).filter(date=self.date).count()
+        return n >= self.num_members_required
 
 WEEK = (
     ('A', 'A Week'),

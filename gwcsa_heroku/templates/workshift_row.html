@@ -1,9 +1,9 @@
 {% load gwcsa_filters %}
 
 <form name="shift-form" action="/workshifts" method="POST">
-  <input type="hidden" name="member_id" value="{{member.key.id}}" />
-  <input type="hidden" name="shift_id" value="{{workshift.key.id}}" />
-  <div class="span-14 last shift {% if workshift.key.id == shift_id %}selected{% endif %}">
+  <input type="hidden" name="member_id" value="{{member.id}}" />
+  <input type="hidden" name="shift_id" value="{{workshift.id}}" />
+  <div class="span-14 last shift {% if workshift.id == shift_id %}selected{% endif %}">
     <div class="span-8">
       <span class="title2">{{workshift.name}}</span>
       <div>
@@ -20,9 +20,9 @@
         {% endif %}
         {% for time in workshift.times %}
           <br />
-          {{time.start}}
-          {% if time.end%}
-            - {{time.end}}
+          {{time.start_time}}
+          {% if time.end_time %}
+            - {{time.end_time}}
           {% endif %}
         {% endfor %}
       </span>
@@ -38,24 +38,24 @@
     <div class="span-20 last shift-date-selection">
       <hr />
       <div class="span-20 last shift-dates">
-        {% for i in 2 %}
+          {% for i in workshift.num_required_per_member|get_range %}
           <div class="shift-date">
             <label for="shift-datepicker-{{i}}">Select date:
               <br />
               <input type="hidden" name="shift-day" value="{{workshift.day}}" />
               <input type="text"
-                id="{{workshift.key.id}}-shift-datepicker-{{i}}"
+                id="{{workshift.id}}-shift-datepicker-{{i}}"
                 name="shift-datepicker-{{i}}"
                 readonly="readonly"
-                value="{% if workshift.key.id == shift_id %}{{shift_dates|get_at_index:i}}{% endif %}"
+                value="{% if workshift.id == shift_id %}{{shift_dates|get_at_index:i}}{% endif %}"
               />
             </label>
             {% if workshift.times|length > 1 %}
               <select id="shift-timepicker-{{i}}" name="shift-timepicker-{{i}}">
                 {% for time in workshift.times %}
                   <option
-                    value="{{time.start|get_formatted_time}}"
-                    {% if workshift.key.id == shift_id and time.start|get_formatted_time == shift_times|get_at_index:i %}
+                    value="{{time.start_time|get_formatted_time}}"
+                    {% if workshift.id == shift_id and time.start_time|get_formatted_time == shift_times|get_at_index:i %}
                       selected="selected"
                     {% endif %}
                   >{{time.start}}</option>
@@ -64,7 +64,7 @@
             {% else %}
               {% for time in workshift.times %}
                 at {{time.start}}
-                <input type="hidden" id="shift-timepicker-{{i}}" name="shift-timepicker-{{i}}" value="{{time.start|get_formatted_time}}" />
+                <input type="hidden" id="shift-timepicker-{{i}}" name="shift-timepicker-{{i}}" value="{{time.start_time|get_formatted_time}}" />
               {% endfor %}
             {% endif %}
           </div>

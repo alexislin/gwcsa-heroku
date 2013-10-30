@@ -1,10 +1,7 @@
 {% extends "base.html" %}
 
 {% block header %}
-  <script type="text/javascript" language="javascript" src="js/workshifts.js?cache_buster={% now "YmdHis" %}""></script>
-  <script type="text/javascript">
-    var gAvailableDatesAsStringsByShiftId = {{ available_dates_by_shift_id|safe }};
-  </script>
+  <script type="text/javascript" language="javascript" src="{{ STATIC_URL }}js/workshifts.js?cache_buster={% now "YmdHis" %}""></script>
 {% endblock %}
 
 {% block content %}
@@ -13,7 +10,7 @@
       <span class="title">Wednesday</span>
     </div>
     {% for workshift in workshifts %}
-      {% if workshift.day == "Wednesday" %}
+      {% if workshift.day == "W" %}
         <div class="span-24 last below-16">
           {% include "workshift_row.html" %}
         </div>
@@ -26,7 +23,7 @@
       <span class="title">Saturday</span>
     </div>
     {% for workshift in workshifts %}
-      {% if workshift.day == "Saturday" %}
+      {% if workshift.day == "S" %}
         <div class="span-24 last below-16">
           {% include "workshift_row.html" %}
         </div>

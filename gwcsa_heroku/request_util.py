@@ -14,11 +14,11 @@ def get_parameter(request, name, default=None):
         return request.POST[name]
     return default
 
-def get_member(request):
-    member_id = get_parameter(request, "member_id")
+def get_member(request, member_id_param_name):
+    member_id = get_parameter(request, member_id_param_name)
 
     if member_id:
-        return Member.objects.get(member_id)
+        return Member.objects.get(id=int(member_id))
     else:
         first_name = get_parameter(request, "firstname")
         last_name = get_parameter(request, "lastname")

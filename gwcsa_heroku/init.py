@@ -24,6 +24,9 @@ def __init_shift(day, name, location, location2, num_required_per_member,
             location2=location2,
             num_required_per_member=num_required_per_member
         )
+        if note:
+            shift.note = note
+            shift.save()
 
     else:
         shift = shifts[0]
