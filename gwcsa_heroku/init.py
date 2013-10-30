@@ -66,6 +66,36 @@ def init_workshift(request):
         note="Must have own car. Soup kitchen is on Milton Street in Greenpoint.",
     )
 
+    __init_shift(
+        day=SATURDAY,
+        name="Distribution Shift",
+        location="McCarren Park",
+        location2="(next to dog run and community garden)",
+        num_required_per_member=1,
+        timeslots=[(time(8, 15, 0), time(12, 00, 0))],
+        num_members_required=[6, 5]
+    )
+
+    __init_shift(
+        day=SATURDAY,
+        name="Garden of Eve Farmstand Shift",
+        location="McCarren Park",
+        location2="(next to dog run and community garden)",
+        num_required_per_member=1,
+        timeslots=[(time(7, 30, 0), time(9, 30, 0)), (time(9, 30, 0), time(11, 30, 0)), (time(11, 30, 0), time(13, 30, 0))],
+        num_members_required=[1, 1]
+    )
+
+    __init_shift(
+        day=SATURDAY,
+        name="Soup Kitchen Driver",
+        location="McCarren Park",
+        location2="(next to dog run and community garden)",
+        num_required_per_member=3,
+        timeslots=[(time(11, 45, 0), time(12, 15, 0))],
+        num_members_required=[1, 1],
+        note="Must have own car. Soup kitchen is on Milton Street in Greenpoint.",
+    )
 
     return render_to_response("base.html",
         RequestContext(request, {
@@ -73,89 +103,4 @@ def init_workshift(request):
         })
     )
 
-
-'''
-        shift = WorkShift.all()
-        shift = shift.filter("season =", CURRENT_SEASON)
-        shift = shift.filter("name =", "Distribution Shift")
-        shift = shift.filter("day =", SATURDAY)
-        if not shift.get():
-            shift = WorkShift(
-                season=CURRENT_SEASON,
-                day=SATURDAY,
-                name="Distribution Shift",
-                location="McCarren Park",
-                location2="(next to dog run and community garden)",
-                num_required_per_member=1,
-                num_members_required_per_timeslot=5,
-                first_day_of_season=SATURDAY_DATES[0],
-                last_day_of_season=SATURDAY_DATES[-1],
-                dates=SATURDAY_DATES
-            )
-            shift.put()
-            WorkShiftTime(
-                start=time(8, 30, 0),
-                end=time(12, 15, 0),
-                shift=shift
-            ).put()
-
-        shift = WorkShift.all()
-        shift = shift.filter("season =", CURRENT_SEASON)
-        shift = shift.filter("name =", "Garden of Eve Farmstand Shift")
-        shift = shift.filter("day =", SATURDAY)
-        if not shift.get():
-            shift = WorkShift(
-                season=CURRENT_SEASON,
-                day=SATURDAY,
-                name="Garden of Eve Farmstand Shift",
-                location="Garden of Eve Stand",
-                location2="McCarren Park Farmers Market",
-                num_required_per_member=1,
-                num_members_required_per_timeslot=1,
-                first_day_of_season=SATURDAY_DATES[0],
-                last_day_of_season=SATURDAY_DATES[-1],
-                dates=SATURDAY_DATES
-            )
-            shift.put()
-            WorkShiftTime(
-                start=time(7, 30, 0),
-                end=time(9, 30, 0),
-                shift=shift
-            ).put()
-            WorkShiftTime(
-                start=time(9, 30, 0),
-                end=time(11, 30, 0),
-                shift=shift
-            ).put()
-            WorkShiftTime(
-                start=time(11, 30, 0),
-                end=time(13, 30, 0),
-                shift=shift
-            ).put()
-
-        shift = WorkShift.all()
-        shift = shift.filter("season =", CURRENT_SEASON)
-        shift = shift.filter("name =", "Soup Kitchen Driver")
-        shift = shift.filter("day =", SATURDAY)
-        if not shift.get():
-            shift = WorkShift(
-                season=CURRENT_SEASON,
-                day=SATURDAY,
-                name="Soup Kitchen Driver",
-                location="McCarren Park",
-                location2="(next to dog run and community garden)",
-                note="Must have own car. Soup kitchen is on Milton Street in Greenpoint.",
-                num_required_per_member=3,
-                num_members_required_per_timeslot=1,
-                first_day_of_season=SATURDAY_DATES[0],
-                last_day_of_season=SATURDAY_DATES[-1],
-                dates=SATURDAY_DATES
-            )
-            shift.put()
-            WorkShiftTime(
-                start=time(12, 00, 0),
-                shift=shift
-            ).put()
-
-'''
 
