@@ -1,3 +1,4 @@
+import datetime
 import json
 
 from django.http import HttpResponse
@@ -21,23 +22,15 @@ def get_available_times_for_shift_date(request):
     member = get_member(request, "memberId")
     shift_id = get_required_parameter(request, "shiftId")
     shift = WorkShift.objects.get(id=shift_id)
+    date = datetime.datetime.strptime(get_required_parameter(request, "date"), "%m/%d/%Y").date()
 
-    date = datetime.datetime.strptime(get_required_parameter("date"), "%m/%d/%Y").date()
+    member_start_times = [ms.workshift_date_time.start_time for ms in \
+        MemberWorkShift.objects.filter(member=member).filter(workshift_date_time__shift=shift)]
 
-    values = {}
+    times = []
+    for w in WorkShiftDateTime.objects.filter(shift=shift).filter(date=date):
+        if not w.is_full() or w.start_time in member_start_times:
+            times.append((w.start_time.strftime("%H%M"), w.start_time.strftime("%-I:%M %p")))
+
+    values = { "available_times": times }
     return HttpResponse(json.dumps(values), content_type="application/json")
-'''
-        member_start_times = [s.time for s in member.shifts if s.get_id() == shift_id]
-
-        available_times = []
-
-        for time in shift.times.order("start"):
-            # include if time is available, or if it's currently assigned to this member
-            if (not time.is_full(date)) or time.start in member_start_times:
-                available_times.append((time.start.strftime("%H%M"), time.start.strftime("%-I:%M %p")))
-
-        data = { "available_times" : available_times }
-
-        self.response.headers["Content-Type"] = "application/json"
-        self.response.out.write(json.dumps(data))
-'''
