@@ -7,6 +7,7 @@ from django.template import RequestContext
 from django.shortcuts import render_to_response
 
 from gwcsa_heroku.decorators import *
+from gwcsa_heroku.email_util import *
 from gwcsa_heroku.models import *
 from gwcsa_heroku.request_util import *
 
@@ -46,9 +47,11 @@ def workshift_selection(request):
 
         # TODO: infer a prefered A/B week assignment based on shifts selected
         # TODO: send email to member with workshift info
+        send_email("alexislin95@gmail.com", member.name, "Your %s GWCSA Work Shifts" % CURRENT_SEASON, "", "")
 
         return render_to_response("thankyou.html",
             RequestContext(request, {
+                "current_season": CURRENT_SEASON,
                 "member" : member,
                 "shift" : shift,
                 "shift_date_times" : workshift_date_times
