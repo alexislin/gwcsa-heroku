@@ -3,10 +3,11 @@ import json
 
 from django.http import HttpResponse
 
+from gwcsa_heroku.decorators import *
 from gwcsa_heroku.models import *
 from gwcsa_heroku.request_util import *
 
-
+@handle_ajax_exception
 def get_available_dates_for_shift(request):
     member = get_member(request, "memberId")
     shift_id = get_required_parameter(request, "shiftId")
@@ -18,6 +19,7 @@ def get_available_dates_for_shift(request):
     values = { "available_dates" : dates }
     return HttpResponse(json.dumps(values), content_type="application/json")
 
+@handle_ajax_exception
 def get_available_times_for_shift_date(request):
     member = get_member(request, "memberId")
     shift_id = get_required_parameter(request, "shiftId")

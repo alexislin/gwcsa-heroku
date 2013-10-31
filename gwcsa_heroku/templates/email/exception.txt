@@ -1,0 +1,12 @@
+Url:
+{{url}}
+
+Args:
+{% for name, value in args %}
+  {{name}} : {{value}}
+{% endfor %}
+
+Stack Trace:
+{{stack_trace|safe}}
+
+

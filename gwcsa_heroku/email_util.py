@@ -2,6 +2,7 @@ import logging
 import urllib
 import urllib2
 import sys
+import traceback
 
 from django.template.loader import render_to_string
 
@@ -34,6 +35,21 @@ def send_email(to_email, to_name, subject, template_path, template_values):
         logging.error(result.info())
     else:
         logging.debug("Successfully sent email '%s' to '%s' through SendGrid." % (to_email, subject))
+
+def send_exception_email(url, args, stack_trace):
+    try:
+        values = {
+            "url": url,
+            "args": args,
+            "stack_trace": stack_trace,
+        }
+
+        subject = "Exception for url: %s" % url
+        send_email("admin@gwcsa.org", "GWCSA Admin", subject, "email/exception.txt", values)
+    except:
+        # don't want to throw an exception when trying to send an exception email...
+        # that would only make things worse
+        logging.error(traceback.format_exc())
 
 def send_workshift_confirmation_email(member):
     member_shifts = MemberWorkShift.objects.filter(member=member)
