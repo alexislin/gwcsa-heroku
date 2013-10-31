@@ -163,7 +163,7 @@ $(function() {
     timePickers.each(function() {
       var name = $(this).attr("name");
       var index = parseInt(name.substr(name.length - 1));
-      times[index] += $(this).val();
+      times[index] = $(this).val();
     });
 
     // verify there are no empty dates or times
@@ -178,7 +178,7 @@ $(function() {
       }
       else {
         // append time to the dates
-        dates[index] += " " + times[i];
+        dates[i] += " " + times[i];
       }
     }
 
