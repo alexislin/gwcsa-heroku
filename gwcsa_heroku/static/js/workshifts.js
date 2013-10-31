@@ -10,6 +10,16 @@ function getShiftIdFromDatePickerId(id) {
   return parseInt(shiftId);
 }
 
+function shiftHasAvailableDates(jDiv) {
+  var id = jDiv.find("input[name^='shift-datepicker-0']").attr("id");
+  var shiftId = getShiftIdFromDatePickerId(id);
+  var availableDates = gAvailableDatesByShiftId[shiftId];
+
+  // will be undefined until it's first initialized... in this case,
+  // treat it as though there are shifts
+  return (typeof availableDates == "undefined") || availableDates.length > 0;
+}
+
 function setAvailableDatesForShift(shiftId, availableDates) {
   dates = []
   for (var i in availableDates) {
@@ -129,10 +139,16 @@ $(function() {
       $(this).addClass("span-14");
       $(this).find(".shift-date-selection").hide();
     });
-    $(this).removeClass("span-14");
-    $(this).addClass("selected");
-    $(this).addClass("span-20");
-    $(this).find(".shift-date-selection").show();
+    if (shiftHasAvailableDates($(this))) {
+      $(this).removeClass("span-14");
+      $(this).addClass("selected");
+      $(this).addClass("span-20");
+      $(this).find(".shift-date-selection").show();
+    }
+    else {
+      $(this).find(".shift-full").show();
+      $(this).addClass("full");
+    }
   });
 
   $(".shift").each(function() {

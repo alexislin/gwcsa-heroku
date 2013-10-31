@@ -27,8 +27,6 @@ div#footer { width: 100%; position: relative; margin-top: -60px; height: 60px; }
   div#footer-links a { text-decoration: none; font-family: 'Varela'; color: rgb(91, 51, 12); }
   div#footer-links a:hover { color: rgb(199, 130, 44); }
 
-.selected { background-color: #E8E5DD; box-shadow: 2px 2px 5px rgba(0,0,0,0.3); -moz-box-shadow: 2px 2px 5px rgba(0,0,0,0.3); -webkit-box-shadow: 2px 2px 5px rgba(0,0,0,0.3); }
-
 .title { font-size: 2em; font-weight: bold; }
 .title2 { font-size: 1.6em; font-weight: bold; }
 .title3 { font-size: 1.2em; font-weight: bold; }
@@ -53,6 +51,10 @@ div.shift { border: 1px solid gray; border-radius: 12px; -moz-border-radius 12px
     div.shift-dates div.shift-date label { font-weight: normal; }
     div.shift-dates div.shift-date select, div.shift-dates div.shift-date input[type="text"] { margin: 0em; }
   div.shift div.shift-note { text-size: 0.8em; font-style: italic; }
+
+.selected { background-color: #F8F4E8; box-shadow: 2px 2px 5px rgba(0,0,0,0.3); -moz-box-shadow: 2px 2px 5px rgba(0,0,0,0.3); -webkit-box-shadow: 2px 2px 5px rgba(0,0,0,0.3); }
+.full { color: #BEBEBE; background-color: #F3F3F3; border-color: #BEBEBE; }
+.full hr { height: 0; border: 0; border-top: 1px solid #BEBEBE; }
 
 .invalid-shift-date { text-decoration: line-through; }
 

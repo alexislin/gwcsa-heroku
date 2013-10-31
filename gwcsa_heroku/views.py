@@ -45,8 +45,7 @@ def workshift_selection(request):
             MemberWorkShift.objects.create(member=member, workshift_date_time=w)
             workshift_date_times.append(w)
 
-        # TODO: infer a prefered A/B week assignment based on shifts selected
-        # TODO: send email to member with workshift info
+#TODO: infer a prefered A/B week assignment based on shifts selected
         send_workshift_confirmation_email(member)
 
         return render_to_response("thankyou.html",

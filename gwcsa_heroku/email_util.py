@@ -28,12 +28,10 @@ def send_email(to_email, to_name, subject, template_path, template_values):
     result = urllib2.urlopen(request)
 
     status_code = result.getcode()
-    print >> sys.stderr, "status code: %s" % status_code
     if status_code <> 200:
         logging.error("SendGrid email failed with status=%s" % status_code)
         logging.error(result.geturl())
         logging.error(result.info())
-        print >> sys.stderr, result.info()
     else:
         logging.debug("Successfully sent email '%s' to '%s' through SendGrid." % (to_email, subject))
 
