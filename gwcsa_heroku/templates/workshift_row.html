@@ -63,7 +63,7 @@
               </select>
             {% else %}
               {% for time in workshift.times %}
-                at {{time.start}}
+                at {{time.start_time}}
                 <input type="hidden" id="shift-timepicker-{{i}}" name="shift-timepicker-{{i}}" value="{{time.start_time|get_formatted_time}}" />
               {% endfor %}
             {% endif %}
