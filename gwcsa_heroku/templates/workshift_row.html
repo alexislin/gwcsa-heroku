@@ -1,6 +1,7 @@
 {% load gwcsa_filters %}
 
-<form name="shift-form" action="/workshifts" method="POST">
+<form name="shift-form" action="/workshift_selection" method="POST">
+  {% csrf_token %}
   <input type="hidden" name="member_id" value="{{member.id}}" />
   <input type="hidden" name="shift_id" value="{{workshift.id}}" />
   <div class="span-14 last shift {% if workshift.id == shift_id %}selected{% endif %}">

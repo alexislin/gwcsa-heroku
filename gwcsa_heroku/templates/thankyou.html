@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <div class="span-24 last below-8">
+    <span class="title">Work Shift Summary</span>
+  </div>
+
+  <div class="span-24 last below-32">
+    {% if not shift %}
+      None Selected
+    {% else %}
+      <span class="title3">{{shift.get_day_display}} {{shift.name}}</span> <br />
+      {{shift.location}} <br />
+      {{shift.location2}} <br />&nbsp;<br />
+      {% for s in shift_date_times %}
+        <span class="title3">{{s.date}} - {{s.start_time}}</span><br />
+      {% endfor %}
+   {% endif %}
+  </div>
+
+  <div class="span-24 last">
+    <p><span class="title2">{{member.first_name}}, thank you for becoming a member of the GWCSA!</span></p>
+    <p>
+      You should receive an email from <a href="mailto:info@gwcsa.org">info@gwcsa.org</a> confirming your work shift date(s). If you
+      don't receive the confirmation email, please check your spam folder.
+    </p>
+    <p>
+      If you have any questions or concerns, please send us an <a href="mailto:info@gwcsa.org">email</a> or visit our
+      <a href="http://gwcsa.org" target="_blank">website</a>.
+    </p>
+  </div>
+{% endblock %}

@@ -7,7 +7,7 @@ from django.template import RequestContext
 
 from functools import wraps
 
-
+# TODO: send email to admin@gwcsa.org for each exception
 def handle_view_exception(view_func):
     def _decorator(request, *args, **kwargs):
         try:
@@ -24,4 +24,5 @@ def handle_view_exception(view_func):
 
     return wraps(view_func)(_decorator)
 
-
+# TODO: add another decorator that just sends an email
+# def send_email_on_exception
