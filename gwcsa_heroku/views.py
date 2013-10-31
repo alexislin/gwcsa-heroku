@@ -47,7 +47,7 @@ def workshift_selection(request):
 
         # TODO: infer a prefered A/B week assignment based on shifts selected
         # TODO: send email to member with workshift info
-        send_email("alexislin95@gmail.com", member.name, "Your %s GWCSA Work Shifts" % CURRENT_SEASON, "", "")
+        send_workshift_confirmation_email(member)
 
         return render_to_response("thankyou.html",
             RequestContext(request, {

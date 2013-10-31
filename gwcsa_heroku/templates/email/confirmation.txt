@@ -2,16 +2,16 @@ Hi {{member.first_name}},
 
 Thank you for signing up for your GWCSA work shift(s):
 
-  {{shift_day}} {{shift_name}}
-  {{shift_location}}
-  {{shift_location2}}
+  {{shift.get_day_display}} {{shift.name}}
+  {{shift.location}}
+  {{shift.location2}}
 
-{% for shift in member.shifts %}  {{shift.date}} - {{shift.time}}
+{% for date, time in date_times %}  {{date}} - {{time}}
 {% endfor %}
 Please mark your calendar with your work shift date(s). It is your responsibility to remember when you are working, and to find someone to work your shift if you are unavailable.
 
 We look forward to having you as a member for the {{current_season}} season!
 
 Greenpoint Williamsburg CSA (GWCSA)
-website: http://gwcsa.org
+website: http://www.gwcsa.org
 email: info@gwcsa.org

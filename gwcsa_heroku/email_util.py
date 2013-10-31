@@ -3,6 +3,10 @@ import urllib
 import urllib2
 import sys
 
+from django.template.loader import render_to_string
+
+from gwcsa_heroku.models import *
+
 def send_email(to_email, to_name, subject, template_path, template_values):
     url = "https://sendgrid.com/api/mail.send.json"
 
@@ -14,7 +18,7 @@ def send_email(to_email, to_name, subject, template_path, template_values):
     data["from"] = "info@gwcsa.org"
     data["fromname"] = "Greenpoint Williamsburg CSA"
     data["subject"] = subject
-    data["text"] = "test" #TODO: self._render(template_path, template_values)
+    data["text"] = render_to_string(template_path, template_values)
     form_data = urllib.urlencode(data)
 
     headers = {}
@@ -33,5 +37,20 @@ def send_email(to_email, to_name, subject, template_path, template_values):
     else:
         logging.debug("Successfully sent email '%s' to '%s' through SendGrid." % (to_email, subject))
 
-def send_workshift_confirmation_email():
-    pass
+def send_workshift_confirmation_email(member):
+    member_shifts = MemberWorkShift.objects.filter(member=member)
+# TODO: need to verify that member_workshifts.count() > 0
+
+    date_times = [(ms.workshift_date_time.date, ms.workshift_date_time.start_time) \
+        for ms in member_shifts]
+
+    values = {
+        "current_season": CURRENT_SEASON,
+        "member": member,
+        "shift": member_shifts[0].workshift_date_time.shift,
+        "date_times": date_times,
+    }
+
+    subject = "Your %s GWCSA Work Shifts" % CURRENT_SEASON
+    send_email(member.email, member.name, subject, "email/confirmation.txt", values)
+
