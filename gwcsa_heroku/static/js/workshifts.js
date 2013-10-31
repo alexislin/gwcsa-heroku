@@ -15,23 +15,18 @@ function setAvailableDatesForShift(shiftId, availableDates) {
   for (var i in availableDates) {
     var d = availableDates[i];
 
-    var date = new Date();
-    date.setMonth(parseInt(d.substr(0, 2), 10) - 1);
-    date.setDate(parseInt(d.substr(2, 2), 10));
-    date.setYear(parseInt(d.substr(4), 10));
-    dates.push(date);
+    var month = parseInt(d.substr(0, 2), 10) - 1;
+    var day = parseInt(d.substr(2, 2), 10);
+    var year = parseInt(d.substr(4), 10);
+
+    dates.push(new Date(year, month, day));
   }
   gAvailableDatesByShiftId[shiftId] = dates;
 }
 
-function getDatePickerDates(id) {
+function getAvailableDatesForShift(shiftId) {
   var memberId = getMemberId();
-  var shiftId = getShiftIdFromDatePickerId(id);
 
-  getAvailableDatesForShift(memberId, shiftId);
-}
-
-function getAvailableDatesForShift(memberId, shiftId) {
   $.ajax({
     url: "/ajax/get_available_dates_for_shift",
     type: "GET",
@@ -48,17 +43,17 @@ function getAvailableDatesForShift(memberId, shiftId) {
 }
 
 $(function() {
-  $("input[name^='shift-datepicker']").each(function() {
-      getDatePickerDates($(this).attr("id"));
+  $("input[name^='shift-datepicker-0']").each(function() {
+    var shiftId = getShiftIdFromDatePickerId($(this).attr("id"));
+    getAvailableDatesForShift(shiftId);
   });
 
   $("input[name^='shift-datepicker']").datepicker({
     minDate: new Date(2014, 5, 1), // June 1st
     maxDate: new Date(2014, 10, 30), // November 30th
     beforeShow: function(input, inst) {
-      getDatePickerDates($(input).attr("id"));
-
       var shiftId = getShiftIdFromDatePickerId($(input).attr("id"));
+      getAvailableDatesForShift(shiftId);
 
       return {
         beforeShowDay: function(date) {

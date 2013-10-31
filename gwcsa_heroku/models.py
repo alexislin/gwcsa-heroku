@@ -1,3 +1,5 @@
+import sys
+
 from django.db import models
 
 class TimestampedModel(models.Model):
@@ -33,7 +35,9 @@ class WorkShift(TimestampedModel):
 
 # TODO: filter out the first two weeks of distro shifts
     def get_available_dates(self):
-        return [s.date for s in WorkShiftDateTime.objects.filter(shift=self) if not s.is_full()]
+        dates = [s.date for s in WorkShiftDateTime.objects.filter(shift=self) \
+            if not s.is_full()]
+        return sorted(list(set(dates)))
 
     def get_available_dates_for_member(self, member):
         dates = self.get_available_dates()
@@ -50,8 +54,7 @@ class WorkShiftDateTime(TimestampedModel):
     num_members_required = models.PositiveIntegerField(null=False)
 
     def is_full(self):
-        n = WorkShiftDateTime.objects.filter(shift=self.shift) \
-            .filter(start_time=self.start_time).filter(date=self.date).count()
+        n = MemberWorkShift.objects.filter(workshift_date_time=self).count()
         return n >= self.num_members_required
 
 WEEK = (
