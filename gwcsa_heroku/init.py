@@ -85,7 +85,7 @@ def init_workshift(request):
         location="McCarren Park",
         location2="(next to dog run and community garden)",
         num_required_per_member=1,
-        timeslots=[(time(7, 30, 0), time(9, 30, 0)), (time(9, 30, 0), time(11, 30, 0)), (time(11, 30, 0), time(13, 30, 0))],
+        timeslots=[(time(7, 30, 0), time(10, 30, 0)), (time(10, 30, 0), time(13, 30, 0))],
         num_members_required=[1, 1]
     )
 
