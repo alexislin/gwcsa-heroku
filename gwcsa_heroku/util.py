@@ -1,4 +1,6 @@
 from datetime import date, datetime
+import re
+import sys
 
 from gwcsa_heroku.models import *
 
@@ -63,4 +65,22 @@ def distro_date_is_week(date, week):
 
     raise Exception("Invalid value for 'week' parameter: %s" % week)
 
+
+SIGNUP_DATE = 0
+FIRST_NAME = 3
+LAST_NAME = 2
+EMAIL = 4
+SHARE_DESCRIPTION = 5
+
+def get_member_from_farmigo_csv_entry(line):
+    # replace commas in values with semi-colons (subscription info esp.)
+    for value in re.compile(',("[^"]+?,[^"]+?"),').findall(line):
+        line = line.replace(value, re.sub(',', ';', value))
+    d = [re.sub('"$', '', re.sub('^"', '', v)) for v in line.split(",")]
+    print >> sys.stderr, "d: %s" % d
+
+    member = Member.get_or_create_member(d[FIRST_NAME], d[LAST_NAME], d[EMAIL].lower())
+    member.farmigo_signup_date = datetime.strptime(d[SIGNUP_DATE], "%m/%d/%Y %H:%M")
+    member.farmigo_share_description = re.sub('"', '', re.sub(';', ',', d[SHARE_DESCRIPTION]))
+    member.save()
 

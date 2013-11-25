@@ -47,6 +47,7 @@
     <div class="span-6">
       <!-- TODO: this should really be in a dialog overlay -->
       <form enctype="multipart/form-data" method="post">
+        {% csrf_token %}
         <label for="csv-file">
           Import Farmigo subscription CVS file:
           <br />
@@ -56,23 +57,6 @@
         &nbsp;<br />
         <input id="upload-button" type="submit" value="upload">
       </form>
-      <br />
-      <form enctype="multipart/form-data" method="post">
-        <label for="contact-csv-file">
-          Import Farmigo contact report:
-          <br />
-          <input id="contact-csv-file" name="csv-file" type="file">
-        </label>
-        <br />
-        &nbsp;<br />
-        <input id="contact-upload-button" type="submit" value="upload contact report">
-      </form>
-    </div>
-
-    <div class="span-4 last">
-      <a href="/admin/members/export.csv">Export...</a>
-      <br />
-      <a href="/admin/members/gwcsa_icontact_export.csv">Export for iContact...</a>
     </div>
   </div>
 
@@ -95,8 +79,8 @@
           <tr id="{{member.id}}" {% cycle 'class="odd"' 'class="even"' %}>
             <td>{{member.id}}</td>
             <td>
-              <span name="tipsy" title="<strong>Farmigo Share Description:</strong> <br />** share description **">
-                ** signup_date **
+              <span name="tipsy" title="<strong>Farmigo Share Description:</strong> <br />{{member.farmigo_share_description}}">
+                {{member.farmigo_signup_date|date:"SHORT_DATE_FORMAT"}}
               </span>
             </td>
             <td>{{member.first_name}}</td>
