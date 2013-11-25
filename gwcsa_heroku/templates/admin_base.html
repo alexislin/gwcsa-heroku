@@ -1,7 +1,9 @@
 {% extends "base.html" %}
 
 {% block title %}Administration{% endblock %}
-{% block subtitle %}Signed in as: {{ user.username }} ({{user.email}}){% endblock %}
+{% block subtitle %}
+  Signed in as: {{ user.username }} (<a href="{% url 'django.contrib.auth.views.logout_then_login' %}">logout</a>)
+{% endblock %}
 
 {% block nav %}
   {% include "admin_nav.html" %}
