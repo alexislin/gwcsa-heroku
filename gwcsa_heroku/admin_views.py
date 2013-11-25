@@ -53,7 +53,7 @@ def members(request):
 '''
 
 
-    members = Member.objects.annotate(shift_count=Count("memberworkshift"))
+    members = Member.objects.annotate(shift_count=Count("memberworkshift")).order_by("last_name")
     return render_to_response("admin_members.html",
         RequestContext(request, {
             "current_season": CURRENT_SEASON,

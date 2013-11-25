@@ -66,11 +66,19 @@ def distro_date_is_week(date, week):
     raise Exception("Invalid value for 'week' parameter: %s" % week)
 
 
+# TODO: verify that column headers match expected title so that we're not
+#       mis-processing columns (Farmigo changes the csv export regularly)
 SIGNUP_DATE = 0
 FIRST_NAME = 3
 LAST_NAME = 2
 EMAIL = 4
 SHARE_DESCRIPTION = 5
+SEASON = 6
+PHONE = 8
+SECONDARY_FIRST_NAME = 16
+SECONDARY_LAST_NAME = 17
+SECONDARY_EMAIL = 15
+ROUTE = 19
 
 def get_member_from_farmigo_csv_entry(line):
     # replace commas in values with semi-colons (subscription info esp.)
@@ -79,8 +87,16 @@ def get_member_from_farmigo_csv_entry(line):
     d = [re.sub('"$', '', re.sub('^"', '', v)) for v in line.split(",")]
     print >> sys.stderr, "d: %s" % d
 
+    # don't process member if not a current year member
+    if CURRENT_SEASON not in d[SEASON]:
+        return
+
     member = Member.get_or_create_member(d[FIRST_NAME], d[LAST_NAME], d[EMAIL].lower())
     member.farmigo_signup_date = datetime.strptime(d[SIGNUP_DATE], "%m/%d/%Y %H:%M")
     member.farmigo_share_description = re.sub('"', '', re.sub(';', ',', d[SHARE_DESCRIPTION]))
+    member.phone = re.sub("[-.()\s]", "", d[PHONE])
+    if re.match("\d{10}", member.phone):
+        member.phone = "%s-%s-%s" % (member.phone[0:3], member.phone[3:6], member.phone[6:])
+
     member.save()
 
