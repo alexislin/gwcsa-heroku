@@ -1,0 +1,118 @@
+{% extends "base.html" %}
+
+{% block header %}
+  <style type="text/css">
+    thead th { padding-top: 2px; padding-bottom: 2px; vertical-align: bottom; text-align: center; background-color: #574349; color: #E8E5DD; }
+    th, td { white-space: nowrap; border: 1px solid #FFFFFF; }
+    table tr.odd td { background-color: #FFF; }
+    table tr.even td { background-color: #E8E5DD; }
+
+    table.shares { padding-right: 50px; }
+      table.shares td.left-border { border-left: 2px #DDD solid; }
+      table.shares td.right-border { border-right: 2px #DDD solid; }
+      table.shares tr.hover td { background-color: #78515C !important; color: #FFFFFF; }
+  </style>
+
+  <script type="text/javascript">
+    $(document).ready(function() {
+      $("span[name='tipsy']").tipsy({ gravity: 'w', trigger: 'focus', html: true });
+
+      $("#upload-button").hide();
+      $("input#csv-file").change(function() {
+        $("#upload-button").show();
+      });
+
+      $("#contact-upload-button").hide();
+      $("input#contact-csv-file").change(function() {
+        $("#contact-upload-button").show();
+      });
+
+      $("table.shares tr").mouseenter(function() { $(this).addClass("hover"); });
+      $("table.shares tr").mouseleave(function() { $(this).removeClass("hover"); });
+      $("table.shares tr").click(function() {
+        window.location = "/admin/member_detail?id=" + $(this).attr("id");
+      });
+    });
+  </script>
+{% endblock %}
+
+{% block title %}Administration{% endblock %}
+{% block subtitle %}(signed in as: **admin_email**){% endblock %}
+
+{% block nav %}
+  {% include "admin_nav.html" %}
+{% endblock %}
+
+{% block content %}
+  <div class="span-24 last below-8">
+    <span class="title">Members</span>
+  </div>
+
+  <div class="span-24 last below-8">
+    <div class="span-14">&nbsp;</div>
+    <div class="span-6">
+      <!-- TODO: this should really be in a dialog overlay -->
+      <form enctype="multipart/form-data" method="post">
+        <label for="csv-file">
+          Import Farmigo subscription CVS file:
+          <br />
+          <input id="csv-file" name="csv-file" type="file">
+        </label>
+        <br />
+        &nbsp;<br />
+        <input id="upload-button" type="submit" value="upload">
+      </form>
+      <br />
+      <form enctype="multipart/form-data" method="post">
+        <label for="contact-csv-file">
+          Import Farmigo contact report:
+          <br />
+          <input id="contact-csv-file" name="csv-file" type="file">
+        </label>
+        <br />
+        &nbsp;<br />
+        <input id="contact-upload-button" type="submit" value="upload contact report">
+      </form>
+    </div>
+
+    <div class="span-4 last">
+      <a href="/admin/members/export.csv">Export...</a>
+      <br />
+      <a href="/admin/members/gwcsa_icontact_export.csv">Export for iContact...</a>
+    </div>
+  </div>
+
+  <div class="span-24 last">
+    <table class="shares">
+      <thead>
+        <tr>
+          <th rowspan="3">ID</th>
+          <th rowspan="3">Farmigo Sign Up</th>
+          <th rowspan="3">First</th>
+          <th rowspan="3">Last</th>
+          <th rowspan="3">Phone</th>
+          <th rowspan="3">Email</th>
+          <th rowspan="3">Shifts?</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        {% for member in members %}
+          <tr id="{{member.id}}" {% cycle 'class="odd"' 'class="even"' %}>
+            <td>{{member.id}}</td>
+            <td>
+              <span name="tipsy" title="<strong>Farmigo Share Description:</strong> <br />** share description **">
+                ** signup_date **
+              </span>
+            </td>
+            <td>{{member.first_name}}</td>
+            <td>{{member.last_name}}</td>
+            <td>** phone number **</td>
+            <td>{{member.email}}</td>
+            <td>** shifts? **</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+{% endblock %}
