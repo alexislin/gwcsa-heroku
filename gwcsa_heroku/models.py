@@ -124,3 +124,48 @@ class Member(TimestampedModel):
 class MemberWorkShift(TimestampedModel):
     member = models.ForeignKey(Member,null=False)
     workshift_date_time = models.ForeignKey(WorkShiftDateTime,null=False)
+
+SHARES = (
+    ('V', 'Vegetables'),
+    ('FR', 'Fruit'),
+    ('E', 'Eggs'),
+    ('FL', 'Flowers'),
+    ('P', 'Plants'),
+    ('M', 'Meat'),
+    ('C', 'Cheese'),
+    ('PP', 'Pickles and Preserves'),
+)
+VEGETABLES = SHARES[0][0]
+FRUIT = SHARES[1][0]
+EGGS = SHARES[2][0]
+FLOWERS = SHARES[3][0]
+PLANTS = SHARES[4][0]
+MEAT = SHARES[5][0]
+CHEESE = SHARES[6][0]
+PICKLES_AND_PRESERVES = SHARES[7][0]
+
+FREQUENCY = (
+    ('B', 'Biweekly'),
+    ('W', 'Weekly'),
+    ('N', 'Not Applicable'),
+)
+WEEKLY = FREQUENCY[0][0]
+BIWEEKLY = FREQUENCY[1][0]
+NOT_APPLICABLE = FREQUENCY[2][0]
+
+class Share(TimestampedModel):
+    member = models.ForeignKey(Member,null=False)
+    content = models.CharField(max_length=2,choices=SHARES,null=False)
+    quantity = models.PositiveIntegerField(null=False)
+    frequency = models.CharField(max_length=1,choices=FREQUENCY,null=False)
+
+    @staticmethod
+    def add_or_create_share(member, quantity, frequency, content):
+        try:
+            share = Share.objects.get(member=member,content=content,frequency=frequency)
+            share.quantity += quantity
+            share.save()
+        except Share.DoesNotExist:
+            Share.objects.create(member=member,content=content,frequency=frequency,quantity=quantity)
+
+

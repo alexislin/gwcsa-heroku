@@ -85,12 +85,12 @@ def get_member_from_farmigo_csv_entry(line):
     for value in re.compile(',("[^"]+?,[^"]+?"),').findall(line):
         line = line.replace(value, re.sub(',', ';', value))
     d = [re.sub('"$', '', re.sub('^"', '', v)) for v in line.split(",")]
-    print >> sys.stderr, "d: %s" % d
 
     # don't process member if not a current year member
     if CURRENT_SEASON not in d[SEASON]:
         return
 
+    # update member
     member = Member.get_or_create_member(d[FIRST_NAME], d[LAST_NAME], d[EMAIL].lower())
     member.day = WEDNESDAY if "Wednesday" in d[ROUTE] else SATURDAY
     member.farmigo_signup_date = datetime.strptime(d[SIGNUP_DATE], "%m/%d/%Y %H:%M")
@@ -101,6 +101,50 @@ def get_member_from_farmigo_csv_entry(line):
     member.secondary_first_name = d[SECONDARY_FIRST_NAME]
     member.secondary_last_name = d[SECONDARY_LAST_NAME]
     member.secondary_email = d[SECONDARY_EMAIL]
-
     member.save()
+
+    # re-create all member shares
+    Share.objects.filter(member=member).delete()
+
+    for s in member.farmigo_share_description.split(","):
+        quantity = int(re.match("\d+", s.strip()).group(0))
+        if re.compile("Biweekly Vegetable Share", re.IGNORECASE).search(s):
+            Share.add_or_create_share(member,quantity,BIWEEKLY,VEGETABLES)
+        elif re.compile("Weekly Vegetable Share", re.IGNORECASE).search(s):
+            Share.add_or_create_share(member,quantity,WEEKLY,VEGETABLES)
+        elif re.compile("Biweekly Vegeholic", re.IGNORECASE).search(s):
+            Share.add_or_create_share(member,2*quantity,BIWEEKLY,VEGETABLES)
+        elif re.compile("Weekly Vegeholic", re.IGNORECASE).search(s):
+            Share.add_or_create_share(member,2*quantity,WEEKLY,VEGETABLES)
+        elif re.compile("Biweekly Fruit Share", re.IGNORECASE).search(s):
+            Share.add_or_create_share(member,quantity,BIWEEKLY,FRUIT)
+        elif re.compile("Weekly Fruit Share", re.IGNORECASE).search(s):
+            Share.add_or_create_share(member,quantity,WEEKLY,FRUIT)
+        elif re.compile("Biweekly Egg Share", re.IGNORECASE).search(s):
+            Share.add_or_create_share(member,quantity,BIWEEKLY,EGGS)
+        elif re.compile("Weekly Egg Share", re.IGNORECASE).search(s):
+            Share.add_or_create_share(member,quantity,WEEKLY,EGGS)
+        elif re.compile("Biweekly Flower share", re.IGNORECASE).search(s):
+            Share.add_or_create_share(member,quantity,BIWEEKLY,FLOWERS)
+        elif re.compile("Weekly Flower Share", re.IGNORECASE).search(s):
+            Share.add_or_create_share(member,quantity,WEEKLY,FLOWERS)
+        elif re.compile("Biweekly Mega Combo", re.IGNORECASE).search(s):
+            Share.add_or_create_share(member,quantity,BIWEEKLY,VEGETABLES)
+            Share.add_or_create_share(member,quantity,BIWEEKLY,FRUIT)
+            Share.add_or_create_share(member,quantity,BIWEEKLY,EGGS)
+            Share.add_or_create_share(member,quantity,BIWEEKLY,FLOWERS)
+        elif re.compile("Weekly Mega Combo", re.IGNORECASE).search(s):
+            Share.add_or_create_share(member,quantity,WEEKLY,VEGETABLES)
+            Share.add_or_create_share(member,quantity,WEEKLY,FRUIT)
+            Share.add_or_create_share(member,quantity,WEEKLY,EGGS)
+            Share.add_or_create_share(member,quantity,WEEKLY,FLOWERS)
+        elif re.compile("Veg PLANT Share", re.IGNORECASE).search(s):
+            Share.add_or_create_share(member,quantity,NOT_APPLICABLE,PLANTS)
+        elif re.compile("Cheese Share", re.IGNORECASE).search(s):
+            Share.add_or_create_share(member,quantity,NOT_APPLICABLE,CHEESE)
+        elif re.compile("Meat Share", re.IGNORECASE).search(s):
+            Share.add_or_create_share(member,quantity,NOT_APPLICABLE,MEAT)
+        elif re.compile("Pickles", re.IGNORECASE).search(s):
+            Share.add_or_create_share(member,quantity,NOT_APPLICABLE,PICKLES_AND_PRESERVES)
+
 

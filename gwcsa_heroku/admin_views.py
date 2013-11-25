@@ -23,6 +23,7 @@ def members(request):
                 continue
 
             get_member_from_farmigo_csv_entry(line)
+
             '''
 
             # update member with subscription information
