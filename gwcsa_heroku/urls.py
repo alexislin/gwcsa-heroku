@@ -5,6 +5,8 @@ admin.autodiscover()
 
 urlpatterns = patterns('',
     url(r'^admin/', include(admin.site.urls)),
+    url(r'^admin/login$', 'django.contrib.auth.views.login', {'template_name': 'admin_login.html'}),
+    url(r'^admin/logout$', 'django.contrib.auth.views.logout_then_login', {}),
     url(r'^admin/members$', 'gwcsa_heroku.admin_views.members', name='members'),
 
     url(r'^$', 'gwcsa_heroku.views.index', name='index'),

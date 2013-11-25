@@ -88,6 +88,9 @@ TEMPLATE_CONTEXT_PROCESSORS = (
 
 ROOT_URLCONF = 'gwcsa_heroku.urls'
 
+LOGIN_URL = '/admin/login'
+LOGIN_REDIRECT_URL = '/admin/members'
+
 # Python dotted path to the WSGI application used by Django's runserver.
 WSGI_APPLICATION = 'gwcsa_heroku.wsgi.application'
 

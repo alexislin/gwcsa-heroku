@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% block header %}
+  <style>
+    #id_username, #id_password {
+        width: 250px;
+        font-size: 16px;
+    }
+  </style>
+{% endblock %}
+
+{% block title %}Administration Login{% endblock %}
+{% block subtitle %}&nbsp;{% endblock %}
+
+{% block content %}
+  <div class="span-24 last below-8">
+
+    {% if form.non_field_errors %}
+    <div class="error span-24 last below-8">
+      {% for error in form.non_field_errors %}
+        {{ error }}<br />
+      {% endfor %}
+    </div>
+    {% endif %}
+
+    <form method="post" action="{% url 'django.contrib.auth.views.login' %}">
+      {% csrf_token %}
+      <div class="span-24 last below-8">
+        {{ form.username.errors }}
+        <h3 style="margin-bottom:0"><label for="{{ form.username.auto_id }}">{{ form.username.label}}</label></h3>
+        {{ form.username }}
+      </div>
+      <div class="span-24 last below-8">
+        {{ form.password.errors }}
+        <h3 style="margin-bottom:0"><label for="{{ form.password.auto_id }}">{{ form.password.label }}</label></h3>
+        {{ form.password }}
+      </div>
+
+      <input type="submit" value="Login" />
+      <input type="hidden" name="next" value="{{ next }}" />
+    </form>
+  </div>
+{% endblock %}

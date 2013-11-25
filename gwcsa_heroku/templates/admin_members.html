@@ -37,7 +37,7 @@
 {% endblock %}
 
 {% block title %}Administration{% endblock %}
-{% block subtitle %}(signed in as: **admin_email**){% endblock %}
+{% block subtitle %}Signed in as: {{ user.username }} ({{user.email}}){% endblock %}
 
 {% block nav %}
   {% include "admin_nav.html" %}
