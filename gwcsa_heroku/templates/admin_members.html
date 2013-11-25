@@ -1,4 +1,5 @@
 {% extends "admin_base.html" %}
+{% load static from staticfiles %}
 
 {% block header %}
   <style type="text/css">
@@ -102,7 +103,7 @@
             <td>{{member.last_name}}</td>
             <td>** phone number **</td>
             <td>{{member.email}}</td>
-            <td>** shifts? **</td>
+            <td>{% if member.shift_count > 0 %}<img src="{% static "images/checkmark.gif" %}">{% else %}&nbsp;{% endif %}</td>
           </tr>
         {% endfor %}
       </tbody>

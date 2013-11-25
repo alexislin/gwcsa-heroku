@@ -1,7 +1,8 @@
 {% extends "base.html" %}
+{% load static from staticfiles %}
 
 {% block header %}
-  <script type="text/javascript" language="javascript" src="{{ STATIC_URL }}js/workshifts.js?cache_buster={% now "YmdHis" %}""></script>
+  <script type="text/javascript" language="javascript" src="{% static 'js/workshifts.js' %}?cache_buster={% now "YmdHis" %}""></script>
 {% endblock %}
 
 {% block content %}
