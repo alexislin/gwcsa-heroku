@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends "admin_base.html" %}
 
 {% block header %}
   <style type="text/css">
@@ -34,13 +34,6 @@
       });
     });
   </script>
-{% endblock %}
-
-{% block title %}Administration{% endblock %}
-{% block subtitle %}Signed in as: {{ user.username }} ({{user.email}}){% endblock %}
-
-{% block nav %}
-  {% include "admin_nav.html" %}
 {% endblock %}
 
 {% block content %}
