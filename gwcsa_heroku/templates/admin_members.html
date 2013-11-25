@@ -9,8 +9,8 @@
     table tr.even td { background-color: #E8E5DD; }
 
     table.shares { padding-right: 50px; }
-      table.shares td.left-border { border-left: 2px #DDD solid; }
-      table.shares td.right-border { border-right: 2px #DDD solid; }
+      table.shares td.left-border { border-left: 1px #BBB solid; }
+      table.shares td.right-border { border-right: 1px #BBB solid; }
       table.shares tr.hover td { background-color: #78515C !important; color: #FFFFFF; }
   </style>
 
@@ -94,16 +94,16 @@
             <td>{{member.last_name}}</td>
             <td>{{member.phone}}</td>
             <td>{{member.email}}</td>
-            <td>{{member.day}}</td>
-            <td>&nbsp;</td>
-            <td>&nbsp;</td>
-            <td>&nbsp;</td>
-            <td>&nbsp;</td>
-            <td>&nbsp;</td>
-            <td>&nbsp;</td>
-            <td>&nbsp;</td>
-            <td>&nbsp;</td>
-            <td>{% if member.shift_count > 0 %}<img src="{% static "images/checkmark.gif" %}">{% else %}&nbsp;{% endif %}</td>
+            <td class="right-border">{{member.day}}</td>
+            <td class="left-border">{% if member.weekly_veggie_count %}{{member.weekly_veggie_count}}{% else %}&nbsp;{% endif %}</td>
+            <td>{% if member.weekly_fruit_count %}{{member.weekly_fruit_count}}{% else %}&nbsp;{% endif %}</td>
+            <td>{% if member.weekly_egg_count %}{{member.weekly_egg_count}}{% else %}&nbsp;{% endif %}</td>
+            <td class="right-border">{% if member.weekly_flower_count %}{{member.weekly_flower_count}}{% else %}&nbsp;{% endif %}</td>
+            <td class="left-border">{% if member.biweekly_veggie_count %}{{member.biweekly_veggie_count}}{% else %}&nbsp;{% endif %}</td>
+            <td>{% if member.biweekly_fruit_count %}{{member.biweekly_fruit_count}}{% else %}&nbsp;{% endif %}</td>
+            <td>{% if member.biweekly_egg_count %}{{member.biweekly_egg_count}}{% else %}&nbsp;{% endif %}</td>
+            <td class="right-border">{% if member.biweekly_flower_count %}{{member.biweekly_flower_count}}{% else %}&nbsp;{% endif %}</td>
+            <td class="left-border">{% if member.shift_count > 0 %}<img src="{% static "images/checkmark.gif" %}">{% else %}&nbsp;{% endif %}</td>
           </tr>
         {% endfor %}
       </tbody>
