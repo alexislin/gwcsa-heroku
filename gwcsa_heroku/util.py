@@ -92,11 +92,15 @@ def get_member_from_farmigo_csv_entry(line):
         return
 
     member = Member.get_or_create_member(d[FIRST_NAME], d[LAST_NAME], d[EMAIL].lower())
+    member.day = WEDNESDAY if "Wednesday" in d[ROUTE] else SATURDAY
     member.farmigo_signup_date = datetime.strptime(d[SIGNUP_DATE], "%m/%d/%Y %H:%M")
     member.farmigo_share_description = re.sub('"', '', re.sub(';', ',', d[SHARE_DESCRIPTION]))
     member.phone = re.sub("[-.()\s]", "", d[PHONE])
     if re.match("\d{10}", member.phone):
         member.phone = "%s-%s-%s" % (member.phone[0:3], member.phone[3:6], member.phone[6:])
+    member.secondary_first_name = d[SECONDARY_FIRST_NAME]
+    member.secondary_last_name = d[SECONDARY_LAST_NAME]
+    member.secondary_email = d[SECONDARY_EMAIL]
 
     member.save()
 

@@ -64,13 +64,20 @@
     <table class="shares">
       <thead>
         <tr>
-          <th rowspan="3">ID</th>
-          <th rowspan="3">Farmigo Sign Up</th>
-          <th rowspan="3">First</th>
-          <th rowspan="3">Last</th>
-          <th rowspan="3">Phone</th>
-          <th rowspan="3">Email</th>
-          <th rowspan="3">Shifts?</th>
+          <th rowspan="2">ID</th>
+          <th rowspan="2">Farmigo Sign Up</th>
+          <th rowspan="2">First</th>
+          <th rowspan="2">Last</th>
+          <th rowspan="2">Phone</th>
+          <th rowspan="2">Email</th>
+          <th rowspan="2">Day</th>
+          <th colspan="4">Weekly</th>
+          <th colspan="4">Biweekly</th>
+          <th rowspan="2">Shifts?</th>
+        </tr>
+        <tr>
+          <th>V</th><th>Fr</th><th>E</th><th>Fl</th>
+          <th>V</th><th>Fr</th><th>E</th><th>Fl</th>
         </tr>
       </thead>
 
@@ -87,6 +94,15 @@
             <td>{{member.last_name}}</td>
             <td>{{member.phone}}</td>
             <td>{{member.email}}</td>
+            <td>{{member.day}}</td>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
             <td>{% if member.shift_count > 0 %}<img src="{% static "images/checkmark.gif" %}">{% else %}&nbsp;{% endif %}</td>
           </tr>
         {% endfor %}
