@@ -1,5 +1,6 @@
 from django.conf.urls import patterns, include, url
 from django.contrib import admin
+from django.views.generic import RedirectView
 
 admin.autodiscover()
 
@@ -9,9 +10,9 @@ urlpatterns = patterns('',
     url(r'^admin/logout$', 'django.contrib.auth.views.logout_then_login', {}),
     url(r'^admin/members$', 'gwcsa_heroku.admin_views.members', name='members'),
 
-    url(r'^$', 'gwcsa_heroku.views.index', name='index'),
+    # index page redirects to admin Members view
+    url(r'^$', RedirectView.as_view(url='/admin/members')),
     url(r'^contact$', 'gwcsa_heroku.views.contact', name='contact'),
-
     url(r'^workshift_selection$', 'gwcsa_heroku.views.workshift_selection', name='workshift_selection'),
 
     url(r'^ajax/get_available_dates_for_shift$', 'gwcsa_heroku.ajax.get_available_dates_for_shift', name='get_available_dates_for_shift'),
