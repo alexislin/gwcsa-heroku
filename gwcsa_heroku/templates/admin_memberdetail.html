@@ -66,8 +66,7 @@
     <div class="span-6 label">Farmigo Share Description</div><div class="span-17 last value">{% if member.farmigo_share_description %}{{member.farmigo_share_description}}{% else %}&nbsp;{% endif %}</div>
   </div>
   <div class="span-24 last below-16">
-    <!-- TODO: url encode the first and last name in the link (have had members with spaces in name) -->
-    <div class="span-6 label">Workshift Link</div><div class="span-17 last value">TODO: url encode first/last name in url<br /><a target="_blank" href="http://app.gwcsa.org/workshifts?firstname={{member.first_name}}&lastname={{member.last_name}}&email={{member.email}}">http://app.gwcsa.org/workshifts?firstname={{member.first_name}}&lastname={{member.last_name}}&email={{member.email}}</a></div>
+    <div class="span-6 label">Workshift Link</div><div class="span-17 last value"><a target="_blank" href="http://gwcsa.herokuapp.com/workshift_selection?firstname={{member.first_name|urlencode:""}}&lastname={{member.last_name|urlencode:""}}&email={{member.email}}">http://gwcsa.herokuapp.com/workshift_selection?firstname={{member.first_name|urlencode:""}}&lastname={{member.last_name|urlencode:""}}&email={{member.email}}</a></div>
   </div>
   {% if member.secondary_email %}
   <div class="span-24 last below-16">
