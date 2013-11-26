@@ -105,7 +105,6 @@ def get_member_from_farmigo_csv_entry(line):
 
     # re-create all member shares
     Share.objects.filter(member=member).delete()
-
     for s in member.farmigo_share_description.split(","):
         quantity = int(re.match("\d+", s.strip()).group(0))
         if re.compile("Biweekly Vegetable Share", re.IGNORECASE).search(s):
