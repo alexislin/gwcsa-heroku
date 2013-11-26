@@ -30,7 +30,7 @@
       $("table.shares tr").mouseenter(function() { $(this).addClass("hover"); });
       $("table.shares tr").mouseleave(function() { $(this).removeClass("hover"); });
       $("table.shares tr").click(function() {
-        window.location = "/admin/member_detail?id=" + $(this).attr("id");
+        window.location = "/admin/member_detail/" + $(this).attr("id");
       });
     });
   </script>

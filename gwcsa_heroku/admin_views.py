@@ -1,3 +1,5 @@
+import sys
+
 from django.contrib.auth.decorators import login_required
 from django.db.models import Count
 from django.shortcuts import render_to_response
@@ -8,6 +10,22 @@ from gwcsa_heroku.models import *
 from gwcsa_heroku.request_util import *
 from gwcsa_heroku.util import *
 
+
+@handle_view_exception
+@login_required
+def member_detail(request, id):
+    member = Member.objects.get(id=id)
+    shift_date_times = [s.workshift_date_time for s in MemberWorkShift.objects.filter(member=member)]
+    shift = None if len(shift_date_times) == 0 else shift_date_times[0].shift
+
+    return render_to_response("admin_memberdetail.html",
+        RequestContext(request, {
+            "current_season": CURRENT_SEASON,
+            "member": member,
+            "shift": shift,
+            "shift_date_times": shift_date_times,
+        })
+    )
 
 SHARE_COUNT_QUERY = """
     SELECT gwcsa_heroku_share.quantity

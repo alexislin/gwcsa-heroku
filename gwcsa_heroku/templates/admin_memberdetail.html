@@ -1,0 +1,90 @@
+{% extends "admin_base.html" %}
+
+{% block header %}
+  <style type="text/css">
+    div.label { text-align: right; font-weight: bold; color: #777777; padding-right: 10px; border-right: 1px solid #DDD; }
+    div.label, div.value { font-size: 1.2em; padding-bottom: 5px; }
+  </style>
+
+  <script type="text/javascript">
+    $(document).ready(function() {
+      $("#delete-member").submit(function() {
+        return confirm("Are you sure you want to delete this member?");
+      });
+    });
+  </script>
+{% endblock %}
+
+{% block content %}
+  <div class="span-24 last below-8">
+    <span class="title">Member Info</span>
+  </div>
+
+  <div class="span-24 last below-8">
+    <div class="span-6 label">Name</div><div class="span-12 last value">{{member.name}}</div>
+    <div class="span-6 label">Email</div><div class="span-12 last value">{{member.email}}</div>
+    <div class="span-6 label">Phone</div><div class="span-12 last value">{% if member.phone %}{{member.phone}}{% else %}&nbsp;{% endif %}</div>
+  </div>
+  <div class="span-24 last below-8">
+    <div class="span-6 label">Pickup Day</div><div class="span-12 last value">{% if member.day %}{{member.get_day_display}}{% else %}&nbsp;{% endif %}</div>
+    <div class="span-6 label">Frequency</div><div class="span-12 last value">{% if member.is_biweekly %}TODO{% else %}TODO{% endif %}</div>
+    {% if member.is_biweekly %}
+      <div class="span-6 label">Designated Week</div>
+      <div class="span-12 last value">
+        <form method="post" id="update-member" name="update-member">
+          <input type="hidden" id="action" name="action" value="update" />
+          <input type="hidden" id="id" name="id" value="{{member.key.id}}" />
+          <select id="week" name="week">
+            <option value="" {% if not member.assigned_week %}selected{% endif %}>-- select --</option>
+            <option value="A" {% if member.assigned_week == "A" %}selected{% endif %}>A</option>
+            <option value="B" {% if member.assigned_week == "B" %}selected{% endif %}>B</option>
+          </select>
+          <input type="submit" class="small-button" value="update" />
+        </form>
+      </div>
+    {% endif %}
+  </div>
+  <div class="span-24 last below-8">
+    <div class="span-6 label">Shifts</div>
+    <div class="span-12 last value">
+      {% for shift_date_time in shift_date_times %}
+        {% if forloop.first %}
+          <strong>{{shift.get_day_display}} {{shift.name}}</strong><br />
+          {{shift.location}} <br />
+          {{shift.location2}} <br />
+          <ul>
+        {% endif %}
+          <li>{{shift_date_time.date}} - {{shift_date_time.start_time}} [TODO: week letter]</li>
+        {% if forloop.last %}
+          </ul>
+        {% endif %}
+      {% endfor %}
+    </div>
+  </div>
+  <div class="span-24 last below-16">
+    <div class="span-6 label">Farmigo Sign Up Date</div><div class="span-17 last value">{% if member.farmigo_signup_date %}{{member.farmigo_signup_date}}{% else %}&nbsp;{% endif %}</div>
+    <div class="span-6 label">Farmigo Share Description</div><div class="span-17 last value">{% if member.farmigo_share_description %}{{member.farmigo_share_description}}{% else %}&nbsp;{% endif %}</div>
+  </div>
+  <div class="span-24 last below-16">
+    <!-- TODO: url encode the first and last name in the link (have had members with spaces in name) -->
+    <div class="span-6 label">Workshift Link</div><div class="span-17 last value"><a target="_blank" href="http://app.gwcsa.org/workshifts?firstname={{member.first_name}}&lastname={{member.last_name}}&email={{member.email}}">http://app.gwcsa.org/workshifts?firstname={{member.first_name}}&lastname={{member.last_name}}&email={{member.email}}</a></div>
+  </div>
+  {% if member.secondary_email %}
+  <div class="span-24 last below-16">
+    <div class="span-6 label">Secondary Email</div><div class="span-12 last value">{{member.secondary_email}}</div>
+    <div class="span-6 label">Secondary Name</div><div class="span-12 last value">{{member.secondary_first_name}} {{member.secondary_last_name}}</div>
+  </div>
+  {% endif %}
+
+  <div class="span-24 last below-8">
+    <div class="span-6">&nbsp;</div>
+    <div class="span-6">
+      <form method="post" id="delete-member" name="delete-member">
+        {% csrf_token %}
+        <input type="hidden" id="action" name="action" value="delete" />
+        <input type="hidden" id="id" name="id" value="{{member.id}}" />
+        <input type="submit" value="delete">
+      </form>
+    </div>
+  </div>
+{% endblock %}
