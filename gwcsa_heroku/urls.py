@@ -10,6 +10,7 @@ urlpatterns = patterns('',
     url(r'^admin/members$', 'gwcsa_heroku.admin_views.members', name='members'),
 
     url(r'^$', 'gwcsa_heroku.views.index', name='index'),
+    url(r'^contact$', 'gwcsa_heroku.views.contact', name='contact'),
 
     url(r'^workshift_selection$', 'gwcsa_heroku.views.workshift_selection', name='workshift_selection'),
 

@@ -12,6 +12,14 @@ from gwcsa_heroku.models import *
 from gwcsa_heroku.request_util import *
 
 @handle_view_exception
+def contact(request):
+    return render_to_response("contact.html",
+        RequestContext(request, {
+            "current_season": CURRENT_SEASON,
+        })
+    )
+
+@handle_view_exception
 def index(request):
     foo = get_required_parameter(request, "foo")
     return render_to_response("base.html",
