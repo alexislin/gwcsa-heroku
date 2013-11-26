@@ -74,6 +74,10 @@ def members(request):
         "biweekly_egg_count": SHARE_COUNT_QUERY % (EGGS, BIWEEKLY),
         "weekly_flower_count": SHARE_COUNT_QUERY % (FLOWERS, WEEKLY),
         "biweekly_flower_count": SHARE_COUNT_QUERY % (FLOWERS, BIWEEKLY),
+        "cheese_count": SHARE_COUNT_QUERY % (CHEESE, NOT_APPLICABLE),
+        "meat_count": SHARE_COUNT_QUERY % (MEAT, NOT_APPLICABLE),
+        "pickles_count": SHARE_COUNT_QUERY % (PICKLES_AND_PRESERVES, NOT_APPLICABLE),
+        "plant_count": SHARE_COUNT_QUERY % (PLANTS, NOT_APPLICABLE),
     }).order_by("day", "last_name")
     return render_to_response("admin_members.html",
         RequestContext(request, {

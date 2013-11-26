@@ -72,6 +72,10 @@
           <th rowspan="2">Day</th>
           <th colspan="4">Weekly</th>
           <th colspan="4">Biweekly</th>
+          <th rowspan="2">C</th>
+          <th rowspan="2">M</th>
+          <th rowspan="2">P&amp;P</th>
+          <th rowspan="2">P</th>
           <th rowspan="2">Shifts?</th>
         </tr>
         <tr>
@@ -102,6 +106,10 @@
             <td>{% if member.biweekly_fruit_count %}{{member.biweekly_fruit_count}}{% else %}&nbsp;{% endif %}</td>
             <td>{% if member.biweekly_egg_count %}{{member.biweekly_egg_count}}{% else %}&nbsp;{% endif %}</td>
             <td>{% if member.biweekly_flower_count %}{{member.biweekly_flower_count}}{% else %}&nbsp;{% endif %}</td>
+            <td class="left-border">{% if member.cheese_count %}{{member.cheese_count}}{% else %}&nbsp;{% endif %}</td>
+            <td class="left-border">{% if member.meat_count %}{{member.meat_count}}{% else %}&nbsp;{% endif %}</td>
+            <td class="left-border">{% if member.pickles_count %}{{member.pickles_count}}{% else %}&nbsp;{% endif %}</td>
+            <td class="left-border">{% if member.plant_count %}{{member.plant_count}}{% else %}&nbsp;{% endif %}</td>
             <td class="left-border">{% if member.shift_count > 0 %}<img src="{% static "images/checkmark.gif" %}">{% else %}&nbsp;{% endif %}</td>
           </tr>
         {% endfor %}
