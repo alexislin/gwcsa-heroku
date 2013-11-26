@@ -80,7 +80,10 @@ SECONDARY_LAST_NAME = 17
 SECONDARY_EMAIL = 15
 ROUTE = 19
 
-def get_member_from_farmigo_csv_entry(line):
+# TODO: set weekly/biweekly for member
+# TODO: assign A/B week as appropriate
+# TODO: record last updated date to be displayed on page
+def add_update_member_from_farmigo_csv_entry(line):
     # replace commas in values with semi-colons (subscription info esp.)
     for value in re.compile(',("[^"]+?,[^"]+?"),').findall(line):
         line = line.replace(value, re.sub(',', ';', value))
