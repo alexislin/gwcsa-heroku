@@ -2,6 +2,7 @@ import sys
 
 from django.contrib.auth.decorators import login_required
 from django.db.models import Count
+from django.shortcuts import redirect
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 
@@ -15,6 +16,12 @@ from gwcsa_heroku.util import *
 @login_required
 def member_detail(request, id):
     member = Member.objects.get(id=id)
+
+    if request.method == "POST":
+        if "delete" == get_parameter(request, "action"):
+            member.delete()
+            return redirect("gwcsa_heroku.admin_views.members")
+
     shift_date_times = [s.workshift_date_time for s in MemberWorkShift.objects.filter(member=member)]
     shift = None if len(shift_date_times) == 0 else shift_date_times[0].shift
 
