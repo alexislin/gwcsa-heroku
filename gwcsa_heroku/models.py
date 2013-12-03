@@ -65,7 +65,6 @@ WEEK = (
 )
 A_WEEK = WEEK[0][0]
 B_WEEK = WEEK[1][0]
-WEEKLY = WEEK[2][0]
 
 class Member(TimestampedModel):
     season = models.ForeignKey(Season,null=False)
@@ -76,7 +75,7 @@ class Member(TimestampedModel):
     day = models.CharField(max_length=2,choices=DAYS)
     farmigo_signup_date = models.DateTimeField(null=True)
     farmigo_share_description = models.TextField(null=False,default='')
-    assigned_week = models.CharField(max_length=1,choices=WEEK)
+    assigned_week = models.CharField(max_length=1,choices=WEEK,null=True)
 
     secondary_first_name = models.CharField(max_length=100,null=False)
     secondary_last_name = models.CharField(max_length=100,null=False)
@@ -95,18 +94,6 @@ class Member(TimestampedModel):
     def get_is_weekly(self):
         return Share.objects.filter(member=self,frequency=WEEKLY).count() > 0
     is_weekly = property(get_is_weekly)
-
-    def get_assigned_week(self):
-        if self.is_weekly:
-            return WEEKLY
-        if Share.objects.filter(member=self).filter(
-            Q(content=CHEESE) | Q(content=MEAT) | Q(content=PICKLES_AND_PRESERVES)
-        ).count() > 0:
-            return A_WEEK
-
-        # TODO: finish this
-        return None
-    assigned_week = property(get_assigned_week)
 
     @staticmethod
     def get_or_create_member(first_name, last_name, email):
@@ -165,8 +152,8 @@ FREQUENCY = (
     ('W', 'Weekly'),
     ('N', 'Not Applicable'),
 )
-WEEKLY = FREQUENCY[0][0]
-BIWEEKLY = FREQUENCY[1][0]
+BIWEEKLY = FREQUENCY[0][0]
+WEEKLY = FREQUENCY[1][0]
 NOT_APPLICABLE = FREQUENCY[2][0]
 
 class Share(TimestampedModel):

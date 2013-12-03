@@ -1,5 +1,6 @@
 from datetime import time
 
+from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
 from django.template import RequestContext
 from django.shortcuts import render_to_response
@@ -8,6 +9,30 @@ from gwcsa_heroku.decorators import *
 from gwcsa_heroku.models import *
 from gwcsa_heroku.request_util import *
 from gwcsa_heroku.util import *
+
+@login_required
+@handle_view_exception
+def init_assigned_week(request):
+    for member in Member.objects.filter(season__name=CURRENT_SEASON):
+        member.assigned_week = None
+        member.save()
+
+        # only set assigned week if not already assigned
+        if not member.assigned_week:
+            if member.is_weekly:
+                member.assigned_week = WEEKLY
+                member.save()
+            elif Share.objects.filter(member=member).filter(
+                Q(content=CHEESE) | Q(content=MEAT) | Q(content=PICKLES_AND_PRESERVES)
+            ).count() > 0:
+                member.assigned_week = A_WEEK
+                member.save()
+
+    return render_to_response("base.html",
+        RequestContext(request, {
+            "current_season": CURRENT_SEASON,
+        })
+    )
 
 def __init_shift(day, name, location, location2, num_required_per_member,
     timeslots, num_members_required, note=None):
@@ -46,6 +71,7 @@ def __init_shift(day, name, location, location2, num_required_per_member,
                     end_time=end_time,
                 )
 
+@login_required
 @handle_view_exception
 def init_workshift(request):
     __init_shift(

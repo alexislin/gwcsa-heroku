@@ -21,6 +21,7 @@ urlpatterns = patterns('',
     url(r'^ajax/get_available_dates_for_shift$', 'gwcsa_heroku.ajax.get_available_dates_for_shift', name='get_available_dates_for_shift'),
     url(r'^ajax/get_available_times_for_shift_date$', 'gwcsa_heroku.ajax.get_available_times_for_shift_date', name='get_available_times_for_shift_date'),
 
+    url(r'^init/assigned_week$', 'gwcsa_heroku.init.init_assigned_week', name='init_assigned_week'),
     url(r'^init/workshift$', 'gwcsa_heroku.init.init_workshift', name='init_workshift'),
 
     # Examples:
