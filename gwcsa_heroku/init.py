@@ -14,9 +14,6 @@ from gwcsa_heroku.util import *
 @handle_view_exception
 def init_assigned_week(request):
     for member in Member.objects.filter(season__name=CURRENT_SEASON):
-        member.assigned_week = None
-        member.save()
-
         # only set assigned week if not already assigned
         if not member.assigned_week:
             if member.is_weekly:
