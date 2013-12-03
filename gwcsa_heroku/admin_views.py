@@ -1,7 +1,6 @@
 import sys
 
 from django.contrib.auth.decorators import login_required
-from django.db import connection
 from django.db.models import Count
 from django.shortcuts import redirect
 from django.shortcuts import render_to_response
@@ -81,37 +80,11 @@ def members(request):
 @handle_view_exception
 @login_required
 def summaries(request):
-    cursor = connection.cursor()
-    cursor.execute("""
-        SELECT ROUND(SUM(CASE WHEN s.frequency = 'B' THEN s.quantity/2.0 ELSE quantity end)) AS total,
-               s.content,
-               m.day
-          FROM gwcsa_heroku_share s,
-               gwcsa_heroku_member m,
-               gwcsa_heroku_season sn
-         WHERE m.id = s.member_id
-           AND m.season_id = sn.id
-           AND sn.name = %s
-      GROUP BY s.content, m.day
-      ORDER BY s.content
-    """, [CURRENT_SEASON])
-    rows = cursor.fetchall()
-
-    x = {}
-    for day in [WEDNESDAY, SATURDAY]:
-        counts = {c: q for (c, q) in [(r[1], r[0]) for r in rows if r[2] == day]}
-
-        x[day] = []
-        for share_code, share_desc in SHARES:
-            x[day].append(
-                (share_desc, 0 if not share_code in counts else counts[share_code])
-            )
-
     return render_to_response("admin_summaries.html",
         RequestContext(request, {
             "current_season": CURRENT_SEASON,
-            "wed_counts": x[WEDNESDAY],
-            "sat_counts": x[SATURDAY],
+            "wed_counts": get_share_count(WEDNESDAY),
+            "sat_counts": get_share_count(SATURDAY),
         })
     )
 

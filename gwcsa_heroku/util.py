@@ -2,7 +2,28 @@ from datetime import date, datetime
 import re
 import sys
 
+from django.db import connection
+
 from gwcsa_heroku.models import *
+
+
+def get_share_count(day):
+    cursor = connection.cursor()
+    cursor.execute("""
+        SELECT ROUND(SUM(CASE WHEN s.frequency = 'B' THEN s.quantity/2.0 ELSE quantity end)) AS total,
+               s.content
+          FROM gwcsa_heroku_share s,
+               gwcsa_heroku_member m,
+               gwcsa_heroku_season sn
+         WHERE m.id = s.member_id
+           AND m.season_id = sn.id
+           AND sn.name = %s
+           AND m.day = %s
+      GROUP BY s.content
+    """, [CURRENT_SEASON, day])
+    r = {c: q for (q, c) in cursor.fetchall()}
+
+    return [(desc, 0 if not code in r else r[code]) for code, desc in SHARES]
 
 WED_A_DATES = [date(2014, 6, 11), date(2014, 6, 25),
     date(2014, 7, 9), date(2014, 7, 23),
