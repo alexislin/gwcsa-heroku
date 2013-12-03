@@ -100,7 +100,7 @@ def workshifts(request):
                     "time": wdt.start_time,
                     "members": members,
                     "num_members_required": wdt.num_members_required,
-                    "full": len(members) < wdt.num_members_required
+                    "full": len(members) >= wdt.num_members_required
                 })
 
     return render_to_response("admin_workshifts.html",

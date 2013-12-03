@@ -11,6 +11,10 @@
       $("#delete-member").submit(function() {
         return confirm("Are you sure you want to delete this member?");
       });
+
+      var link = "http://" + window.location.host + "/workshift_selection?firstname={{member.first_name|urlencode:""}}&lastname={{member.last_name|urlencode:""}}&email={{member.email}}";
+      $("#workshift-link").attr("href", link);
+      $("#workshift-link").text(link);
     });
   </script>
 {% endblock %}
@@ -66,7 +70,7 @@
     <div class="span-6 label">Farmigo Share Description</div><div class="span-17 last value">{% if member.farmigo_share_description %}{{member.farmigo_share_description}}{% else %}&nbsp;{% endif %}</div>
   </div>
   <div class="span-24 last below-16">
-    <div class="span-6 label">Workshift Link</div><div class="span-17 last value"><a target="_blank" href="http://gwcsa.herokuapp.com/workshift_selection?firstname={{member.first_name|urlencode:""}}&lastname={{member.last_name|urlencode:""}}&email={{member.email}}">http://gwcsa.herokuapp.com/workshift_selection?firstname={{member.first_name|urlencode:""}}&lastname={{member.last_name|urlencode:""}}&email={{member.email}}</a></div>
+    <div class="span-6 label">Workshift Link</div><div class="span-17 last value"><a id="workshift-link" target="_blank" href="#">&nbsp;</a></div>
   </div>
   {% if member.secondary_email %}
   <div class="span-24 last below-16">
