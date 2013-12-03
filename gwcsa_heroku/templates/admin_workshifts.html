@@ -1,0 +1,63 @@
+{% extends "admin_base.html" %}
+
+{% block header %}
+  <style type="text/css">
+    div.container { clear: both }
+      div.wednesday, div.saturday { width: 45%; padding: 15px }
+      div.wednesday { float: left }
+      div.saturday { float: right }
+        div.member-shift { padding: 5px; }
+          div.member-shift a { text-decoration: none; }
+          div.member-shift a:hover { text-decoration: underline; color: rgb(213, 126, 0); }
+        div.full { color: #888; border-bottom: 2px solid #EDE8DB; }
+          div.full a { color: #888; }
+        div.not-full { color: #444; background-color: #EDE8DB; border-bottom: 2px solid #fff }
+          div.not-full a { color: #444; }
+  </style>
+{% endblock %}
+
+{% block nav %}
+  {% include "admin_nav.html" %}
+{% endblock %}
+
+{% block content %}
+  <div class="span-24 last">
+    <span class="title">Work Shifts</span>
+  </div>
+
+  <div class="container">
+    <div class="wednesday">
+      <span class="title2">Wednesday</span>
+    </div>
+    <div class="saturday">
+      <span class="title2">Saturday</span>
+    </div>
+  </div>
+
+  {% for date, shift_infos in shifts_by_date %}
+    {% if date.isoweekday == 2 or date.isoweekday == 3 %}
+    <div class="container">
+    {% endif %}
+      <div class="{% if date.isoweekday == 2 or date.isoweekday == 3 %}wednesday{% else %}saturday{% endif %}">
+        <span class="title3">{{date}}{% if date.isoweekday == 2 %} (Tuesday){% endif %}</span> <br />
+        {% for shift_info in shift_infos %}
+          <div class="member-shift {% if shift_info.full %}full{% else %}not-full{% endif %}">
+            <strong>{{shift_info.name}} at {{shift_info.time}}</strong>
+            ({{shift_info.members|length}}/{{shift_info.num_members_required}})
+            {% if shift_info.full %}<div style="float:right"><strong>FULL</strong></div>{% endif %}
+            <br />
+            {% if shift_info.members|length > 0 %}
+              <ul>
+                {% for member in shift_info.members %}
+                  <li><a href="/admin/member_detail/{{member.id}}">{{member.name}} ({{member.phone}}, {{member.email}})</a></li>
+                {% endfor %}
+              </ul>
+            {% endif %}
+          </div>
+        {% endfor %}
+      </div>
+    {% if date.isoweekday != 2 and date.isoweekday != 3 %}
+    </div>
+    {% endif %}
+  {% endfor %}
+{% endblock %}

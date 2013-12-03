@@ -54,7 +54,7 @@ def members(request):
                 add_update_member_from_farmigo_csv_entry(line)
 
     # query member data for page
-    members = Member.objects.annotate(
+    members = Member.objects.filter(season__name=CURRENT_SEASON).annotate(
         shift_count=Count("memberworkshift")
     ).extra(select={
         "weekly_veggie_count": SHARE_COUNT_QUERY % (VEGETABLES, WEEKLY),
@@ -74,6 +74,39 @@ def members(request):
         RequestContext(request, {
             "current_season": CURRENT_SEASON,
             "members": members
+        })
+    )
+
+@handle_view_exception
+@login_required
+def workshifts(request):
+    dates = [o.date for o in WorkShiftDateTime.objects.filter(shift__season__name=CURRENT_SEASON)]
+    dates = sorted(list(set(dates)))
+
+    shifts = WorkShift.objects.filter(season__name=CURRENT_SEASON)
+
+    shifts_by_date = []
+
+    for date in dates:
+        shifts_by_date.append((date,[]))
+
+        for shift in shifts:
+            for wdt in WorkShiftDateTime.objects.filter(date=date,shift=shift).order_by("start_time"):
+                members = [ms.member for ms in \
+                    MemberWorkShift.objects.filter(workshift_date_time=wdt)]
+
+                shifts_by_date[-1][1].append({
+                    "name": shift.name,
+                    "time": wdt.start_time,
+                    "members": members,
+                    "num_members_required": wdt.num_members_required,
+                    "full": len(members) < wdt.num_members_required
+                })
+
+    return render_to_response("admin_workshifts.html",
+        RequestContext(request, {
+            "current_season": CURRENT_SEASON,
+            "shifts_by_date": shifts_by_date
         })
     )
 
