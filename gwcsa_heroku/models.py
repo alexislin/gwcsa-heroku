@@ -1,6 +1,7 @@
 import sys
 
 from django.db import models
+from django.db.models import Q
 
 class TimestampedModel(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
@@ -64,6 +65,7 @@ WEEK = (
 )
 A_WEEK = WEEK[0][0]
 B_WEEK = WEEK[1][0]
+WEEKLY = WEEK[2][0]
 
 class Member(TimestampedModel):
     season = models.ForeignKey(Season,null=False)
@@ -74,8 +76,6 @@ class Member(TimestampedModel):
     day = models.CharField(max_length=2,choices=DAYS)
     farmigo_signup_date = models.DateTimeField(null=True)
     farmigo_share_description = models.TextField(null=False,default='')
-    is_weekly = models.BooleanField(null=False,default=False)
-    is_biweekly = models.BooleanField(null=False,default=False)
     assigned_week = models.CharField(max_length=1,choices=WEEK)
 
     secondary_first_name = models.CharField(max_length=100,null=False)
@@ -91,6 +91,22 @@ class Member(TimestampedModel):
             return ""
         return self.farmigo_signup_date.strftime("%m/%d/%Y %H:%M")
     formatted_signup_date = property(get_formatted_signup_date)
+
+    def get_is_weekly(self):
+        return Share.objects.filter(member=self,frequency=WEEKLY).count() > 0
+    is_weekly = property(get_is_weekly)
+
+    def get_assigned_week(self):
+        if self.is_weekly:
+            return WEEKLY
+        if Share.objects.filter(member=self).filter(
+            Q(content=CHEESE) | Q(content=MEAT) | Q(content=PICKLES_AND_PRESERVES)
+        ).count() > 0:
+            return A_WEEK
+
+        # TODO: finish this
+        return None
+    assigned_week = property(get_assigned_week)
 
     @staticmethod
     def get_or_create_member(first_name, last_name, email):
