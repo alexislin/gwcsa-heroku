@@ -130,19 +130,19 @@ SHARES = (
     ('FR', 'Fruit'),
     ('E', 'Eggs'),
     ('FL', 'Flowers'),
-    ('P', 'Plants'),
     ('M', 'Meat'),
     ('C', 'Cheese'),
-    ('PP', 'Pickles and Preserves'),
+    ('PP', 'Pickles & Preserves'),
+    ('P', 'Plants'),
 )
 VEGETABLES = SHARES[0][0]
 FRUIT = SHARES[1][0]
 EGGS = SHARES[2][0]
 FLOWERS = SHARES[3][0]
-PLANTS = SHARES[4][0]
-MEAT = SHARES[5][0]
-CHEESE = SHARES[6][0]
-PICKLES_AND_PRESERVES = SHARES[7][0]
+MEAT = SHARES[4][0]
+CHEESE = SHARES[5][0]
+PICKLES_AND_PRESERVES = SHARES[6][0]
+PLANTS = SHARES[7][0]
 
 FREQUENCY = (
     ('B', 'Biweekly'),
