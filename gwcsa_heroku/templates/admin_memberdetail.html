@@ -59,7 +59,7 @@
           {{shift.location2}} <br />
           <ul>
         {% endif %}
-          <li>{{shift_date_time.date}} - {{shift_date_time.start_time}} [TODO: week letter]</li>
+          <li>{{shift_date_time.date}} - {{shift_date_time.start_time}} [{{shift_date_time.week}} Week]</li>
         {% if forloop.last %}
           </ul>
         {% endif %}

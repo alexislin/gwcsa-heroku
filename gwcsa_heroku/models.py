@@ -56,6 +56,15 @@ class WorkShiftDateTime(TimestampedModel):
     end_time = models.TimeField(null=False)
     num_members_required = models.PositiveIntegerField(null=False)
 
+    def get_week(self):
+        if self.date in WED_A_DATES or self.date in SAT_A_DATES:
+            return A_WEEK
+        elif self.date in WED_B_DATES or self.date in SAT_B_DATES:
+            return B_WEEK
+        else:
+            raise Exception("Could not determine A/B week for date: %s" % self.date)
+    week = property(get_week)
+
     def is_full(self):
         n = MemberWorkShift.objects.filter(workshift_date_time=self).count()
         return n >= self.num_members_required
@@ -135,13 +144,7 @@ class MemberWorkShift(TimestampedModel):
     workshift_date_time = models.ForeignKey(WorkShiftDateTime,null=False)
 
     def get_week(self):
-        date = self.workshift_date_time.date
-        if date in WED_A_DATES or date in SAT_A_DATES:
-            return A_WEEK
-        elif date in WED_B_DATES or date in SAT_B_DATES:
-            return B_WEEK
-        else:
-            raise Exception("Could not determine A/B week for date: %s" % date)
+        return self.workshift_date_time.week
     week = property(get_week)
 
 SHARES = (
