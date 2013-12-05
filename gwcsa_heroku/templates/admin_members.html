@@ -77,6 +77,7 @@
           <th rowspan="2">P&amp;P</th>
           <th rowspan="2">P</th>
           <th rowspan="2">Shifts?</th>
+          <th rowspan="2">Shift </br>Week</th>
           <th rowspan="2">Assigned </br>Week</th>
         </tr>
         <tr>
@@ -99,20 +100,21 @@
             <td>{{member.phone}}</td>
             <td>{{member.email}}</td>
             <td>{{member.day}}</td>
-            <td class="left-border">{% if member.weekly_veggie_count %}{{member.weekly_veggie_count}}{% else %}&nbsp;{% endif %}</td>
-            <td>{% if member.weekly_fruit_count %}{{member.weekly_fruit_count}}{% else %}&nbsp;{% endif %}</td>
-            <td>{% if member.weekly_egg_count %}{{member.weekly_egg_count}}{% else %}&nbsp;{% endif %}</td>
-            <td>{% if member.weekly_flower_count %}{{member.weekly_flower_count}}{% else %}&nbsp;{% endif %}</td>
-            <td class="left-border">{% if member.biweekly_veggie_count %}{{member.biweekly_veggie_count}}{% else %}&nbsp;{% endif %}</td>
-            <td>{% if member.biweekly_fruit_count %}{{member.biweekly_fruit_count}}{% else %}&nbsp;{% endif %}</td>
-            <td>{% if member.biweekly_egg_count %}{{member.biweekly_egg_count}}{% else %}&nbsp;{% endif %}</td>
-            <td>{% if member.biweekly_flower_count %}{{member.biweekly_flower_count}}{% else %}&nbsp;{% endif %}</td>
-            <td class="left-border">{% if member.cheese_count %}{{member.cheese_count}}{% else %}&nbsp;{% endif %}</td>
-            <td class="left-border">{% if member.meat_count %}{{member.meat_count}}{% else %}&nbsp;{% endif %}</td>
-            <td class="left-border">{% if member.pickles_count %}{{member.pickles_count}}{% else %}&nbsp;{% endif %}</td>
-            <td class="left-border">{% if member.plant_count %}{{member.plant_count}}{% else %}&nbsp;{% endif %}</td>
+            <td class="left-border">{{member.weekly_veggie_count|default_if_none:" "}}</td>
+            <td>{{member.weekly_fruit_count|default_if_none:" "}}</td>
+            <td>{{member.weekly_egg_count|default_if_none:" "}}</td>
+            <td>{{member.weekly_flower_count|default_if_none:" "}}</td>
+            <td class="left-border">{{member.biweekly_veggie_count|default_if_none:" "}}</td>
+            <td>{{member.biweekly_fruit_count|default_if_none:" "}}</td>
+            <td>{{member.biweekly_egg_count|default_if_none:" "}}</td>
+            <td>{{member.biweekly_flower_count|default_if_none:" "}}</td>
+            <td class="left-border">{{member.cheese_count|default_if_none:" "}}</td>
+            <td class="left-border">{{member.meat_count|default_if_none:" "}}</td>
+            <td class="left-border">{{member.pickles_count|default_if_none:" "}}</td>
+            <td class="left-border">{{member.plant_count|default_if_none:" "}}</td>
             <td class="left-border">{% if member.shift_count > 0 %}<img src="{% static "images/checkmark.gif" %}">{% else %}&nbsp;{% endif %}</td>
-            <td class="left-border">{% if member.assigned_week == "W" %}-{% else %}{% if member.assigned_week %}<strong>{{member.assigned_week}}</strong>{% else %}TBD{% endif %}{% endif %}</td>
+            <td class="left-border">{{member.workshift_week|default_if_none:" "}}</td>
+            <td class="left-border">{% if member.assigned_week == "W" %}-{% else %}{{member.assigned_week|default_if_none:"TBD"}}{% endif %}</td>
           </tr>
         {% endfor %}
       </tbody>

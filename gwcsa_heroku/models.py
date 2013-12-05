@@ -3,6 +3,8 @@ import sys
 from django.db import models
 from django.db.models import Q
 
+from gwcsa_heroku.constants import *
+
 class TimestampedModel(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True, auto_now_add=True)
@@ -95,6 +97,11 @@ class Member(TimestampedModel):
         return Share.objects.filter(member=self,frequency=WEEKLY).count() > 0
     is_weekly = property(get_is_weekly)
 
+    def get_workshift_week(self):
+        weeks = [s.week for s in MemberWorkShift.objects.filter(member=self)]
+        return weeks[0] if len(set(weeks)) == 1 else None
+    workshift_week = property(get_workshift_week)
+
     @staticmethod
     def get_or_create_member(first_name, last_name, email):
         if not first_name or not last_name or not email:
@@ -123,10 +130,19 @@ class Member(TimestampedModel):
             )
             return member
 
-
 class MemberWorkShift(TimestampedModel):
     member = models.ForeignKey(Member,null=False)
     workshift_date_time = models.ForeignKey(WorkShiftDateTime,null=False)
+
+    def get_week(self):
+        date = self.workshift_date_time.date
+        if date in WED_A_DATES or date in SAT_A_DATES:
+            return A_WEEK
+        elif date in WED_B_DATES or date in SAT_B_DATES:
+            return B_WEEK
+        else:
+            raise Exception("Could not determine A/B week for date: %s" % date)
+    week = property(get_week)
 
 SHARES = (
     ('V', 'Vegetables'),
