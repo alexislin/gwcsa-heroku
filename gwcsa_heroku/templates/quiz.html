@@ -5,15 +5,7 @@
 
     <link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Varela">
     <link rel="stylesheet" type="text/css" href="{% static "css/style.css" %}?cache_buster={% now "YmdHis" %}" />
-    <link rel="stylesheet" type="text/css" href="{% static "css/blueprint/screen.css" %}" media="screen, projection">
-    <link rel="stylesheet" type="text/css" href="{% static "css/blueprint/print.css" %}" media="print">
-    <!--[if lt IE 8]><link rel="stylesheet" href="{% static "css/blueprint/ie.css" %}" type="text/css" media="screen, projection"><![endif]-->
 
-    <!--[if !IE 7]>
-      <style type="text/css">
-        div#wrapper { display:table; height:100% }
-      </style>
-    <![endif]-->
     <script type="text/javascript">
         function markCorrect(jLabel) {
           if (!jLabel.hasClass("correct")) {
@@ -37,52 +29,48 @@
     </script>
   </head>
   <body>
-    <div id="wrapper">
-      <div id="content">
-        <div class="container showgrid">
-          <div class="prepend-4 span-16 last">
-            <div class="title span-14 last">Quiz!</div>
-            <div class="text span-14 last below-32">
-              Answer the questions below to continue to our online membership signup.
-            </div>
-            <hr class="question-divider" />
-          </div>
+    <div class="quiz-container">
+      <div class="below-16">
+        <div class="title">Quiz!</div>
+        <div class="text">
+          Answer the questions below to continue to our online membership signup.
+        </div>
+        <hr class="question-divider" />
+      </div>
 
-          <div class="prepend-4 span-16 last below-16">
-            <div class="question span-14 last">
-              What is Maia's middle name?
-            </div>
-            <div class="span-14 last below-16">
-              <input class="answer" type="radio" name="middle-name"><label class="answer">Paia</label><br />
-              <input class="answer" type="radio" name="middle-name"><label class="answer">Greta</label><br />
-              <input class="answer" type="radio" name="middle-name"><label class="answer">Valerie</label><br />
-              <input class="answer" type="radio" name="middle-name" id="middle-name-correct"><label for="middle-name-correct" class="answer">I have no idea...</label><br />
-            </div>
-          </div>
+      <div class="below-16">
+        <div class="question">
+          What is Maia's middle name?
+        </div>
+        <div class="below-16">
+          <input class="answer" type="radio" name="middle-name"><label class="answer">Paia</label><br />
+          <input class="answer" type="radio" name="middle-name"><label class="answer">Greta</label><br />
+          <input class="answer" type="radio" name="middle-name"><label class="answer">Valerie</label><br />
+          <input class="answer" type="radio" name="middle-name" id="middle-name-correct"><label for="middle-name-correct" class="answer">I have no idea...</label><br />
+        </div>
+      </div>
 
-          <div class="prepend-4 span-16 last below-16">
-            <div class="question span-14 last">
-                What should you do if you find yourself seeing double at a party?
-            </div>
-            <div class="span-14 last below-16">
-              <input class="answer" type="radio" name="double-party" id="double-party-correct"><label for="double-party-correct" class="answer">Grab a friend and see quadruple!</label><br />
-              <input class="answer" type="radio" name="double-party"><label class="answer">Head home... tee too many martinis...</label><br />
-              <input class="answer" type="radio" name="double-party"><label class="answer">Strike up a conversation with a stranger using your favorite accent - what could go wrong?</label><br />
-            </div>
-            <hr class="question-divider" />
-          </div>
+      <div>
+        <div class="question">
+            What should you do if you find yourself seeing double at a party?
+        </div>
+        <div class="below-16">
+          <input class="answer" type="radio" name="double-party" id="double-party-correct"><label for="double-party-correct" class="answer">Grab a friend and see quadruple!</label><br />
+          <input class="answer" type="radio" name="double-party"><label class="answer">Head home... tee too many martinis...</label><br />
+          <input class="answer" type="radio" name="double-party"><label class="answer">Strike up a conversation with a stranger using your favorite accent - what could go wrong?</label><br />
+        </div>
+        <hr class="question-divider" />
+      </div>
 
-          <div class="prepend-4 span-16 last">
-            <div class="text span-14 last below-32">
-              If you have any questions at all, please don't hesitate to send us an <a href="mailto:info@gwcsa.org">email</a>.
-            </div>
-            <div class="prepend-11 span-5 last">
-              <a style="display:none" id="continue-link" class="continue" href="http://www.farmigo.com/join/greenpointwilliamsburgcsa/gwcsa2014">Sign me up >></a>
-            </div>
-          </div>
-        </div><!-- end container showgrid -->
-      </div><!-- end content -->
-    </div><!-- end wrapper -->
+      <div >
+        <div class="text below-32">
+          If you have any questions at all, please don't hesitate to send us an <a href="mailto:info@gwcsa.org">email</a>.
+        </div>
+        <div class="right">
+          <a style="display:none" id="continue-link" class="continue" href="http://www.farmigo.com/join/greenpointwilliamsburgcsa/gwcsa2014">Sign me up >></a>
+        </div>
+      </div>
+    </div><!-- end container showgrid -->
   </body>
 </html>
 
