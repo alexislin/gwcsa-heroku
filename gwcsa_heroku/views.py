@@ -84,3 +84,12 @@ def workshift_selection(request):
             })
         )
 
+@handle_view_exception
+def signup_quiz(request):
+    return render_to_response("quiz.html",
+        RequestContext(request, {
+            "current_season": CURRENT_SEASON,
+        })
+    )
+
+
