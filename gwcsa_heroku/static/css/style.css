@@ -55,7 +55,7 @@ input.answer { margin: 6px; }
 label.answer { font-size: 14px; font-weight: normal; }
 label.correct { border: 0px; background-color: #DDEDDD; border-radius: 6px; -moz-border-radius 6px; padding: 4px; padding-left: 8px; padding-right: 4px; }
 label.correct img { vertical-align: middle; }
-a.continue { border: 1px solid #333; background-color: #5B330C; color:#F6F2EE; border-radius: 6px; -moz-border-radius 6px; padding: 9px; text-decoration: none; font-size: 20px; font-weight: bold; }
+a.continue { border: 0px; background-color: #417641; color:#F2F6EE; border-radius: 6px; -moz-border-radius 6px; padding: 9px; text-decoration: none; font-size: 20px; }
 a.continue:hover { color: #FFF; }
 .text { font-size: 14px; }
 
