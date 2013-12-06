@@ -1,11 +1,30 @@
 {% load static from staticfiles %}
 <html>
   <head>
+    <style type="text/css">
+        body { font-family: Helvetica, Tahoma, Verdana, sans-serif; }
+        div.below-0 { padding-bottom: 0px; }
+        div.below-2 { padding-bottom: 2px; }
+        div.below-4 { padding-bottom: 4px; }
+        div.below-8 { padding-bottom: 8px; }
+        div.below-16 { padding-bottom: 16px; }
+        div.below-32 { padding-bottom: 32px; }
+
+        div.right { float: right; }
+        div.quiz-container { width: 600px; margin:0 auto; }
+        hr.question-divider { border: 1px solid #f6f2ea; background-color: #f6f2ea !important; color: #f6f2ea !important; }
+        div.question { font-size: 18px; }
+        input.answer { margin: 6px; }
+        label.answer { font-size: 14px; font-weight: normal; }
+        label.correct { border: 0px; background-color: #DDEDDD; border-radius: 6px; -moz-border-radius 6px; padding: 4px; padding-left: 8px; padding-right: 4px; }
+        label.correct img { vertical-align: middle; }
+        a.continue { border: 0px; background-color: #AD9D7D; color:#F6f2ea; border-radius: 6px; -moz-border-radius 6px; padding: 12px; text-decoration: none; font-size: 20px; }
+        a.continue:hover { color: #F6f2ea; }
+        .title { font-size: 24px; }
+        .text { font-size: 14px; }
+    </style>
+
     <script type="text/javascript" language="javascript" src="{% static "js/jquery-1.7.js" %}"></script>
-
-    <link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Varela">
-    <link rel="stylesheet" type="text/css" href="{% static "css/style.css" %}?cache_buster={% now "YmdHis" %}" />
-
     <script type="text/javascript">
         function markCorrect(jLabel) {
           if (!jLabel.hasClass("correct")) {
