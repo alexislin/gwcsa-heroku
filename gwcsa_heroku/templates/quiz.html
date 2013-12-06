@@ -1,18 +1,73 @@
 {% extends "base.html" %}
 
-{% block title %}GWCSA Membership - 2014{% endblock %}
-{% block subtitle %}
-  Almost done...
+{% block header %}
+  <script type="text/javascript">
+    function markCorrect(jLabel) {
+      if (!jLabel.hasClass("correct")) {
+        jLabel.addClass("correct");
+        jLabel.append('&nbsp;&nbsp;<img src="/static/images/green_check_mark.png">');
+      }
+
+      if ($("label[for$='correct']").length == $("label[for$='correct'].correct").length) {
+        $("#continue-link").show();
+      }
+    }
+
+    $(function() {
+      $("input[name='middle-name']").click(function() {
+        markCorrect($("label[for='middle-name-correct']"));
+      });
+      $("input[name='double-party']").click(function() {
+        markCorrect($("label[for='double-party-correct']"));
+      });
+    });
+  </script>
 {% endblock %}
 
+{% block title %}GWCSA Membership - 2014{% endblock %}
+{% block subtitle %}
+  Almost there...
+{% endblock %}
 
 {% block content %}
-  <div class="span-24 last below-8">
-    <span class="title">Quick Quiz!</span>
+  <div class="prepend-4 span-16 last">
+    <div class="title span-14 last">Quiz!</div>
+    <div class="text span-14 last below-32">
+      Answer the questions below to continue to our online membership signup.
+    </div>
+    <hr class="question-divider" />
   </div>
-  <div class="span-24 last">
-    website: <a href="http://gwcsa.org" target="_blank">http://gwcsa.org</a><br />
-    email: <a href="mailto:info@gwcsa.org">info@gwcsa.org</a><br />
-    technical issues: <a href="mailto:admin@gwcsa.org">admin@gwcsa.org</a><br />
+
+  <div class="prepend-4 span-16 last below-16">
+    <div class="question span-14 last">
+      What is Maia's middle name?
+    </div>
+    <div class="span-14 last below-16">
+      <input class="answer" type="radio" name="middle-name"><label class="answer">Paia</label><br />
+      <input class="answer" type="radio" name="middle-name"><label class="answer">Greta</label><br />
+      <input class="answer" type="radio" name="middle-name"><label class="answer">Valerie</label><br />
+      <input class="answer" type="radio" name="middle-name" id="middle-name-correct"><label for="middle-name-correct" class="answer">I have no idea...</label><br />
+    </div>
+  </div>
+
+  <div class="prepend-4 span-16 last below-16">
+    <div class="question span-14 last">
+        What should you do if you find yourself seeing double at a party?
+    </div>
+    <div class="span-14 last below-16">
+      <input class="answer" type="radio" name="double-party" id="double-party-correct"><label for="double-party-correct" class="answer">Grab a friend and see quadruple!</label><br />
+      <input class="answer" type="radio" name="double-party"><label class="answer">Head home... tee too many martinis...</label><br />
+      <input class="answer" type="radio" name="double-party"><label class="answer">Strike up a conversation with a stranger using your favorite accent - what could go wrong?</label><br />
+    </div>
+    <hr class="question-divider" />
+  </div>
+
+  <div class="prepend-4 span-16 last">
+    <div class="text span-14 last below-32">
+      If you have any questions at all, please don't hesitate to send us an <a href="mailto:info@gwcsa.org">email</a>.
+    </div>
+    <div class="prepend-11 span-5 last">
+      <a style="display:none" id="continue-link" class="continue" href="http://www.farmigo.com/join/greenpointwilliamsburgcsa/gwcsa2014">Sign me up >></a>
+    </div>
   </div>
 {% endblock %}
