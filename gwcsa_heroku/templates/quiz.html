@@ -38,11 +38,8 @@
         }
 
         $(function() {
-          $("input[name='middle-name']").click(function() {
-            markCorrect($("label[for='middle-name-correct']"));
-          });
-          $("input[name='double-party']").click(function() {
-            markCorrect($("label[for='double-party-correct']"));
+          $("input[name^='question-']").click(function() {
+            markCorrect($("label[for='" +$(this).attr("name") + "-correct']"));
           });
         });
     </script>
@@ -59,29 +56,135 @@
 
       <div class="below-16">
         <div class="question">
-          What is Maia's middle name?
+          What does GWCSA stand for?
         </div>
         <div class="below-16">
-          <input class="answer" type="radio" name="middle-name"><label class="answer">Paia</label><br />
-          <input class="answer" type="radio" name="middle-name"><label class="answer">Greta</label><br />
-          <input class="answer" type="radio" name="middle-name"><label class="answer">Valerie</label><br />
-          <input class="answer" type="radio" name="middle-name" id="middle-name-correct"><label for="middle-name-correct" class="answer">I have no idea...</label><br />
+          <input class="answer" type="radio" name="question-gwcsa"><label class="answer">Growing Wonderful Crispy Sweet Artichokes</label><br />
+          <input class="answer" type="radio" name="question-gwcsa"><label class="answer">Gently Washed Community Sourced Asparagus</label><br />
+          <input class="answer" type="radio" name="question-gwcsa" id="question-gwcsa-correct"><label for="question-gwcsa-correct" class="answer">Greenpoint Williamsburg Community Supported Agriculture</label><br />
         </div>
       </div>
 
       <div>
         <div class="question">
-            What should you do if you find yourself seeing double at a party?
+          The GWCSA's day-to-day operations are run by...
         </div>
         <div class="below-16">
-          <input class="answer" type="radio" name="double-party" id="double-party-correct"><label for="double-party-correct" class="answer">Grab a friend and see quadruple!</label><br />
-          <input class="answer" type="radio" name="double-party"><label class="answer">Head home... tee too many martoonis...</label><br />
-          <input class="answer" type="radio" name="double-party"><label class="answer">Strike up a conversation with a stranger using your favorite accent - what could go wrong?</label><br />
+          <input class="answer" type="radio" name="question-core" id="question-core-correct"><label for="question-core-correct" class="answer">A core group of volunteer members.</label><br />
+          <input class="answer" type="radio" name="question-core"><label class="answer">A benevolent overlord.</label><br />
+          <input class="answer" type="radio" name="question-core"><label class="answer">Magical elves.</label><br />
+        </div>
+      </div>
+
+      <div>
+        <div class="question">
+          How will I get all of my delicious goods home from distribution?
+        </div>
+        <div class="below-16">
+          <input class="answer" type="radio" name="question-transport">
+          <label class="answer">
+            A sherpa will be provided to carry it to your doorstep.
+          </label><br />
+          <input class="answer" type="radio" name="question-transport" id="question-transport-correct">
+          <label for="question-transport-correct" class="answer">
+            You must bring your own bags (and a few tupperware wouldn't hurt).
+          </label><br />
+          <input class="answer" type="radio" name="question-transport">
+          <label class="answer">
+            You can only take home what fits in your pockets.
+          </label><br />
+        </div>
+      </div>
+
+      <div>
+        <div class="question">
+          What do I do if I can't pick up my food on a given week?
+        </div>
+        <div class="below-16">
+          <input class="answer" type="radio" name="question-cant-pickup">
+          <label class="answer">
+            Fire your personal assistant for double booking your Wednesday evening / Saturday morning.
+          </label><br />
+          <input class="answer" type="radio" name="question-cant-pickup" id="question-cant-pickup-correct">
+          <label for="question-cant-pickup-correct" class="answer">
+            Ask a friend, neighbor, or someone who owes you a favor to pick up for you. Alternately, post to the member forum at least a week in advance to switch pick up dates with another member.
+          </label><br />
+          <input class="answer" type="radio" name="question-cant-pickup">
+          <label class="answer">
+            Blame Ryan Gosling.
+          </label><br />
+        </div>
+      </div>
+
+      <div>
+        <div class="question">
+          Can I pick up my food just two minutes after 8pm or 12pm... just this once? Please?
+        </div>
+        <div class="below-16">
+          <input class="answer" type="radio" name="question-late">
+          <label class="answer">
+            Nope, sorry.
+          </label><br />
+          <input class="answer" type="radio" name="question-late">
+          <label class="answer">
+            No.
+          </label><br />
+          <input class="answer" type="radio" name="question-late">
+          <label class="answer">
+            NO.
+          </label><br />
+          <input class="answer" type="radio" name="question-late" id="question-late-correct">
+          <label for="question-late-correct" class="answer">
+            All of the above.
+          </label><br />
+        </div>
+      </div>
+
+      <div>
+        <div class="question">
+          What do I do if I can't make my work shift(s)?
+        </div>
+        <div class="below-16">
+          <input class="answer" type="radio" name="question-workshift" id="question-workshift-correct">
+          <label for="question-workshift-correct" class="answer">
+            Ask a friend, neighbor, or someone who owes you a favor to work for you. Alternately, post
+            on the member forum at least a week in advance to switch work shifts with another member.
+          </label><br />
+          <input class="answer" type="radio" name="question-workshift">
+          <label class="answer">
+            Avoid all phone calls and emails for a month and hope no one will notice you didn't show.
+          </label><br />
+          <input class="answer" type="radio" name="question-workshift">
+          <label class="answer">
+            Blame Ryan Gosling.
+          </label><br />
+        </div>
+      </div>
+
+      <div>
+        <div class="question">
+          What do I do if I don't like, or can't eat, one of the items being offered
+        </div>
+        <div class="below-16">
+          </label><br />
+          <input class="answer" type="radio" name="question-yuck">
+          <label class="answer">
+            Beg, plead, and bargain to switch for other items.
+          </label><br />
+          <input class="answer" type="radio" name="question-yuck">
+          <label class="answer">
+            Bribe the distribution workers to let you switch for other items.
+          </label><br />
+          <input class="answer" type="radio" name="question-yuck" id="question-yuck-correct">
+          <label for="question-yuck-correct" class="answer">
+            Put the unwanted item(s) in the Trade Box and take someone else's unwanted items.
+          </label><br />
         </div>
         <hr class="question-divider" />
       </div>
 
-      <div >
+
+      <div>
         <div class="text below-32">
           If you have any questions at all, please don't hesitate to send us an email (info@gwcsa.org).
         </div>
