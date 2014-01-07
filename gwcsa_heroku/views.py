@@ -19,6 +19,12 @@ def contact(request):
         })
     )
 
+# for testing csv_xform bookmarklet, which is unrelated to this site:
+# https://github.com/alexislin/csv-xform-bookmarklet
+@handle_view_exception
+def csv_xform(request):
+    return render_to_response("csv_xform.html", RequestContext(request, {}))
+
 @handle_view_exception
 def workshift_selection(request):
     if request.method == "POST":

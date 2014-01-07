@@ -16,6 +16,7 @@ urlpatterns = patterns('',
     # index page redirects to admin Members view
     url(r'^$', RedirectView.as_view(url='/admin/members')),
     url(r'^contact$', 'gwcsa_heroku.views.contact', name='contact'),
+    url(r'^csv_xform$', 'gwcsa_heroku.views.csv_xform', name='csv_xform'),
     url(r'^signup_quiz$', 'gwcsa_heroku.views.signup_quiz', name='signup_quiz'),
     url(r'^workshift_selection$', 'gwcsa_heroku.views.workshift_selection', name='workshift_selection'),
 
