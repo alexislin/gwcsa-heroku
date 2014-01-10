@@ -27,7 +27,6 @@ def member_detail(request, id):
 
     return render_to_response("admin_memberdetail.html",
         RequestContext(request, {
-            "current_season": CURRENT_SEASON,
             "member": member,
             "shift": shift,
             "shift_date_times": shift_date_times,
@@ -72,7 +71,6 @@ def members(request):
     }).order_by("day", "last_name")
     return render_to_response("admin_members.html",
         RequestContext(request, {
-            "current_season": CURRENT_SEASON,
             "members": members
         })
     )
@@ -82,7 +80,6 @@ def members(request):
 def summaries(request):
     return render_to_response("admin_summaries.html",
         RequestContext(request, {
-            "current_season": CURRENT_SEASON,
             "wed_counts": get_share_count(WEDNESDAY),
             "sat_counts": get_share_count(SATURDAY),
         })
@@ -119,7 +116,6 @@ def workshifts(request):
 
     return render_to_response("admin_workshifts.html",
         RequestContext(request, {
-            "current_season": CURRENT_SEASON,
             "shifts_by_date": shifts_by_date
         })
     )

@@ -2,7 +2,9 @@
 {% load static from staticfiles %}
 
 {% block header %}
-  <script type="text/javascript" language="javascript" src="{% static 'js/workshifts.js' %}?cache_buster={% now "YmdHis" %}""></script>
+  <script type="text/javascript" language="javascript"
+    src="{% static 'js/workshifts.js' %}{% if "amazon" in STATIC_URL %}&{% else %}?{% endif %}cache_buster={% now "YmdHis" %}">
+  </script>
 {% endblock %}
 
 {% block content %}

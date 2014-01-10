@@ -2,7 +2,7 @@
 import os
 import dj_database_url
 
-DEBUG = True
+DEBUG = False
 TEMPLATE_DEBUG = DEBUG
 
 ADMINS = (
@@ -19,7 +19,7 @@ SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 # Hosts/domain names that are valid for this site; required if DEBUG is False
 # See https://docs.djangoproject.com/en/1.5/ref/settings/#allowed-hosts
-ALLOWED_HOSTS = ['.herokuapp.com']
+ALLOWED_HOSTS = ['*']
 
 # Local time zone for this installation. Choices can be found here:
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
@@ -44,22 +44,28 @@ USE_L10N = True
 # If you set this to False, Django will not use timezone-aware datetimes.
 USE_TZ = True
 
-# static asset configuration
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-STATIC_ROOT = 'staticfiles'
-STATIC_URL = '/static/'
 
+# List of finder classes that know how to find static files in various locations.
+STATICFILES_FINDERS = (
+    'django.contrib.staticfiles.finders.FileSystemFinder',
+    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+)
+# Locations where static file finders look for static files
 STATICFILES_DIRS = (
     os.path.join(BASE_DIR, 'static'),
 )
 
-# List of finder classes that know how to find static files in
-# various locations.
-STATICFILES_FINDERS = (
-    'django.contrib.staticfiles.finders.FileSystemFinder',
-    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
-#    'django.contrib.staticfiles.finders.DefaultStorageFinder',
-)
+STATIC_ROOT = 'staticfiles'
+
+STATIC_URL = '/static/'
+
+if not DEBUG:
+    AWS_ACCESS_KEY_ID = os.environ.get('GWCSA_AWS_ACCESS_KEY_ID')
+    AWS_SECRET_ACCESS_KEY = os.environ.get('GWCSA_AWS_SECRET_ACCESS_KEY')
+    AWS_STORAGE_BUCKET_NAME = os.environ['GWCSA_AWS_STORAGE_BUCKET_NAME']
+    STATICFILES_STORAGE = 'storages.backends.s3boto.S3BotoStorage'
+    STATIC_URL = 'http://%s.s3.amazonaws.com/' % AWS_STORAGE_BUCKET_NAME
 
 # Make this unique, and don't share it with anybody.
 SECRET_KEY = 'k6ew($wouvuass5*aen3mn9a3da)w(ynd*k!v8&9h*5km12ml0'
@@ -84,6 +90,8 @@ MIDDLEWARE_CLASSES = (
 TEMPLATE_CONTEXT_PROCESSORS = (
     'django.contrib.auth.context_processors.auth',
     'django.contrib.messages.context_processors.messages',
+    'django.core.context_processors.static',
+    'gwcsa_heroku.context_processors.constants',
 )
 
 ROOT_URLCONF = 'gwcsa_heroku.urls'
@@ -108,6 +116,7 @@ INSTALLED_APPS = (
     'gwcsa_heroku',
     'south',
     'django.contrib.admin',
+    'storages',
     # Uncomment the next line to enable admin documentation:
     # 'django.contrib.admindocs',
 )

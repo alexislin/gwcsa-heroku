@@ -7,7 +7,7 @@
     <script type="text/javascript" language="javascript" src="{% static "js/jquery-ui-1.8.16.custom.min.js" %}"></script>
 
     <link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Varela">
-    <link rel="stylesheet" type="text/css" href="{% static "css/style.css" %}?cache_buster={% now "YmdHis" %}" />
+    <link rel="stylesheet" type="text/css" href="{% static "css/style.css" %}{% if "amazon" in STATIC_URL %}&{% else %}?{% endif %}cache_buster={% now "YmdHis" %}" />
     <link rel="stylesheet" type="text/css" href="{% static "css/tipsy.css" %}" />
     <link rel="stylesheet" type="text/css" href="{% static "css/ui-lightness/jquery-ui-1.8.16.custom.css" %}" />
     <link rel="stylesheet" type="text/css" href="{% static "css/blueprint/screen.css" %}" media="screen, projection">

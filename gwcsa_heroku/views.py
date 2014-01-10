@@ -14,9 +14,7 @@ from gwcsa_heroku.request_util import *
 @handle_view_exception
 def contact(request):
     return render_to_response("contact.html",
-        RequestContext(request, {
-            "current_season": CURRENT_SEASON,
-        })
+        RequestContext(request, {})
     )
 
 # for testing csv_xform bookmarklet, which is unrelated to this site:
@@ -55,7 +53,6 @@ def workshift_selection(request):
 
         return render_to_response("thankyou.html",
             RequestContext(request, {
-                "current_season": CURRENT_SEASON,
                 "member" : member,
                 "shift" : shift,
                 "shift_date_times" : workshift_date_times
@@ -81,7 +78,6 @@ def workshift_selection(request):
 
         return render_to_response("workshift_selection.html",
             RequestContext(request, {
-                "current_season": CURRENT_SEASON,
                 "workshifts": shifts,
                 "member": member,
                 "shift_id": shift_id,
@@ -93,9 +89,7 @@ def workshift_selection(request):
 @handle_view_exception
 def signup_quiz(request):
     return render_to_response("quiz.html",
-        RequestContext(request, {
-            "current_season": CURRENT_SEASON,
-        })
+        RequestContext(request, {})
     )
 
 
