@@ -60,10 +60,11 @@ STATIC_ROOT = 'staticfiles'
 
 STATIC_URL = '/static/'
 
+AWS_ACCESS_KEY_ID = os.environ.get('GWCSA_AWS_ACCESS_KEY_ID')
+AWS_SECRET_ACCESS_KEY = os.environ.get('GWCSA_AWS_SECRET_ACCESS_KEY')
+AWS_STORAGE_BUCKET_NAME = os.environ['GWCSA_AWS_STORAGE_BUCKET_NAME']
+
 if not DEBUG:
-    AWS_ACCESS_KEY_ID = os.environ.get('GWCSA_AWS_ACCESS_KEY_ID')
-    AWS_SECRET_ACCESS_KEY = os.environ.get('GWCSA_AWS_SECRET_ACCESS_KEY')
-    AWS_STORAGE_BUCKET_NAME = os.environ['GWCSA_AWS_STORAGE_BUCKET_NAME']
     STATICFILES_STORAGE = 'storages.backends.s3boto.S3BotoStorage'
     STATIC_URL = 'http://%s.s3.amazonaws.com/' % AWS_STORAGE_BUCKET_NAME
 
