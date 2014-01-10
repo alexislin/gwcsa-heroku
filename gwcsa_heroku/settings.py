@@ -2,7 +2,7 @@
 import os
 import dj_database_url
 
-DEBUG = False
+DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
 ADMINS = (
@@ -68,7 +68,7 @@ if not DEBUG:
     STATIC_URL = 'http://%s.s3.amazonaws.com/' % AWS_STORAGE_BUCKET_NAME
 
 # Make this unique, and don't share it with anybody.
-SECRET_KEY = 'k6ew($wouvuass5*aen3mn9a3da)w(ynd*k!v8&9h*5km12ml0'
+SECRET_KEY = os.environ.get('GWCSA_SECRET_KEY')
 
 # List of callables that know how to import templates from various sources.
 TEMPLATE_LOADERS = (
