@@ -113,7 +113,16 @@
             <td class="left-border">{{member.pickles_count|default_if_none:" "}}</td>
             <td class="left-border">{{member.plant_count|default_if_none:" "}}</td>
             <td class="left-border">{% if member.shift_count > 0 %}<img src="{% static "images/checkmark.gif" %}">{% else %}&nbsp;{% endif %}</td>
-            <td class="left-border">{{member.workshift_week|default_if_none:" "}}</td>
+            <td class="left-border">
+              {{member.workshift_week|default_if_none:" "}}
+              {% if "A" in member.assigned_week or "B" in member.assigned_week %}
+                {% if "A" in member.workshift_week or "B" in member.workshift_week %}
+                  {% if member.workshift_week != member.assigned_week %}
+                    &nbsp;<img src="{% static "images/warning.png" %}" />
+                  {% endif %}
+                {% endif %}
+              {% endif %}
+            </td>
             <td class="left-border">{% if member.assigned_week == "W" %}-{% else %}{{member.assigned_week|default_if_none:"TBD"}}{% endif %}</td>
           </tr>
         {% endfor %}
