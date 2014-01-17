@@ -7,6 +7,7 @@ from django.http import HttpResponse
 from django.template import RequestContext
 from django.shortcuts import render_to_response
 
+from gwcsa_heroku.constants import *
 from gwcsa_heroku.decorators import *
 from gwcsa_heroku.email_util import *
 from gwcsa_heroku.models import *
@@ -85,6 +86,10 @@ def workshift_selection(request):
                 "shift_id": shift_id,
                 "shift_dates": shift_dates,
                 "shift_times": shift_times,
+                "wed_a_dates": json.dumps([d.strftime("%m%d%Y") for d in WED_A_DATES]),
+                "wed_b_dates": json.dumps([d.strftime("%m%d%Y") for d in WED_B_DATES]),
+                "sat_a_dates": json.dumps([d.strftime("%m%d%Y") for d in SAT_A_DATES]),
+                "sat_b_dates": json.dumps([d.strftime("%m%d%Y") for d in SAT_B_DATES]),
             })
         )
 

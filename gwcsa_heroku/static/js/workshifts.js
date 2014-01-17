@@ -1,3 +1,8 @@
+var WED_A_DATES = $.map($(wed_a_dates), function(d) { return getDateFromString(d); });
+var WED_B_DATES = $.map($(wed_b_dates), function(d) { return getDateFromString(d); });
+var SAT_A_DATES = $.map($(sat_a_dates), function(d) { return getDateFromString(d); });
+var SAT_B_DATES = $.map($(sat_b_dates), function(d) { return getDateFromString(d); });
+
 var gAvailableDatesByShiftId = {};
 
 function getMemberId() {
@@ -20,18 +25,28 @@ function shiftHasAvailableDates(jDiv) {
   return (typeof availableDates == "undefined") || availableDates.length > 0;
 }
 
-function setAvailableDatesForShift(shiftId, availableDates) {
-  dates = []
-  for (var i in availableDates) {
-    var d = availableDates[i];
+function getDateFromString(s) {
+  var month = parseInt(s.substr(0, 2), 10) - 1;
+  var day = parseInt(s.substr(2, 2), 10);
+  var year = parseInt(s.substr(4), 10);
 
-    var month = parseInt(d.substr(0, 2), 10) - 1;
-    var day = parseInt(d.substr(2, 2), 10);
-    var year = parseInt(d.substr(4), 10);
+  return new Date(year, month, day);
+}
 
-    dates.push(new Date(year, month, day));
-  }
-  gAvailableDatesByShiftId[shiftId] = dates;
+function datesAreEqual(d1, d2) {
+  return d1.getFullYear() === d2.getFullYear() && d1.getMonth() === d2.getMonth() && d1.getDate() === d2.getDate();
+}
+
+function isDateInDateArray(date, dates) {
+  return $.map($(dates), function(d) { return datesAreEqual(d, date) ? true : null; }).length > 0;
+}
+
+function isAWeekDate(date) {
+  return isDateInDateArray(date, WED_A_DATES.concat(SAT_A_DATES));
+}
+
+function isBWeekDate(date) {
+  return isDateInDateArray(date, WED_B_DATES.concat(SAT_B_DATES));
 }
 
 function getAvailableDatesForShift(shiftId) {
@@ -44,7 +59,8 @@ function getAvailableDatesForShift(shiftId) {
     dataType: "json",
     timeout: 30000,
     success: function(data, textStatus, jqXHR) {
-      setAvailableDatesForShift(shiftId, data.available_dates);
+      gAvailableDatesByShiftId[shiftId] =
+        $.map($(data.available_dates), function(d) { return getDateFromString(d); });
     },
     error: function(jqXHR, textStatus, errorThrown) {
       alert("Error getting dates for shift(id=" + shiftId + "): " + textStatus + ". " + errorThrown);
@@ -68,17 +84,18 @@ $(function() {
       return {
         beforeShowDay: function(date) {
           var validDates = gAvailableDatesByShiftId[shiftId];
-
-          for (var i in validDates) {
-            var equal =
-                date.getFullYear() === validDates[i].getFullYear() &&
-                date.getMonth() === validDates[i].getMonth() &&
-                date.getDate() === validDates[i].getDate();
-
-            if (equal)
+          var isValid = $.map($(validDates), function(d) { return datesAreEqual(d, date) ? true : null; }).length > 0;
+          if (isValid) {
+            if (isAWeekDate(date))
+              return [true, "a-week-shift-date", "Available date for shift."]
+            else if (isBWeekDate(date))
+              return [true, "b-week-shift-date", "Available date for shift."]
+            else
               return [true, "", "Available date for shift."]
           }
-          return [false, "invalid-shift-date", "No available shift on this date."];
+          else {
+            return [false, "invalid-shift-date", "No available shift on this date."];
+          }
         }
       }
     }
