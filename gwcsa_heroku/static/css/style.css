@@ -60,8 +60,10 @@ div.shift { border: 1px solid gray; border-radius: 12px; -moz-border-radius 12px
 .full hr { height: 0; border: 0; border-top: 1px solid #BEBEBE; }
 
 .invalid-shift-date { text-decoration: line-through; }
-.a-week-shift-date a { background-color: #FFF2D2 !important; background-image: none !important; }
-.b-week-shift-date a { background-color: #E9F2FF !important; background-image: none !important; }
+.a-week-shift-date a { background-color: #FFFFCC !important; background-image: none !important; }
+.b-week-shift-date a { background-color: #FFFFFF !important; background-image: none !important; }
+.a-week-sample { background-color: #FFFFCC; border: 1px solid #CCCCCC; color: #1c94c4; font-weight: bold; text-align: center; }
+.b-week-sample { background-color: #FFFFFF; border: 1px solid #CCCCCC; color: #1c94c4; font-weight: bold; text-align: center; }
 
 hr { background-color: black !important; color: black !important; }
 

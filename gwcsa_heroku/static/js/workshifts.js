@@ -86,12 +86,8 @@ $(function() {
           var validDates = gAvailableDatesByShiftId[shiftId];
           var isValid = $.map($(validDates), function(d) { return datesAreEqual(d, date) ? true : null; }).length > 0;
           if (isValid) {
-            if (isAWeekDate(date))
-              return [true, "a-week-shift-date", "Available date for shift."]
-            else if (isBWeekDate(date))
-              return [true, "b-week-shift-date", "Available date for shift."]
-            else
-              return [true, "", "Available date for shift."]
+            var cssClass = isAWeekDate(date) ? "a-week-shift-date" : "b-week-shift-date";
+            return [true, cssClass, "Available date for shift."]
           }
           else {
             return [false, "invalid-shift-date", "No available shift on this date."];
