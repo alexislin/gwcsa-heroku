@@ -13,8 +13,12 @@ def get_available_dates_for_shift(request):
     shift_id = get_required_parameter(request, "shiftId")
     shift = WorkShift.objects.get(id=shift_id)
 
-    dates = [d.strftime("%m%d%Y") \
-            for d in shift.get_available_dates_for_member(member)]
+    dates = []
+    for date in shift.get_available_dates_for_member(member):
+        # hack to not show the first two weeks of distribution
+        if "Distribution" in shift.name and date < datetime.date(2014, 6, 22):
+            continue
+        dates.append(date.strftime("%m%d%Y"))
 
     values = { "available_dates" : dates }
     return HttpResponse(json.dumps(values), content_type="application/json")
