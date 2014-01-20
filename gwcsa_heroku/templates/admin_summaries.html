@@ -19,7 +19,7 @@
   </div>
 
   <div class="span-24 last below-8">
-    <div class="span-5 last">
+    <div class="span-5">
       <table class="summary">
         <thead><tr><th colspan="2">Saturday Share Count</th></tr></thead>
         <tbody>
@@ -39,7 +39,22 @@
         </tbody>
       </table>
     </div>
-    <div class="span-1">&nbsp;</div>
+  </div>
+
+  <div class="span-24 last">
+    <div class="span-5">
+      <table class="summary">
+        <thead>
+          <tr><th colspan="4">Veggie A/B Count</th></tr>
+        </thead>
+        <tbody>
+          {% for day, assigned_week, frequency, total in veggie_counts %}
+            <tr {% cycle 'class="odd"' 'class="even"' %}><td>{{day}}</td><td>{{frequency|lower}}</td><td>{{assigned_week|default_if_none:""}}</td><td>{{total}}</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
   </div>
 
 {% endblock %}

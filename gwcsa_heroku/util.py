@@ -25,6 +25,34 @@ def get_share_count(day):
 
     return [(desc, 0 if not code in r else r[code]) for code, desc in SHARES]
 
+def get_ab_count_for_share(content):
+    cursor = connection.cursor()
+    cursor.execute("""
+        SELECT m.day,
+               m.assigned_week,
+               s.frequency,
+               SUM(s.quantity) AS total
+          FROM gwcsa_heroku_share s,
+               gwcsa_heroku_member m,
+               gwcsa_heroku_season sn
+         WHERE m.id = s.member_id
+           AND m.season_id = sn.id
+           AND sn.name = %s
+           AND s.content = %s
+      GROUP BY m.day, m.assigned_week, s.frequency
+      ORDER BY m.day, s.frequency, m.assigned_week
+    """, [CURRENT_SEASON, content])
+
+    results = []
+    for day, assigned_week, frequency, total in cursor.fetchall():
+        results.append((
+            [desc for code, desc in DAYS if code == day][0],
+            assigned_week,
+            [desc for code, desc in FREQUENCY if code == frequency][0],
+            total
+        ))
+
+    return results
 
 def get_distro_dates(day, week=None):
     if day == WEDNESDAY:

@@ -82,6 +82,7 @@ def summaries(request):
         RequestContext(request, {
             "wed_counts": get_share_count(WEDNESDAY),
             "sat_counts": get_share_count(SATURDAY),
+            "veggie_counts": get_ab_count_for_share(VEGETABLES),
         })
     )
 
