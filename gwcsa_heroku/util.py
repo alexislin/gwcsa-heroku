@@ -30,7 +30,6 @@ def get_ab_count_for_share(content):
     cursor.execute("""
         SELECT m.day,
                m.assigned_week,
-               s.frequency,
                SUM(s.quantity) AS total
           FROM gwcsa_heroku_share s,
                gwcsa_heroku_member m,
@@ -38,17 +37,17 @@ def get_ab_count_for_share(content):
          WHERE m.id = s.member_id
            AND m.season_id = sn.id
            AND sn.name = %s
+           AND s.frequency = 'B'
            AND s.content = %s
-      GROUP BY m.day, m.assigned_week, s.frequency
-      ORDER BY m.day, s.frequency, m.assigned_week
+      GROUP BY m.day, m.assigned_week
+      ORDER BY m.day, m.assigned_week
     """, [CURRENT_SEASON, content])
 
     results = []
-    for day, assigned_week, frequency, total in cursor.fetchall():
+    for day, assigned_week, total in cursor.fetchall():
         results.append((
             [desc for code, desc in DAYS if code == day][0],
             assigned_week,
-            [desc for code, desc in FREQUENCY if code == frequency][0],
             total
         ))
 

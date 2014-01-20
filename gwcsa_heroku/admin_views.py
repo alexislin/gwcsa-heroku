@@ -83,11 +83,11 @@ def summaries(request):
             "wed_counts": get_share_count(WEDNESDAY),
             "sat_counts": get_share_count(SATURDAY),
             "veggie_counts": get_ab_count_for_share(VEGETABLES),
+            "fruit_counts": get_ab_count_for_share(FRUIT),
+            "egg_counts": get_ab_count_for_share(EGGS),
+            "flower_counts": get_ab_count_for_share(FLOWERS),
         })
     )
-
-
-
 
 @handle_view_exception
 @login_required
