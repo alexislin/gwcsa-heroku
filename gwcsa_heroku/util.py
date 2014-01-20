@@ -10,7 +10,7 @@ from gwcsa_heroku.models import *
 def get_share_count(day):
     cursor = connection.cursor()
     cursor.execute("""
-        SELECT ROUND(SUM(CASE WHEN s.frequency = 'B' THEN s.quantity/2.0 ELSE quantity end)) AS total,
+        SELECT ROUND(SUM(CASE WHEN s.frequency = 'B' THEN s.quantity/2.0 ELSE quantity end), 1) AS total,
                s.content
           FROM gwcsa_heroku_share s,
                gwcsa_heroku_member m,

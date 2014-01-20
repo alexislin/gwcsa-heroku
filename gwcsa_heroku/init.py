@@ -15,15 +15,18 @@ from gwcsa_heroku.util import *
 def init_assigned_week(request):
     for member in Member.objects.filter(season__name=CURRENT_SEASON):
         # only set assigned week if not already assigned
-        if not member.assigned_week:
-            if member.is_weekly:
-                member.assigned_week = WEEKLY
-                member.save()
-            elif Share.objects.filter(member=member).filter(
-                Q(content=CHEESE) | Q(content=MEAT) | Q(content=PICKLES_AND_PRESERVES)
-            ).count() > 0:
-                member.assigned_week = A_WEEK
-                member.save()
+        #if not member.assigned_week:
+        if not member.has_biweekly:
+            member.assigned_week = WEEKLY
+            member.save()
+        elif Share.objects.filter(member=member).filter(
+            Q(content=CHEESE) | Q(content=MEAT) | Q(content=PICKLES_AND_PRESERVES)
+        ).count() > 0:
+            member.assigned_week = A_WEEK
+            member.save()
+        else:
+            member.assigned_week = None
+            member.save()
 
     return render_to_response("base.html",
         RequestContext(request, {

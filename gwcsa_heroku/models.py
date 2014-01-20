@@ -106,6 +106,10 @@ class Member(TimestampedModel):
         return Share.objects.filter(member=self,frequency=WEEKLY).count() > 0
     is_weekly = property(get_is_weekly)
 
+    def get_has_biweekly(self):
+        return Share.objects.filter(member=self,frequency=BIWEEKLY).count() > 0
+    has_biweekly = property(get_has_biweekly)
+
     def get_workshift_week(self):
         weeks = [s.week for s in MemberWorkShift.objects.filter(member=self)]
         return weeks[0] if len(set(weeks)) == 1 else None
