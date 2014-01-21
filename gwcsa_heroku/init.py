@@ -1,4 +1,5 @@
 from datetime import time
+import logging
 
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
@@ -9,6 +10,9 @@ from gwcsa_heroku.decorators import *
 from gwcsa_heroku.models import *
 from gwcsa_heroku.request_util import *
 from gwcsa_heroku.util import *
+
+logger = logging.getLogger(__name__)
+
 
 def get_tplus(t, s):
     return [sum(c) for c in zip(*(t, s))]
@@ -24,6 +28,7 @@ def assign_distribution_week(members):
     a_week_totals = [0]*4
     b_week = []
     b_week_totals = [0]*4
+    logger.info("start assignment")
 
     # initial sorting
     for m in members:
@@ -92,6 +97,7 @@ def init_assigned_week(request):
             # only assign A/B weeks to members that have at least one biweekly
             # share (veggies, fruit, eggs or flowers)
 
+            # TODO: DO NOT ASSIGN WEEK IF ALREADY ASSIGNED
             m.add_share_attributes()
             if sum(getattr(m, "biweekly_share_counts")) > 0:
                 if m.day == WEDNESDAY:
