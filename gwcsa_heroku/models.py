@@ -115,6 +115,19 @@ class Member(TimestampedModel):
         return weeks[0] if len(set(weeks)) == 1 else None
     workshift_week = property(get_workshift_week)
 
+    def add_share_attributes(self):
+        setattr(self, "a_week", False)
+
+        d = { VEGETABLES: 0, FRUIT: 0, EGGS: 0, FLOWERS: 0 }
+        for s in Share.objects.filter(member=self):
+            if s.frequency == BIWEEKLY:
+                d[s.content] += s.quantity
+            if s.content in [MEAT, CHEESE, PICKLES_AND_PRESERVES] and s.quantity > 0:
+                setattr(self, "a_week", True)
+
+        setattr(self, "biweekly_share_counts",
+            (d[VEGETABLES], d[FRUIT], d[EGGS], d[FLOWERS]))
+
     @staticmethod
     def get_or_create_member(first_name, last_name, email):
         if not first_name or not last_name or not email:
