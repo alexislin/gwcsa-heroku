@@ -21,7 +21,7 @@
   <div class="span-24 last below-8">
     <div class="span-5">
       <table class="summary">
-        <thead><tr><th colspan="2">Saturday Share Count</th></tr></thead>
+        <thead><tr><th colspan="2">Saturday - Total Shares</th></tr></thead>
         <tbody>
           {% for content, quantity in sat_counts %}
             <tr {% cycle 'class="odd"' 'class="even"' %}><td>{{content}}</td><td>{{quantity}}</td></tr>
@@ -31,7 +31,7 @@
     </div>
     <div class="span-5">
       <table class="summary">
-        <thead><tr><th colspan="2">Wednesday Share Count</th></tr></thead>
+        <thead><tr><th colspan="2">Wednesday - Total Shares</th></tr></thead>
         <tbody>
           {% for content, quantity in wed_counts %}
             <tr {% cycle 'class="odd"' 'class="even"' %}><td>{{content}}</td><td>{{quantity}}</td></tr>
@@ -94,6 +94,20 @@
         </tbody>
       </table>
     </div>
+    <div class="span-4 last">
+      <table class="summary">
+        <thead>
+          <tr><th colspan="3">Weekly Share Count</th></tr>
+          <tr><th>Day</th><th>Content</th><th>Count</th></tr>
+        </thead>
+        <tbody>
+          {% for day, content, total in weekly_counts %}
+            <tr {% cycle 'class="odd"' 'class="even"' %}><td>{{day}}</td><td>{{content}}</td><td>{{total}}</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
   </div>
 
 {% endblock %}

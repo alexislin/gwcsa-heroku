@@ -53,6 +53,34 @@ def get_ab_count_for_share(content):
 
     return results
 
+def get_weekly_count_for_shares():
+    cursor = connection.cursor()
+    cursor.execute("""
+        SELECT m.day,
+               s.content,
+               SUM(s.quantity) AS total
+          FROM gwcsa_heroku_share s,
+               gwcsa_heroku_member m,
+               gwcsa_heroku_season sn
+         WHERE m.id = s.member_id
+           AND m.season_id = sn.id
+           AND sn.name = %s
+           AND s.frequency = 'W'
+      GROUP BY m.day, s.content
+      ORDER BY m.day, s.content desc
+    """, [CURRENT_SEASON])
+
+    results = []
+    for day, content, total in cursor.fetchall():
+        results.append((
+            [desc for code, desc in DAYS if code == day][0],
+            [desc for code, desc in SHARES if code == content][0],
+            total
+        ))
+
+    return results
+
+
 def get_distro_dates(day, week=None):
     if day == WEDNESDAY:
         if week == A_WEEK:

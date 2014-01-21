@@ -86,6 +86,7 @@ def summaries(request):
             "fruit_counts": get_ab_count_for_share(FRUIT),
             "egg_counts": get_ab_count_for_share(EGGS),
             "flower_counts": get_ab_count_for_share(FLOWERS),
+            "weekly_counts": get_weekly_count_for_shares(),
         })
     )
 
