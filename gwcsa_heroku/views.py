@@ -3,7 +3,6 @@ import logging
 
 from datetime import datetime
 
-from django.conf import settings
 from django.http import HttpResponse
 from django.template import RequestContext
 from django.shortcuts import render_to_response
@@ -54,9 +53,7 @@ def workshift_selection(request):
             workshift_date_times.append(w)
 
 #TODO: infer a prefered A/B week assignment based on shifts selected
-        if not settings.DEBUG:
-            logger.info("sending confirmation email to: %s" % member.email)
-            send_workshift_confirmation_email(member)
+        send_workshift_confirmation_email(member)
 
         return render_to_response("thankyou.html",
             RequestContext(request, {

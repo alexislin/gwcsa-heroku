@@ -4,6 +4,7 @@ import urllib2
 import sys
 import traceback
 
+from django.conf import settings
 from django.template.loader import render_to_string
 
 from gwcsa_heroku.models import *
@@ -20,6 +21,12 @@ def send_email(to_email, to_name, subject, template_path, template_values):
     data["fromname"] = "Greenpoint Williamsburg CSA"
     data["subject"] = subject
     data["text"] = render_to_string(template_path, template_values)
+
+    # send all emails to admin email when developing or debugging
+    if settings.DEBUG:
+        data["to"] = "admin+testing@gwcsa.org"
+        data["toname"] = "GWCSA Admin - Test Emails"
+
     form_data = urllib.urlencode(data)
 
     headers = {}
