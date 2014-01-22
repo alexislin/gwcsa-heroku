@@ -18,9 +18,18 @@ def member_detail(request, id):
     member = Member.objects.get(id=id)
 
     if request.method == "POST":
-        if "delete" == get_parameter(request, "action"):
+        action = get_parameter(request, "action")
+        if action == "delete":
             member.delete()
             return redirect("gwcsa_heroku.admin_views.members")
+        if action == "update":
+            week = get_parameter(request, "week")
+            if week == A_WEEK and not member.assigned_week == A_WEEK:
+                member.assigned_week = A_WEEK
+                member.save()
+            if week == B_WEEK and not member.assigned_week == B_WEEK:
+                member.assigned_week = B_WEEK
+                member.save()
 
     shift_date_times = [s.workshift_date_time for s in MemberWorkShift.objects.filter(member=member)]
     shift = None if len(shift_date_times) == 0 else shift_date_times[0].shift

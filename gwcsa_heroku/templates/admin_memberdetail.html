@@ -33,10 +33,11 @@
     <div class="span-6 label">Pickup Day</div><div class="span-12 last value">{% if member.day %}{{member.get_day_display}}{% else %}&nbsp;{% endif %}</div>
     <div class="span-6 label">Frequency</div><div class="span-12 last value">{% if member.is_weekly %}weekly{% else %}biweekly{% endif %}</div>
     <!-- TODO: make this work again -->
-    {% if not member.is_weekly %}
-      <div class="span-6 label">Assigned Week (TODO)</div>
+    {% if member.has_biweekly %}
+      <div class="span-6 label">Assigned Week</div>
       <div class="span-12 last value">
         <form method="post" id="update-member" name="update-member">
+          {% csrf_token %}
           <input type="hidden" id="action" name="action" value="update" />
           <input type="hidden" id="id" name="id" value="{{member.key.id}}" />
           <select id="week" name="week">
