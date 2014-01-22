@@ -35,11 +35,14 @@ def assign_distribution_week(members):
     # until the remainder of the members are assigned. It's only looking at
     # number of members assigned to A vs. B. That needs to change.
 
-    # put all a-week-mandatory members into a_week array
-    a_week = [m for m in members if getattr(m, "a_week")]
+    # initialize our a and b weeks of members
+    a_week = [m for m in members if m.assigned_week == A_WEEK or getattr(m, "a_week")]
+    b_week = [m for m in members if m.assigned_week == B_WEEK]
+    logger.debug("init => a week: %s, b week: %s" % (get_total(a_week), get_total(b_week)))
 
-    # members awaiting assignment
-    members = [m for m in members if not getattr(m, "a_week")]
+    # members still awaiting assignment
+    members = [m for m in members \
+        if not getattr(m, "a_week") and not m.assigned_week in (A_WEEK, B_WEEK)]
 
     # split members into three groups
     a_week_workshift_members = [m for m in members if m.workshift_week == A_WEEK]
@@ -50,12 +53,11 @@ def assign_distribution_week(members):
     logger.debug("a ws [%s], b ws [%s], no ws [%s]" % \
         (len(a_week_workshift_members), len(b_week_workshift_members), len(no_workshift_members)))
 
-    # init b_week with b week workshift members
-    i = min(len(b_week_workshift_members), len(a_week))
-    b_week = b_week_workshift_members[:i]
-    b_week_workshift_members = b_week_workshift_members[i:]
-    logger.debug("a week required: %s" % get_total(a_week))
-    logger.debug("b week init: %s" % get_total(b_week))
+    # if necessary, extend b_week with b week workshift members
+    if len(b_week) < len(a_week):
+        i = min(len(b_week_workshift_members), len(a_week) - len(b_week))
+        b_week.extend(b_week_workshift_members[:i])
+        b_week_workshift_members = b_week_workshift_members[i:]
 
     # if we didn't have enough b week workshift members to match mandatory
     # a week members, then see if we can make up the difference with no workshift
@@ -115,13 +117,15 @@ def assign_distribution_week(members):
     logger.debug("final => a week: %s, b week: %s" % (get_total(a_week), get_total(b_week)))
 
     for m in a_week:
-        m.assigned_week = A_WEEK
-        m.save()
-        WeekAssignmentLog.objects.create(member=m,assigned_week=A_WEEK,module_name=__name__)
+        if not m.assigned_week == A_WEEK:
+            m.assigned_week = A_WEEK
+            m.save()
+            WeekAssignmentLog.objects.create(member=m,assigned_week=A_WEEK,module_name=__name__)
     for m in b_week:
-        m.assigned_week = B_WEEK
-        m.save()
-        WeekAssignmentLog.objects.create(member=m,assigned_week=B_WEEK,module_name=__name__)
+        if not m.assigned_week == B_WEEK:
+            m.assigned_week = B_WEEK
+            m.save()
+            WeekAssignmentLog.objects.create(member=m,assigned_week=B_WEEK,module_name=__name__)
 
 @login_required
 @handle_view_exception
@@ -136,8 +140,6 @@ def init_assigned_week(request):
         else:
             # only assign A/B weeks to members that have at least one biweekly
             # share (veggies, fruit, eggs or flowers)
-
-            # TODO: DO NOT ASSIGN WEEK IF ALREADY ASSIGNED
             m.add_share_attributes()
             if sum(getattr(m, "biweekly_share_counts")) > 0:
                 if m.day == WEDNESDAY:
