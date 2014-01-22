@@ -13,6 +13,13 @@ from gwcsa_heroku.util import *
 
 logger = logging.getLogger(__name__)
 
+def get_total(members, member=None):
+    total = [0]*4
+    for m in members:
+        total = get_tplus(getattr(m, "biweekly_share_counts"), total)
+
+    return total if not member else \
+        get_tplus(getattr(member, "biweekly_share_counts"), total)
 
 def get_tplus(t, s):
     return [sum(c) for c in zip(*(t, s))]
@@ -24,57 +31,89 @@ def get_diff(t1, t2):
     return sum([abs(x-y) for x, y in zip(*(t1, t2))])
 
 def assign_distribution_week(members):
-    a_week = []
-    a_week_totals = [0]*4
-    b_week = []
-    b_week_totals = [0]*4
-    logger.info("start assignment")
+    # TODO: this is okay, but doesn't take share counts into account at all
+    # until the remainder of the members are assigned. It's only looking at
+    # number of members assigned to A vs. B. That needs to change.
 
-    # initial sorting
+    # put all a-week-mandatory members into a_week array
+    a_week = [m for m in members if getattr(m, "a_week")]
+    logger.info("must: a week: %s" % get_total(a_week))
+
+    # members awaiting assignment
+    members = [m for m in members if not getattr(m, "a_week")]
+
+    # split members into three groups
+    a_week_workshift_members = [m for m in members if m.workshift_week == A_WEEK]
+    b_week_workshift_members = [m for m in members if m.workshift_week == B_WEEK]
+    no_workshift_members = [m for m in members \
+        if m not in a_week_workshift_members and m not in b_week_workshift_members]
+
+    logger.info("a workshift: %s" % len(a_week_workshift_members))
+    logger.info("b workshift: %s" % len(b_week_workshift_members))
+    logger.info("no workshift: %s" % len(no_workshift_members))
+
+    # init b_week with b week workshift members
+    i = min(len(b_week_workshift_members), len(a_week))
+    b_week = b_week_workshift_members[:i]
+    b_week_workshift_members = b_week_workshift_members[i:]
+
+    # if we didn't have enough b week workshift members to match mandatory
+    # a week members, then see if we can make up the difference with no workshift
+    # members
+    if len(b_week) < len(a_week):
+        i = min(len(a_week) - len(b_week), len(no_workshift_members))
+        b_week.extend(no_workshift_members[:i])
+        no_workshift_members = no_workshift_members[i:]
+
+        logger.info("after adding no workshift members")
+        logger.info("a workshift: %s" % len(a_week_workshift_members))
+        logger.info("b workshift: %s" % len(b_week_workshift_members))
+        logger.info("no workshift: %s" % len(no_workshift_members))
+
+    # at this point, one of the following situations is true:
+    # 1) len(a_week) == len(b_week) and we might have non-zero lengths for one or more arrays
+    # 2) len(a_week) > len(b_week) and we have only a week workshift members left
+
+    if len(b_week) == len(a_week):
+        if len(b_week_workshift_members) > 0:
+            # shift equivalent numbers of a and b workshift members into a_week and b_week arrays
+            # this will empty one of these arrays
+            i = min(len(a_week_workshift_members), len(b_week_workshift_members))
+            a_week.extend(a_week_workshift_members[:i])
+            a_week_workshift_members = a_week_workshift_members[i:]
+            b_week.extend(b_week_workshift_members[:i])
+            b_week_workshift_members = b_week_workshift_members[i:]
+
+        # now either a_week_workshift_members or b_week_workshift_members will be empty
+        if len(no_workshift_members) > 0:
+            if len(a_week_workshift_members) > 0 and len(b_week_workshift_members) == 0:
+                i = min(len(a_week_workshift_members), len(no_workshift_members))
+                a_week.extend(a_week_workshift_members[:i])
+                a_week_workshift_members = a_week_workshift_members[i:]
+                b_week.extend(no_workshift_members[:i])
+                no_workshift_members = no_workshift_members[i:]
+            if len(b_week_workshift_members) > 0 and len(a_week_workshift_members) == 0:
+                i = min(len(b_week_workshift_members), len(no_workshift_members))
+                a_week.extend(no_workshift_members[:i])
+                no_workshift_members = no_workshift_members[i:]
+                b_week.extend(b_week_workshift_members[:i])
+                b_week_workshift_members = b_week_workshift_members[i:]
+
+    logger.info("before remainder: a week: %s" % get_total(a_week))
+    logger.info("before remainder: b week: %s" % get_total(b_week))
+
+    # only one or of these arrays should be non-zero length
+    members = a_week_workshift_members + b_week_workshift_members + no_workshift_members
     for m in members:
-        share_count = getattr(m, "biweekly_share_counts")
-        a = get_tplus(a_week_totals, share_count)
-        b = get_tplus(b_week_totals, share_count)
-
-        workshift_week = m.get_workshift_week()
-        if getattr(m, "a_week"):
+        diff_a = get_diff(get_total(a_week, m), get_total(b_week))
+        diff_b = get_diff(get_total(a_week), get_total(b_week, m))
+        if diff_a <= diff_b:
             a_week.append(m)
-            a_week_totals = a
-        elif workshift_week == A_WEEK:
-            a_week.append(m)
-            a_week_totals = a
-        elif workshift_week == B_WEEK:
-            b_week.append(m)
-            b_week_totals = b
         else:
-            if get_diff(a, b_week_totals) <= get_diff(b, a_week_totals):
-                a_week.append(m)
-                a_week_totals = a
-            else:
-                b_week.append(m)
-                b_week_totals = b
+            b_week.append(m)
 
-    # make some swaps if necessary to balance numbers
-    for ma in a_week:
-        # don't swap if this member must be A week (i.e. has meat, cheese or P&P)
-        if not getattr(ma, "a_week"):
-            for mb in b_week:
-                a = getattr(ma, "biweekly_share_counts")
-                b = getattr(mb, "biweekly_share_counts")
-
-                # get totals if shares were swapped
-                ta_delta = get_tplus(get_tminus(a_week_totals, a), b)
-                tb_delta = get_tplus(get_tminus(b_week_totals, b), a)
-
-                if get_diff(a_week_totals, b_week_totals) > get_diff(ta_delta, tb_delta):
-                    a_week.remove(ma)
-                    b_week.append(ma)
-                    b_week.remove(mb)
-                    a_week.append(mb)
-
-                    a_week_totals = ta_delta
-                    b_week_totals = tb_delta
-                    break
+    logger.info("final: a week: %s" % get_total(a_week))
+    logger.info("final: b week: %s" % get_total(b_week))
 
     for m in a_week:
         m.assigned_week = A_WEEK
