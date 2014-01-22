@@ -9,6 +9,8 @@ from django.template.loader import render_to_string
 
 from gwcsa_heroku.models import *
 
+logger = logging.getLogger(__name__)
+
 def send_email(to_email, to_name, subject, template_path, template_values):
     url = "https://sendgrid.com/api/mail.send.json"
 
@@ -37,11 +39,13 @@ def send_email(to_email, to_name, subject, template_path, template_values):
 
     status_code = result.getcode()
     if status_code <> 200:
-        logging.error("SendGrid email failed with status=%s" % status_code)
-        logging.error(result.geturl())
-        logging.error(result.info())
+        logger.error("SendGrid email failed with status=%s" % status_code)
+        logger.error(result.geturl())
+        logger.error(result.info())
     else:
-        logging.debug("Successfully sent email '%s' to '%s' through SendGrid." % (to_email, subject))
+        logger.debug("Successfully sent email '%s' to '%s' through SendGrid." % (to_email, subject))
+
+    EmailLog.objects.create(to_email=to_email, to_name=to_name, subject=subject, status_code=status_code)
 
 def send_exception_email(url, args, stack_trace):
     try:
@@ -56,7 +60,7 @@ def send_exception_email(url, args, stack_trace):
     except:
         # don't want to throw an exception when trying to send an exception email...
         # that would only make things worse
-        logging.error(traceback.format_exc())
+        logger.error(traceback.format_exc())
 
 def send_workshift_confirmation_email(member):
     member_shifts = MemberWorkShift.objects.filter(member=member)

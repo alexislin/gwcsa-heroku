@@ -212,4 +212,8 @@ class Share(TimestampedModel):
         except Share.DoesNotExist:
             Share.objects.create(member=member,content=content,frequency=frequency,quantity=quantity)
 
-
+class EmailLog(TimestampedModel):
+    to_email = models.EmailField(max_length=254,null=False)
+    to_name = models.CharField(max_length=210,null=False)
+    subject = models.CharField(max_length=350,null=False)
+    status_code = models.CharField(max_length=10,null=False)
