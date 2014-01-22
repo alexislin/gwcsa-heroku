@@ -125,6 +125,11 @@ class Member(TimestampedModel):
             if s.content in [MEAT, CHEESE, PICKLES_AND_PRESERVES] and s.quantity > 0:
                 setattr(self, "a_week", True)
 
+        # if this member has any weekly shares, then they're coming every week
+        # anyway... don't need to force an A Week assignment
+        if self.is_weekly:
+            setattr(self, "a_week", False)
+
         setattr(self, "biweekly_share_counts",
             (d[VEGETABLES], d[FRUIT], d[EGGS], d[FLOWERS]))
 

@@ -1,4 +1,5 @@
 import json
+import logging
 
 from datetime import datetime
 
@@ -12,6 +13,8 @@ from gwcsa_heroku.decorators import *
 from gwcsa_heroku.email_util import *
 from gwcsa_heroku.models import *
 from gwcsa_heroku.request_util import *
+
+logger = logging.getLogger(__name__)
 
 @handle_view_exception
 def contact(request):
@@ -52,6 +55,7 @@ def workshift_selection(request):
 
 #TODO: infer a prefered A/B week assignment based on shifts selected
         if not settings.DEBUG:
+            logger.info("sending confirmation email to: %s" % member.email)
             send_workshift_confirmation_email(member)
 
         return render_to_response("thankyou.html",
