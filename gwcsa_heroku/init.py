@@ -117,9 +117,11 @@ def assign_distribution_week(members):
     for m in a_week:
         m.assigned_week = A_WEEK
         m.save()
+        WeekAssignmentLog.objects.create(member=m,assigned_week=A_WEEK,module_name=__name__)
     for m in b_week:
         m.assigned_week = B_WEEK
         m.save()
+        WeekAssignmentLog.objects.create(member=m,assigned_week=B_WEEK,module_name=__name__)
 
 @login_required
 @handle_view_exception

@@ -27,9 +27,11 @@ def member_detail(request, id):
             if week == A_WEEK and not member.assigned_week == A_WEEK:
                 member.assigned_week = A_WEEK
                 member.save()
+                WeekAssignmentLog.objects.create(member=member,assigned_week=A_WEEK,module_name=__name__)
             if week == B_WEEK and not member.assigned_week == B_WEEK:
                 member.assigned_week = B_WEEK
                 member.save()
+                WeekAssignmentLog.objects.create(member=member,assigned_week=B_WEEK,module_name=__name__)
 
     shift_date_times = [s.workshift_date_time for s in MemberWorkShift.objects.filter(member=member)]
     shift = None if len(shift_date_times) == 0 else shift_date_times[0].shift

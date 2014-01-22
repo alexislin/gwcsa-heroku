@@ -217,3 +217,9 @@ class EmailLog(TimestampedModel):
     to_name = models.CharField(max_length=210,null=False)
     subject = models.CharField(max_length=350,null=False)
     status_code = models.CharField(max_length=10,null=False)
+
+class WeekAssignmentLog(TimestampedModel):
+    member = models.ForeignKey(Member,null=False)
+    assigned_week = models.CharField(max_length=1,choices=WEEK,null=False)
+    module_name = models.CharField(max_length=50, null=False)
+
