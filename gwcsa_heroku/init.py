@@ -7,6 +7,7 @@ from django.template import RequestContext
 from django.shortcuts import render_to_response
 
 from gwcsa_heroku.decorators import *
+from gwcsa_heroku.email_util import send_ab_week_assignment_email
 from gwcsa_heroku.models import *
 from gwcsa_heroku.request_util import *
 from gwcsa_heroku.util import *
@@ -151,6 +152,20 @@ def init_assigned_week(request):
     assign_distribution_week(sat_biweekly_members)
     logger.debug("Assigning Wednesday A/B Week")
     assign_distribution_week(wed_biweekly_members)
+
+    return render_to_response("base.html",
+        RequestContext(request, {
+            "current_season": CURRENT_SEASON,
+        })
+    )
+
+@login_required
+@handle_view_exception
+def email_assigned_week(request):
+    # TODO: don't send emails to people who have already received them as part
+    # of previous assignment rounds
+    members = Member.objects.filter(Q(assigned_week=A_WEEK) | Q(assigned_week=B_WEEK))
+    [send_ab_week_assignment_email(m) for m in members]
 
     return render_to_response("base.html",
         RequestContext(request, {
