@@ -41,7 +41,7 @@
     {% if member.has_biweekly %}
       <div class="span-6 label">Assigned Week</div>
       <div class="span-12 last value">
-        <form method="post" id="update-member" name="update-member">
+        <form method="post" id="update-member" name="update-member" style="display:inline">
           {% csrf_token %}
           <input type="hidden" id="action" name="action" value="update" />
           <input type="hidden" id="id" name="id" value="{{member.key.id}}" />
@@ -51,6 +51,11 @@
             <option value="B" {% if member.assigned_week == "B" %}selected{% endif %}>B</option>
           </select>
           <input type="submit" class="small-button" value="update" />
+        </form>
+        <form method="post" id="send-member" name="send-member" style="display:inline">
+          {% csrf_token %}
+          <input type="hidden" id="action" name="action" value="send" />
+          <input type="submit" class="small-button" value="send assignment email" />
         </form>
       </div>
     {% endif %}

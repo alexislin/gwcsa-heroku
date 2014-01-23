@@ -7,6 +7,7 @@ from django.shortcuts import render_to_response
 from django.template import RequestContext
 
 from gwcsa_heroku.decorators import *
+from gwcsa_heroku.email_util import *
 from gwcsa_heroku.models import *
 from gwcsa_heroku.request_util import *
 from gwcsa_heroku.util import *
@@ -32,6 +33,8 @@ def member_detail(request, id):
                 member.assigned_week = B_WEEK
                 member.save()
                 WeekAssignmentLog.objects.create(member=member,assigned_week=B_WEEK,module_name=__name__)
+        if action == "send":
+            send_ab_week_assignment_email(member)
 
     shift_date_times = [s.workshift_date_time for s in MemberWorkShift.objects.filter(member=member)]
     shift = None if len(shift_date_times) == 0 else shift_date_times[0].shift
