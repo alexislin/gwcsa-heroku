@@ -154,22 +154,27 @@ def init_assigned_week(request):
     assign_distribution_week(wed_biweekly_members)
 
     return render_to_response("base.html",
-        RequestContext(request, {
-            "current_season": CURRENT_SEASON,
-        })
+        RequestContext(request, { })
     )
 
 @login_required
 @handle_view_exception
 def email_assigned_week(request):
-    # TODO: don't send emails to people who have already received them as part
-    # of previous assignment rounds
+    # BUG: this will fail to send emails to returning members next season
+    # don't send emails to people who have already received them
     members = Member.objects.filter(Q(assigned_week=A_WEEK) | Q(assigned_week=B_WEEK))
-    [send_ab_week_assignment_email(m) for m in members]
+    members = [m for m in members \
+        if not EmailLog.objects.filter(to_email=m.email).filter(
+            subject="GWCSA %s Week Distribution Assignment" % m.assigned_week
+        ).exists()]
 
-    return render_to_response("base.html",
+    if request.method == "POST":
+        [send_ab_week_assignment_email(m) for m in members]
+        members = []
+
+    return render_to_response("admin_send_ab_assignment_emails.html",
         RequestContext(request, {
-            "current_season": CURRENT_SEASON,
+            "members": members,
         })
     )
 

@@ -18,18 +18,13 @@ def send_email(to_email, to_name, subject, template_path, template_values):
     data = {}
     data["api_user"] = "williamsburgcsa"
     data["api_key"] = "kohlrabi"
-    data["to"] = to_email
-    data["toname"] = to_name
+    data["to"] = to_email if not settings.DEBUG else "admin+testing@gwcsa.org"
+    data["toname"] = to_name if not settings.DEBUG else "GWCSA Admin - Test Emails"
+    data["bcc"] = "admin@gwcsa.org" if not settings.DEBUG else "admin+testing@gwcsa.org"
     data["from"] = "info@gwcsa.org"
     data["fromname"] = "Greenpoint Williamsburg CSA"
     data["subject"] = subject
     data["text"] = render_to_string(template_path, template_values)
-
-    # send all emails to admin email when developing or debugging
-    if settings.DEBUG:
-        data["to"] = "admin+testing@gwcsa.org"
-        data["toname"] = "GWCSA Admin - Test Emails"
-
     form_data = urllib.urlencode(data)
 
     headers = {}
