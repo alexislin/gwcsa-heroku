@@ -14,8 +14,8 @@ logger = logging.getLogger(__name__)
 
 def send_email_to_member(member, subject, template_path, template_values):
     send_email(
-        [member.email, member.secondary_email],
-        [member.name, member.secondary_name],
+        member.email if not member.secondary_email else [member.email, member.secondary_email],
+        member.name if not member.secondary_email else [member.name, member.secondary_name],
         subject,
         template_path,
         template_values
