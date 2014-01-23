@@ -96,6 +96,10 @@ class Member(TimestampedModel):
         return self.first_name + " " + self.last_name
     name = property(get_name)
 
+    def get_secondary_name(self):
+        return self.secondary_first_name + " " + self.secondary_last_name
+    secondary_name = property(get_secondary_name)
+
     def get_formatted_signup_date(self):
         if not self.farmigo_signup_date:
             return ""

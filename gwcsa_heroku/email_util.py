@@ -12,20 +12,41 @@ from gwcsa_heroku.models import *
 
 logger = logging.getLogger(__name__)
 
+def send_email_to_member(member, subject, template_path, template_values):
+    send_email(
+        [member.email, member.secondary_email],
+        [member.name, member.secondary_name],
+        subject,
+        template_path,
+        template_values
+    )
+
 def send_email(to_email, to_name, subject, template_path, template_values):
     url = "https://sendgrid.com/api/mail.send.json"
 
     data = {}
     data["api_user"] = "williamsburgcsa"
     data["api_key"] = "kohlrabi"
-    data["to"] = to_email if not settings.DEBUG else "admin+testing@gwcsa.org"
-    data["toname"] = to_name if not settings.DEBUG else "GWCSA Admin - Test Emails"
     data["bcc"] = "admin@gwcsa.org" if not settings.DEBUG else "admin+testing@gwcsa.org"
     data["from"] = "info@gwcsa.org"
     data["fromname"] = "Greenpoint Williamsburg CSA"
     data["subject"] = subject
     data["text"] = render_to_string(template_path, template_values)
-    form_data = urllib.urlencode(data)
+
+    # handle multiple recipients
+    if isinstance(to_email, list):
+        form_data = urllib.urlencode(data)
+
+        for i in range(len(to_email)):
+            data = {
+                "to[]": to_email[i] if not settings.DEBUG else "admin+testing@gwcsa.org",
+                "toname[]": to_name[i] if not settings.DEBUG else "GWCSA Admin - Test Emails [%s]" % i,
+            }
+            form_data += "&%s" % urllib.urlencode(data)
+    else:
+        data["to"] = to_email if not settings.DEBUG else "admin+testing@gwcsa.org"
+        data["toname"] = to_name if not settings.DEBUG else "GWCSA Admin - Test Emails"
+        form_data = urllib.urlencode(data)
 
     headers = {}
     headers["Content-Type"] = "application/x-www-form-urlencoded"
@@ -41,7 +62,12 @@ def send_email(to_email, to_name, subject, template_path, template_values):
     else:
         logger.debug("Successfully sent email '%s' to '%s' through SendGrid." % (to_email, subject))
 
-    EmailLog.objects.create(to_email=to_email, to_name=to_name, subject=subject, status_code=status_code)
+    if isinstance(to_email, list):
+        for i in range(len(to_email)):
+            EmailLog.objects.create(to_email=to_email[i], to_name=to_name[i], subject=subject, status_code=status_code)
+    else:
+        EmailLog.objects.create(to_email=to_email, to_name=to_name, subject=subject, status_code=status_code)
+
 
 def send_exception_email(url, args, stack_trace):
     try:
@@ -76,7 +102,7 @@ def send_workshift_confirmation_email(member):
     values = __add_member_workshift_values(member, { "current_season": CURRENT_SEASON })
 
     subject = "Your %s GWCSA Work Shifts" % CURRENT_SEASON
-    send_email(member.email, member.name, subject, "email/confirmation.txt", values)
+    send_email_to_member(member, subject, "email/confirmation.txt", values)
 
 def send_ab_week_assignment_email(member):
     if not member.assigned_week:
@@ -100,5 +126,5 @@ def send_ab_week_assignment_email(member):
     values = __add_member_workshift_values(member, values)
 
     subject = "GWCSA %s Week Distribution Assignment" % member.assigned_week
-    send_email(member.email, member.name, subject, "email/ab_week_assignment.txt", values)
+    send_email_to_member(member, subject, "email/ab_week_assignment.txt", values)
 
