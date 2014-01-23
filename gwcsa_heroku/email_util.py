@@ -48,6 +48,8 @@ def send_email(to_email, to_name, subject, template_path, template_values):
         data["toname"] = to_name if not settings.DEBUG else "GWCSA Admin - Test Emails"
         form_data = urllib.urlencode(data)
 
+    logger.debug(form_data)
+
     headers = {}
     headers["Content-Type"] = "application/x-www-form-urlencoded"
 
