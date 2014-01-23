@@ -35,12 +35,14 @@ def member_detail(request, id):
 
     shift_date_times = [s.workshift_date_time for s in MemberWorkShift.objects.filter(member=member)]
     shift = None if len(shift_date_times) == 0 else shift_date_times[0].shift
+    email_log = EmailLog.objects.filter(to_email=member.email).order_by("-created_at")
 
     return render_to_response("admin_memberdetail.html",
         RequestContext(request, {
             "member": member,
             "shift": shift,
             "shift_date_times": shift_date_times,
+            "email_log": email_log,
         })
     )
 
