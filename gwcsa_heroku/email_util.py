@@ -18,10 +18,11 @@ def send_email_to_member(member, subject, template_path, template_values):
         member.name if not member.secondary_email else [member.name, member.secondary_name],
         subject,
         template_path,
-        template_values
+        template_values,
+        member
     )
 
-def send_email(to_email, to_name, subject, template_path, template_values):
+def send_email(to_email, to_name, subject, template_path, template_values, member=None):
     url = "https://sendgrid.com/api/mail.send.json"
 
     data = {}
@@ -48,8 +49,6 @@ def send_email(to_email, to_name, subject, template_path, template_values):
         data["toname"] = to_name if not settings.DEBUG else "GWCSA Admin - Test Emails"
         form_data = urllib.urlencode(data)
 
-    logger.debug(form_data)
-
     headers = {}
     headers["Content-Type"] = "application/x-www-form-urlencoded"
 
@@ -66,9 +65,9 @@ def send_email(to_email, to_name, subject, template_path, template_values):
 
     if isinstance(to_email, list):
         for i in range(len(to_email)):
-            EmailLog.objects.create(to_email=to_email[i], to_name=to_name[i], subject=subject, status_code=status_code)
+            EmailLog.objects.create(to_email=to_email[i], to_name=to_name[i], subject=subject, status_code=status_code, member=member)
     else:
-        EmailLog.objects.create(to_email=to_email, to_name=to_name, subject=subject, status_code=status_code)
+        EmailLog.objects.create(to_email=to_email, to_name=to_name, subject=subject, status_code=status_code, member=member)
 
 
 def send_exception_email(url, args, stack_trace):

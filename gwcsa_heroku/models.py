@@ -221,6 +221,7 @@ class Share(TimestampedModel):
             Share.objects.create(member=member,content=content,frequency=frequency,quantity=quantity)
 
 class EmailLog(TimestampedModel):
+    member = models.ForeignKey(Member,null=True)
     to_email = models.EmailField(max_length=254,null=False)
     to_name = models.CharField(max_length=210,null=False)
     subject = models.CharField(max_length=350,null=False)
@@ -228,6 +229,6 @@ class EmailLog(TimestampedModel):
 
 class WeekAssignmentLog(TimestampedModel):
     member = models.ForeignKey(Member,null=False)
-    assigned_week = models.CharField(max_length=1,choices=WEEK,null=False)
+    assigned_week = models.CharField(max_length=1,choices=WEEK,null=True)
     module_name = models.CharField(max_length=50, null=False)
 
