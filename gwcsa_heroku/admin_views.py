@@ -1,3 +1,4 @@
+import logging
 import sys
 
 from django.contrib.auth.decorators import login_required
@@ -12,6 +13,7 @@ from gwcsa_heroku.models import *
 from gwcsa_heroku.request_util import *
 from gwcsa_heroku.util import *
 
+logger = logging.getLogger(__name__)
 
 @handle_view_exception
 @login_required
@@ -28,8 +30,11 @@ def member_detail(request, id):
             if week == A_WEEK and not member.assigned_week == A_WEEK:
                 member.assigned_week = A_WEEK
                 member.save()
-            if week == B_WEEK and not member.assigned_week == B_WEEK:
+            elif week == B_WEEK and not member.assigned_week == B_WEEK:
                 member.assigned_week = B_WEEK
+                member.save()
+            elif not week or week == "" and member.assigned_week <> None:
+                member.assigned_week = None
                 member.save()
         if action == "send":
             send_ab_week_assignment_email(member)
