@@ -1,6 +1,7 @@
 from datetime import time
 import logging
 
+from django.db.models import Max
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
 from django.template import RequestContext
@@ -155,16 +156,26 @@ def init_assigned_week(request):
         RequestContext(request, { })
     )
 
+def __send_ab_assignment_email(member):
+    if not member.assigned_week in (A_WEEK, B_WEEK):
+        return False
+    if not EmailLog.objects.filter(member=member)\
+        .filter(subject__contains="Week Distribution Assignment").exists():
+        return True
+
+    email_timestamp = EmailLog.objects.filter(member=member)\
+        .filter(subject__contains="Week Distribution Assignment")\
+        .aggregate(Max("created_at"))["created_at__max"]
+    week_assignment_timestamp = WeekAssignmentLog.objects.filter(member=member)\
+        .aggregate(Max("created_at"))["created_at__max"]
+
+    return week_assignment_timestamp > email_timestamp
+
 @login_required
 @handle_view_exception
 def email_assigned_week(request):
-    # BUG: this will fail to send emails to returning members next season
-    # don't send emails to people who have already received them
     members = Member.objects.filter(Q(assigned_week=A_WEEK) | Q(assigned_week=B_WEEK))
-    members = [m for m in members \
-        if not EmailLog.objects.filter(to_email=m.email).filter(
-            subject="GWCSA %s Week Distribution Assignment" % m.assigned_week
-        ).exists()]
+    members = [m for m in members if __send_ab_assignment_email(m)]
 
     if request.method == "POST":
         [send_ab_week_assignment_email(m) for m in members]
