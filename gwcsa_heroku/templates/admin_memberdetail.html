@@ -108,12 +108,12 @@
     <span class="title">Member Email Log</span>
     <table>
       <thead>
-        <tr><th>Date</th><th>Subject</th><th>Status Code</th></tr>
+        <tr><th>Date</th><th>To Email</th><th>To Name</th><th>Subject</th><th>Status Code</th></tr>
       </thead>
       <tbody>
       {% for entry in email_log %}
         <tr {% cycle 'class="odd"' 'class="even"' %}>
-          <td>{{entry.created_at}}</td><td>{{entry.subject}}</td><td>{{entry.status_code}}</td>
+          <td>{{entry.created_at}}</td><td>{{entry.to_email}}</td><td>{{entry.to_name}}</td><td>{{entry.subject}}</td><td>{{entry.status_code}}</td>
         </tr>
       {% endfor %}
       </tbody>
