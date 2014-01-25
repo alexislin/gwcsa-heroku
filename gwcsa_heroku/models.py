@@ -2,6 +2,7 @@ import sys
 
 from django.db import models
 from django.db.models import Q
+from django.db.models.signals import post_save
 
 from gwcsa_heroku.constants import *
 
@@ -227,8 +228,17 @@ class EmailLog(TimestampedModel):
     subject = models.CharField(max_length=350,null=False)
     status_code = models.CharField(max_length=10,null=False)
 
+def log_ab_week_assignment(sender, **kwargs):
+    member = kwargs["instance"]
+    WeekAssignmentLog.objects.create(
+        member=member,assigned_week=member.assigned_week,module_name=__name__)
+
+post_save.connect(log_ab_week_assignment, sender=Member)
+
 class WeekAssignmentLog(TimestampedModel):
     member = models.ForeignKey(Member,null=False)
     assigned_week = models.CharField(max_length=1,choices=WEEK,null=True)
+    # TODO: remove the module_name - this isn't useful anymore now
+    # that we're using signals
     module_name = models.CharField(max_length=50, null=False)
 

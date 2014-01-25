@@ -28,11 +28,9 @@ def member_detail(request, id):
             if week == A_WEEK and not member.assigned_week == A_WEEK:
                 member.assigned_week = A_WEEK
                 member.save()
-                WeekAssignmentLog.objects.create(member=member,assigned_week=A_WEEK,module_name=__name__)
             if week == B_WEEK and not member.assigned_week == B_WEEK:
                 member.assigned_week = B_WEEK
                 member.save()
-                WeekAssignmentLog.objects.create(member=member,assigned_week=B_WEEK,module_name=__name__)
         if action == "send":
             send_ab_week_assignment_email(member)
 
