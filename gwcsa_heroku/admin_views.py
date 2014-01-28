@@ -156,6 +156,11 @@ def summaries(request):
             "egg_counts": get_ab_count_for_share(EGGS),
             "flower_counts": get_ab_count_for_share(FLOWERS),
             "weekly_counts": get_weekly_count_for_shares(),
+            "member_count": Member.objects.filter(season__name=CURRENT_SEASON).count(),
+            "secondary_member_count": Member.objects \
+                .filter(season__name=CURRENT_SEASON) \
+                .exclude(secondary_email__isnull=True) \
+                .exclude(secondary_email__exact="").count(),
         })
     )
 
