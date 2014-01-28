@@ -9,22 +9,15 @@ from django.template.loader import render_to_string
 
 from gwcsa_heroku.constants import *
 from gwcsa_heroku.models import *
+from gwcsa_heroku.util import get_ascii
 
 logger = logging.getLogger(__name__)
-
-def __get_ascii_name(name):
-    try:
-        # make sure this name is all ascii
-        name.decode("ascii")
-        return name
-    except:
-        return ""
 
 def send_email_to_member(member, subject, template_path, template_values):
     to_email = member.email if not member.secondary_email else \
         [member.email, member.secondary_email]
-    to_name = __get_ascii_name(member.name) if not member.secondary_email else \
-        [__get_ascii_name(member.name), __get_ascii_name(member.secondary_name)]
+    to_name = get_ascii(member.name) if not member.secondary_email else \
+        [get_ascii(member.name), get_ascii(member.secondary_name)]
     send_email(to_email, to_name, subject, template_path, template_values, member)
 
 def send_email(to_email, to_name, subject, template_path, template_values, member=None):

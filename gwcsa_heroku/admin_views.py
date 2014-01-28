@@ -96,16 +96,37 @@ def members(request):
         })
     )
 
+def __get_export_row(email, first_name, last_name, member):
+    m = member
+    row = [email, get_ascii(first_name), get_ascii(last_name), get_ascii(m.name)]
+    row.append(m.day == WEDNESDAY and (m.is_weekly or m.assigned_week == A_WEEK))
+    row.append(m.day == WEDNESDAY and (m.is_weekly or m.assigned_week == B_WEEK))
+    row.append(m.day == SATURDAY and (m.is_weekly or m.assigned_week == A_WEEK))
+    row.append(m.day == SATURDAY and (m.is_weekly or m.assigned_week == B_WEEK))
+    row.append(Share.objects.filter(member=m,content=VEGETABLES,quantity__gt=0).exists())
+    row.append(Share.objects.filter(member=m,content=FRUIT,quantity__gt=0).exists())
+    row.append(Share.objects.filter(member=m,content=EGGS,quantity__gt=0).exists())
+    row.append(Share.objects.filter(member=m,content=FLOWERS,quantity__gt=0).exists())
+    row.append(Share.objects.filter(member=m,content=MEAT,quantity__gt=0).exists())
+    row.append(Share.objects.filter(member=m,content=CHEESE,quantity__gt=0).exists())
+    row.append(Share.objects.filter(member=m,content=PICKLES_AND_PRESERVES,quantity__gt=0).exists())
+    row.append(Share.objects.filter(member=m,content=PLANTS,quantity__gt=0).exists())
+
+    shifts = MemberWorkShift.objects.filter(member=m)
+    [row.append("" if len(shifts) <= i else shifts[i].date.strftime("%-m/%-d/%Y")) \
+        for i in range(3)]
+    [row.append("" if len(shifts) <= i else shifts[i]) for i in range(3)]
+
+    row.append(m.id)
+    return row
+
 @handle_view_exception
 @login_required
 def members_export(request):
     response = HttpResponse(content_type='text/csv')
-    # TODO: have the file name include the date
     response['Content-Disposition'] = 'attachment; filename="gwcsa_export.csv"'
 
     writer = csv.writer(response, dialect=csv.excel)
-
-    # add header rows
     writer.writerow(["Email", "Fname", "Lname", "Primary",
         "Week_A_Wed", "Week_B_Wed", "Week_A_Sat", "Week_B_Sat",
         "Vegetables", "Fruit", "Eggs", "Flowers",
@@ -114,29 +135,11 @@ def members_export(request):
         "Workshift_Details_1", "Workshift_Details_2", "Workshift_Details_3",
         "MemberID"])
 
-    # TODO: include a line for secondary members too
     for m in Member.objects.filter(season__name=CURRENT_SEASON):
-        row = [m.email, m.first_name, m.last_name, m.name]
-        row.append(m.day == WEDNESDAY and (m.is_weekly or m.assigned_week == A_WEEK))
-        row.append(m.day == WEDNESDAY and (m.is_weekly or m.assigned_week == B_WEEK))
-        row.append(m.day == SATURDAY and (m.is_weekly or m.assigned_week == A_WEEK))
-        row.append(m.day == SATURDAY and (m.is_weekly or m.assigned_week == B_WEEK))
-        row.append(Share.objects.filter(member=m,content=VEGETABLES,quantity__gt=0).exists())
-        row.append(Share.objects.filter(member=m,content=FRUIT,quantity__gt=0).exists())
-        row.append(Share.objects.filter(member=m,content=EGGS,quantity__gt=0).exists())
-        row.append(Share.objects.filter(member=m,content=FLOWERS,quantity__gt=0).exists())
-        row.append(Share.objects.filter(member=m,content=MEAT,quantity__gt=0).exists())
-        row.append(Share.objects.filter(member=m,content=CHEESE,quantity__gt=0).exists())
-        row.append(Share.objects.filter(member=m,content=PICKLES_AND_PRESERVES,quantity__gt=0).exists())
-        row.append(Share.objects.filter(member=m,content=PLANTS,quantity__gt=0).exists())
-
-        shifts = MemberWorkShift.objects.filter(member=m)
-        [row.append("" if len(shifts) <= i else shifts[i].date.strftime("%-m/%-d/%Y")) \
-            for i in range(3)]
-        [row.append("" if len(shifts) <= i else shifts[i]) for i in range(3)]
-
-        row.append(m.id)
-        writer.writerow(row)
+        writer.writerow(__get_export_row(m.email, m.first_name, m.last_name, m))
+        if m.secondary_email:
+            writer.writerow(__get_export_row(m.secondary_email,
+                m.secondary_first_name, m.secondary_last_name, m))
 
     return response
 

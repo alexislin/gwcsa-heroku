@@ -1,11 +1,25 @@
 from datetime import date, datetime
 import re
 import sys
+import unicodedata
 
 from django.db import connection
 
 from gwcsa_heroku.constants import *
 from gwcsa_heroku.models import *
+
+def get_ascii(s):
+    try:
+        # if this works, the string only contains ascii characters
+        return s.decode("ascii")
+    except:
+        pass
+
+    try:
+        # if possible, remove accents and print in base form
+        return unicodedata.normalize("NFKD", s).encode("ascii", "ignore")
+    except:
+        return ""
 
 def get_share_count(day):
     cursor = connection.cursor()
@@ -80,7 +94,6 @@ def get_weekly_count_for_shares():
 
     return results
 
-
 def get_distro_dates(day, week=None):
     if day == WEDNESDAY:
         if week == A_WEEK:
@@ -128,8 +141,6 @@ SECONDARY_LAST_NAME = 17
 SECONDARY_EMAIL = 15
 ROUTE = 19
 
-# TODO: set weekly/biweekly for member
-# TODO: assign A/B week as appropriate
 # TODO: record last updated date to be displayed on page
 def add_update_member_from_farmigo_csv_entry(line):
     # replace commas in values with semi-colons (subscription info esp.)
