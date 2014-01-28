@@ -2,7 +2,7 @@ import csv
 import logging
 import sys
 
-from django.db.models import Count
+from django.db.models import Count, F
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
 from django.shortcuts import redirect
@@ -160,7 +160,8 @@ def summaries(request):
             "secondary_member_count": Member.objects \
                 .filter(season__name=CURRENT_SEASON) \
                 .exclude(secondary_email__isnull=True) \
-                .exclude(secondary_email__exact="").count(),
+                .exclude(secondary_email__exact="") \
+                .exclude(secondary_email=F('email')).count(), # at least one member has matching primary and secondary info
         })
     )
 
