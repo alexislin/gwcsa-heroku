@@ -178,6 +178,21 @@ class MemberWorkShift(TimestampedModel):
         return self.workshift_date_time.week
     week = property(get_week)
 
+    def get_date(self):
+        return self.workshift_date_time.date
+    date = property(get_date)
+
+    def __str__(self):
+        return "Shift: %s | Date: %s | Day: %s | Time: %s - %s | Location: %s %s" % (
+            self.workshift_date_time.shift.name,
+            self.date.strftime("%-m/%-d/%Y"),
+            self.workshift_date_time.shift.get_day_display(),
+            self.workshift_date_time.start_time.strftime("%-I:%M %p"),
+            self.workshift_date_time.end_time.strftime("%-I:%M %p"),
+            self.workshift_date_time.shift.location,
+            self.workshift_date_time.shift.location2
+        )
+
 SHARES = (
     ('V', 'Vegetables'),
     ('FR', 'Fruit'),

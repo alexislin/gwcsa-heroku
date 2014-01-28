@@ -114,6 +114,7 @@ def members_export(request):
         "Workshift_Details_1", "Workshift_Details_2", "Workshift_Details_3",
         "MemberID"])
 
+    # TODO: include a line for secondary members too
     for m in Member.objects.filter(season__name=CURRENT_SEASON):
         row = [m.email, m.first_name, m.last_name, m.name]
         row.append(m.day == WEDNESDAY and (m.is_weekly or m.assigned_week == A_WEEK))
@@ -128,6 +129,13 @@ def members_export(request):
         row.append(Share.objects.filter(member=m,content=CHEESE,quantity__gt=0).exists())
         row.append(Share.objects.filter(member=m,content=PICKLES_AND_PRESERVES,quantity__gt=0).exists())
         row.append(Share.objects.filter(member=m,content=PLANTS,quantity__gt=0).exists())
+
+        shifts = MemberWorkShift.objects.filter(member=m)
+        [row.append("" if len(shifts) <= i else shifts[i].date.strftime("%-m/%-d/%Y")) \
+            for i in range(3)]
+        [row.append("" if len(shifts) <= i else shifts[i]) for i in range(3)]
+
+        row.append(m.id)
         writer.writerow(row)
 
     return response
