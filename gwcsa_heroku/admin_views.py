@@ -1,8 +1,10 @@
+import csv
 import logging
 import sys
 
-from django.contrib.auth.decorators import login_required
 from django.db.models import Count
+from django.contrib.auth.decorators import login_required
+from django.http import HttpResponse
 from django.shortcuts import redirect
 from django.shortcuts import render_to_response
 from django.template import RequestContext
@@ -93,6 +95,43 @@ def members(request):
             "members": members
         })
     )
+
+@handle_view_exception
+@login_required
+def members_export(request):
+    response = HttpResponse(content_type='text/csv')
+    # TODO: have the file name include the date
+    response['Content-Disposition'] = 'attachment; filename="gwcsa_export.csv"'
+
+    writer = csv.writer(response, dialect=csv.excel)
+
+    # add header rows
+    writer.writerow(["Email", "Fname", "Lname", "Primary",
+        "Week_A_Wed", "Week_B_Wed", "Week_A_Sat", "Week_B_Sat",
+        "Vegetables", "Fruit", "Eggs", "Flowers",
+        "Meat", "Cheese", "Pickles_Preserves", "Plants",
+        "Workshift_Date_1", "Workshift_Date_2", "Workshift_Date_3",
+        "Workshift_Details_1", "Workshift_Details_2", "Workshift_Details_3",
+        "MemberID"])
+
+    for m in Member.objects.filter(season__name=CURRENT_SEASON):
+        row = [m.email, m.first_name, m.last_name, m.name]
+        row.append(m.day == WEDNESDAY and (m.is_weekly or m.assigned_week == A_WEEK))
+        row.append(m.day == WEDNESDAY and (m.is_weekly or m.assigned_week == B_WEEK))
+        row.append(m.day == SATURDAY and (m.is_weekly or m.assigned_week == A_WEEK))
+        row.append(m.day == SATURDAY and (m.is_weekly or m.assigned_week == B_WEEK))
+        row.append(Share.objects.filter(member=m,content=VEGETABLES,quantity__gt=0).exists())
+        row.append(Share.objects.filter(member=m,content=FRUIT,quantity__gt=0).exists())
+        row.append(Share.objects.filter(member=m,content=EGGS,quantity__gt=0).exists())
+        row.append(Share.objects.filter(member=m,content=FLOWERS,quantity__gt=0).exists())
+        row.append(Share.objects.filter(member=m,content=MEAT,quantity__gt=0).exists())
+        row.append(Share.objects.filter(member=m,content=CHEESE,quantity__gt=0).exists())
+        row.append(Share.objects.filter(member=m,content=PICKLES_AND_PRESERVES,quantity__gt=0).exists())
+        row.append(Share.objects.filter(member=m,content=PLANTS,quantity__gt=0).exists())
+        writer.writerow(row)
+
+    return response
+
 
 @handle_view_exception
 @login_required
