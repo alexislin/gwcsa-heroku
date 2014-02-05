@@ -1,4 +1,5 @@
 from datetime import date, datetime
+import logging
 import re
 import sys
 import unicodedata
@@ -7,6 +8,8 @@ from django.db import connection
 
 from gwcsa_heroku.constants import *
 from gwcsa_heroku.models import *
+
+logger = logging.getLogger(__name__)
 
 def get_ascii(s):
     try:
@@ -135,11 +138,11 @@ LAST_NAME = 2
 EMAIL = 4
 SHARE_DESCRIPTION = 5
 SEASON = 6
+LOCATION = 7
 PHONE = 8
 SECONDARY_FIRST_NAME = 16
 SECONDARY_LAST_NAME = 17
 SECONDARY_EMAIL = 15
-ROUTE = 19
 
 # TODO: record last updated date to be displayed on page
 def add_update_member_from_farmigo_csv_entry(line):
@@ -154,15 +157,19 @@ def add_update_member_from_farmigo_csv_entry(line):
 
     # update member
     member = Member.get_or_create_member(d[FIRST_NAME], d[LAST_NAME], d[EMAIL].lower())
-    member.day = WEDNESDAY if "Wednesday" in d[ROUTE] else SATURDAY
+    member.day = WEDNESDAY if "Greenpoint" in d[LOCATION] else SATURDAY
     member.farmigo_signup_date = datetime.strptime(d[SIGNUP_DATE], "%m/%d/%Y %H:%M")
     member.farmigo_share_description = re.sub('"', '', re.sub(';', ',', d[SHARE_DESCRIPTION]))
     member.phone = re.sub("[-.()\s]", "", d[PHONE])
     if re.match("\d{10}", member.phone):
         member.phone = "%s-%s-%s" % (member.phone[0:3], member.phone[3:6], member.phone[6:])
-    member.secondary_first_name = d[SECONDARY_FIRST_NAME]
-    member.secondary_last_name = d[SECONDARY_LAST_NAME]
-    member.secondary_email = d[SECONDARY_EMAIL]
+    # HACK: the comments column (#14?) sometimes has newlines that corrupt the csv...
+    # just don't worry about the secondary info if the member has entered a
+    # subscription comment with newlines
+    if len(d) >= SECONDARY_LAST_NAME:
+        member.secondary_first_name = d[SECONDARY_FIRST_NAME]
+        member.secondary_last_name = d[SECONDARY_LAST_NAME]
+        member.secondary_email = d[SECONDARY_EMAIL]
     member.save()
 
     # re-create all member shares
