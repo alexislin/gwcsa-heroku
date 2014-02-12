@@ -152,7 +152,7 @@ def add_update_member_from_farmigo_csv_entry(line):
     d = [re.sub('"$', '', re.sub('^"', '', v)) for v in line.split(",")]
 
     # don't process member if not a current year member
-    if CURRENT_SEASON not in d[SEASON]:
+    if len(d) < SEASON or CURRENT_SEASON not in d[SEASON]:
         return
 
     # update member
