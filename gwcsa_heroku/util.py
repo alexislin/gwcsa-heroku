@@ -158,7 +158,12 @@ def add_update_member_from_farmigo_csv_entry(line):
     # update member
     member = Member.get_or_create_member(d[FIRST_NAME], d[LAST_NAME], d[EMAIL].lower())
     member.day = WEDNESDAY if "Greenpoint" in d[LOCATION] else SATURDAY
-    member.farmigo_signup_date = datetime.strptime(d[SIGNUP_DATE], "%m/%d/%Y %H:%M")
+    try:
+        # old dashboard format
+        member.farmigo_signup_date = datetime.strptime(d[SIGNUP_DATE], "%m/%d/%Y %H:%M")
+    except:
+        # new (02-2014) dashboard format
+        member.farmigo_signup_date = datetime.strptime(d[SIGNUP_DATE], "%Y/%m/%d %H:%M:%S")
     member.farmigo_share_description = re.sub('"', '', re.sub(';', ',', d[SHARE_DESCRIPTION]))
     member.phone = re.sub("[-.()\s]", "", d[PHONE])
     if re.match("\d{10}", member.phone):
