@@ -132,7 +132,7 @@ def distro_date_is_week(date, week):
 
 # TODO: verify that column headers match expected title so that we're not
 #       mis-processing columns (Farmigo changes the csv export regularly)
-SIGNUP_DATE = 0
+SIGNUP_DATE = 1
 FIRST_NAME = 3
 LAST_NAME = 2
 EMAIL = 4
@@ -163,7 +163,7 @@ def add_update_member_from_farmigo_csv_entry(line):
         member.farmigo_signup_date = datetime.strptime(d[SIGNUP_DATE], "%m/%d/%Y %H:%M")
     except:
         # new (02-2014) dashboard format
-        member.farmigo_signup_date = datetime.strptime(d[SIGNUP_DATE], "%Y/%m/%d %H:%M:%S")
+        member.farmigo_signup_date = datetime.strptime(d[SIGNUP_DATE], "%Y-%m-%d")
     member.farmigo_share_description = re.sub('"', '', re.sub(';', ',', d[SHARE_DESCRIPTION]))
     member.phone = re.sub("[-.()\s]", "", d[PHONE])
     if re.match("\d{10}", member.phone):

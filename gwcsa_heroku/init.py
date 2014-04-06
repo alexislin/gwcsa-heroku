@@ -187,6 +187,19 @@ def email_assigned_week(request):
         })
     )
 
+@login_required
+def send_workshift_link(request):
+    members = Member.objects.filter(season__name=CURRENT_SEASON)\
+        .filter(farmigo_signup_date__gt=datetime(2014,3,19))\
+        .filter(farmigo_signup_date__lt=datetime(2014,4,4))\
+        .order_by("farmigo_signup_date")
+
+    return render_to_response("admin_send_workshift_emails.html",
+        RequestContext(request, {
+            "members": members,
+        })
+    )
+
 def __init_shift(day, name, location, location2, num_required_per_member,
     timeslots, num_members_required, note=None):
 
