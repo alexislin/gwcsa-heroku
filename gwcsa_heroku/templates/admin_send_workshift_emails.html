@@ -1,0 +1,66 @@
+{% extends "admin_base.html" %}
+{% load static from staticfiles %}
+
+{% block header %}
+  <style type="text/css">
+    thead th { padding-top: 2px; padding-bottom: 2px; vertical-align: bottom; text-align: center; background-color: #574349; color: #E8E5DD; }
+    th, td { white-space: nowrap; border: 1px solid #FFFFFF; }
+    table tr.odd td { background-color: #FFF; }
+    table tr.even td { background-color: #E8E5DD; }
+
+    table.shares { padding-right: 50px; }
+      table.shares td.left-border { border-left: 1px #BBB solid; }
+      table.shares tr.hover td { background-color: #78515C !important; color: #FFFFFF; }
+  </style>
+
+  <script type="text/javascript">
+    $(document).ready(function() {
+      $("table.shares tr").mouseenter(function() { $(this).addClass("hover"); });
+      $("table.shares tr").mouseleave(function() { $(this).removeClass("hover"); });
+      $("table.shares tr").click(function() {
+        window.location = "/admin/member_detail/" + $(this).attr("id");
+      });
+    });
+  </script>
+{% endblock %}
+
+{% block content %}
+  <div class="span-24 last below-8">
+    <span class="title">Members - Workshift Emails</span>
+  </div>
+
+  <div class="span-24 last">
+    <table class="shares">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>First</th>
+          <th>Last</th>
+          <th>Farmigo Signup Date</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        {% for member in members %}
+          <tr id="{{member.id}}" {% cycle 'class="odd"' 'class="even"' %}>
+            <td>{{member.id}}</td>
+            <td>{{member.first_name}}</td>
+            <td>{{member.last_name}}</td>
+            <td class="left-border">{{member.farmigo_signup_date}}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  <div class="span-24 last below-8">
+    <div class="prepend-20 span-2 last">
+      <form enctype="multipart/form-data" method="post">
+        {% csrf_token %}
+        <input id="send-button" type="submit" value="send">
+      </form>
+    </div>
+  </div>
+
+
+{% endblock %}

@@ -8,7 +8,7 @@ from django.template import RequestContext
 from django.shortcuts import render_to_response
 
 from gwcsa_heroku.decorators import *
-from gwcsa_heroku.email_util import send_ab_week_assignment_email
+from gwcsa_heroku.email_util import send_ab_week_assignment_email, send_correct_workshift_link_email
 from gwcsa_heroku.models import *
 from gwcsa_heroku.request_util import *
 from gwcsa_heroku.util import *
@@ -193,6 +193,10 @@ def send_workshift_link(request):
         .filter(farmigo_signup_date__gt=datetime(2014,3,19))\
         .filter(farmigo_signup_date__lt=datetime(2014,4,4))\
         .order_by("farmigo_signup_date")
+
+    if request.method == "POST":
+        [send_correct_workshift_link_email(m) for m in members]
+        members = []
 
     return render_to_response("admin_send_workshift_emails.html",
         RequestContext(request, {

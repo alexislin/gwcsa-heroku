@@ -59,7 +59,7 @@ def send_email(to_email, to_name, subject, template_path, template_values, membe
         logger.error(result.geturl())
         logger.error(result.info())
     else:
-        logger.debug("Successfully sent email '%s' to '%s' through SendGrid." % (to_email, subject))
+        logger.debug("Successfully sent email '%s' to '%s' through SendGrid." % (subject, to_email))
 
     if isinstance(to_email, list):
         for i in range(len(to_email)):
@@ -126,4 +126,9 @@ def send_ab_week_assignment_email(member):
 
     subject = "GWCSA %s Week Distribution Assignment" % member.assigned_week
     send_email_to_member(member, subject, "email/ab_week_assignment.txt", values)
+
+def send_correct_workshift_link_email(member):
+    values = { "member": member }
+    subject = "GWCSA - New Workshift Signup Link"
+    send_email_to_member(member, subject, "email/correct_workshift_link.txt", values)
 
