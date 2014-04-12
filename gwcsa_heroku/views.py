@@ -52,8 +52,13 @@ def workshift_selection(request):
             MemberWorkShift.objects.create(member=member, workshift_date_time=w)
             workshift_date_times.append(w)
 
-#TODO: infer a prefered A/B week assignment based on shifts selected
-        send_workshift_confirmation_email(member)
+        # ensure workshift selection doesn't fail just because the email
+        # doesn't send (can happen when SendGrid credits run out)
+        try:
+            send_workshift_confirmation_email(member)
+        except Exception:
+            stack_trace = traceback.format_exc()
+            send_exception_email(request.path, request.POST.items(), stack_trace)
 
         return render_to_response("thankyou.html",
             RequestContext(request, {
