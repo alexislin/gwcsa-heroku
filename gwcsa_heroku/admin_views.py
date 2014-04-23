@@ -98,19 +98,21 @@ def members(request):
 
 def __get_export_row(email, first_name, last_name, member):
     m = member
+    is_weekly = m.is_weekly
+    shares = Share.objects.filter(member=m,quantity__gt=0)
     row = [email, get_ascii(first_name), get_ascii(last_name), get_ascii(m.name)]
-    row.append(m.day == WEDNESDAY and (m.is_weekly or m.assigned_week == A_WEEK))
-    row.append(m.day == WEDNESDAY and (m.is_weekly or m.assigned_week == B_WEEK))
-    row.append(m.day == SATURDAY and (m.is_weekly or m.assigned_week == A_WEEK))
-    row.append(m.day == SATURDAY and (m.is_weekly or m.assigned_week == B_WEEK))
-    row.append(Share.objects.filter(member=m,content=VEGETABLES,quantity__gt=0).exists())
-    row.append(Share.objects.filter(member=m,content=FRUIT,quantity__gt=0).exists())
-    row.append(Share.objects.filter(member=m,content=EGGS,quantity__gt=0).exists())
-    row.append(Share.objects.filter(member=m,content=FLOWERS,quantity__gt=0).exists())
-    row.append(Share.objects.filter(member=m,content=MEAT,quantity__gt=0).exists())
-    row.append(Share.objects.filter(member=m,content=CHEESE,quantity__gt=0).exists())
-    row.append(Share.objects.filter(member=m,content=PICKLES_AND_PRESERVES,quantity__gt=0).exists())
-    row.append(Share.objects.filter(member=m,content=PLANTS,quantity__gt=0).exists())
+    row.append(m.day == WEDNESDAY and (is_weekly or m.assigned_week == A_WEEK))
+    row.append(m.day == WEDNESDAY and (is_weekly or m.assigned_week == B_WEEK))
+    row.append(m.day == SATURDAY and (is_weekly or m.assigned_week == A_WEEK))
+    row.append(m.day == SATURDAY and (is_weekly or m.assigned_week == B_WEEK))
+    row.append(shares.filter(content=VEGETABLES).exists())
+    row.append(shares.filter(content=FRUIT).exists())
+    row.append(shares.filter(content=EGGS).exists())
+    row.append(shares.filter(content=FLOWERS).exists())
+    row.append(shares.filter(content=MEAT).exists())
+    row.append(shares.filter(content=CHEESE).exists())
+    row.append(shares.filter(content=PICKLES_AND_PRESERVES).exists())
+    row.append(shares.filter(content=PLANTS).exists())
 
     shifts = MemberWorkShift.objects.filter(member=m)
     [row.append("" if len(shifts) <= i else shifts[i].date.strftime("%-m/%-d/%Y")) \
