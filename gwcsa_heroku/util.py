@@ -159,9 +159,9 @@ def add_update_member_from_farmigo_csv_entry(line):
     member = Member.get_or_create_member(d[FIRST_NAME], d[LAST_NAME], d[EMAIL].lower())
 
     # don't update member if their farmigo subscription hasn't been modified
-    #last_modified_date = datetime.strptime(d[LAST_MODIFIED_DATE], "%Y/%m/%d %H:%M:%S")
-    #if member.farmigo_last_modified_date == last_modified_date:
-    #    return
+    last_modified_date = datetime.strptime(d[LAST_MODIFIED_DATE], "%Y/%m/%d %H:%M:%S")
+    if member.farmigo_last_modified_date == last_modified_date:
+        return
 
     # update member
     member.day = WEDNESDAY if "Greenpoint" in d[LOCATION] else SATURDAY

@@ -28,6 +28,7 @@ urlpatterns = patterns('',
     url(r'^email/assigned_week$', 'gwcsa_heroku.init.email_assigned_week', name='email_assigned_week'),
     url(r'^init/workshift$', 'gwcsa_heroku.init.init_workshift', name='init_workshift'),
     url(r'^init/workshift_email$', 'gwcsa_heroku.init.send_workshift_link', name='send_workshift_link'),
+    url(r'^init/is_weekly$', 'gwcsa_heroku.init.set_is_weekly', name='set_is_weekly'),
 
 
     # Examples:

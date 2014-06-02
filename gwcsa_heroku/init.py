@@ -188,6 +188,20 @@ def email_assigned_week(request):
     )
 
 @login_required
+@handle_view_exception
+def set_is_weekly(request):
+    members = Member.objects.filter(season__name=CURRENT_SEASON)
+    for member in members:
+        member.is_weekly = Share.objects.filter(member=member,frequency=WEEKLY).count() > 0
+        member.has_biweekly = Share.objects.filter(member=member,frequency=BIWEEKLY).count() > 0
+        member.save()
+
+    return render_to_response("base.html",
+        RequestContext(request, { })
+    )
+
+
+@login_required
 def send_workshift_link(request):
     members = Member.objects.filter(season__name=CURRENT_SEASON)\
         .filter(farmigo_signup_date__gt=datetime(2014,3,19))\
