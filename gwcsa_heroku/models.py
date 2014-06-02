@@ -86,6 +86,7 @@ class Member(TimestampedModel):
     phone = models.CharField(max_length=20,null=False,default='')
     day = models.CharField(max_length=2,choices=DAYS)
     farmigo_signup_date = models.DateTimeField(null=True)
+    farmigo_last_modified_date = models.DateTimeField(null=True)
     farmigo_share_description = models.TextField(null=False,default='')
     assigned_week = models.CharField(max_length=1,choices=WEEK,null=True)
 

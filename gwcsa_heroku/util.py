@@ -132,6 +132,7 @@ def distro_date_is_week(date, week):
 
 # TODO: verify that column headers match expected title so that we're not
 #       mis-processing columns (Farmigo changes the csv export regularly)
+LAST_MODIFIED_DATE = 0
 SIGNUP_DATE = 1
 FIRST_NAME = 3
 LAST_NAME = 2
@@ -155,15 +156,17 @@ def add_update_member_from_farmigo_csv_entry(line):
     if len(d) < SEASON or CURRENT_SEASON not in d[SEASON]:
         return
 
-    # update member
     member = Member.get_or_create_member(d[FIRST_NAME], d[LAST_NAME], d[EMAIL].lower())
+
+    # don't update member if their farmigo subscription hasn't been modified
+    last_modified_date = datetime.strptime(d[LAST_MODIFIED_DATE], "%Y/%m/%d %H:%M:%S")
+    if member.farmigo_last_modified_date == last_modified_date:
+        return
+
+    # update member
     member.day = WEDNESDAY if "Greenpoint" in d[LOCATION] else SATURDAY
-    try:
-        # old dashboard format
-        member.farmigo_signup_date = datetime.strptime(d[SIGNUP_DATE], "%m/%d/%Y %H:%M")
-    except:
-        # new (02-2014) dashboard format
-        member.farmigo_signup_date = datetime.strptime(d[SIGNUP_DATE], "%Y-%m-%d")
+    member.farmigo_signup_date = datetime.strptime(d[SIGNUP_DATE], "%Y-%m-%d")
+    member.farmigo_last_modified_date = last_modified_date
     member.farmigo_share_description = re.sub('"', '', re.sub(';', ',', d[SHARE_DESCRIPTION]))
     member.phone = re.sub("[-.()\s]", "", d[PHONE])
     if re.match("\d{10}", member.phone):
