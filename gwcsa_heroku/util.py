@@ -166,7 +166,7 @@ def add_update_member_from_farmigo_csv_entry(line):
     # update member
     member.day = WEDNESDAY if "Greenpoint" in d[LOCATION] else SATURDAY
     member.farmigo_signup_date = datetime.strptime(d[SIGNUP_DATE], "%Y-%m-%d")
-    member.farmigo_last_modified_date = last_modified_date
+    member.farmigo_last_modified_date = datetime.strptime(d[LAST_MODIFIED_DATE], "%Y/%m/%d %H:%M:%S")
     member.farmigo_share_description = re.sub('"', '', re.sub(';', ',', d[SHARE_DESCRIPTION]))
     member.phone = re.sub("[-.()\s]", "", d[PHONE])
     if re.match("\d{10}", member.phone):
