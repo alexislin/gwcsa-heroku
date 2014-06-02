@@ -94,6 +94,9 @@ class Member(TimestampedModel):
     secondary_last_name = models.CharField(max_length=100,null=False)
     secondary_email = models.EmailField(max_length=254,null=False)
 
+    is_weekly = models.BooleanField()
+    has_biweekly = models.BooleanField()
+
     def get_name(self):
         return self.first_name + " " + self.last_name
     name = property(get_name)
@@ -107,14 +110,6 @@ class Member(TimestampedModel):
             return ""
         return self.farmigo_signup_date.strftime("%m/%d/%Y %H:%M")
     formatted_signup_date = property(get_formatted_signup_date)
-
-    def get_is_weekly(self):
-        return Share.objects.filter(member=self,frequency=WEEKLY).count() > 0
-    is_weekly = property(get_is_weekly)
-
-    def get_has_biweekly(self):
-        return Share.objects.filter(member=self,frequency=BIWEEKLY).count() > 0
-    has_biweekly = property(get_has_biweekly)
 
     def get_workshift_week(self):
         weeks = [s.week for s in MemberWorkShift.objects.filter(member=self)]

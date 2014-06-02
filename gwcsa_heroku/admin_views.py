@@ -98,13 +98,12 @@ def members(request):
 
 def __get_export_row(email, first_name, last_name, member):
     m = member
-    is_weekly = m.is_weekly
     shares = Share.objects.filter(member=m,quantity__gt=0)
     row = [email, get_ascii(first_name), get_ascii(last_name), get_ascii(m.name)]
-    row.append(m.day == WEDNESDAY and (is_weekly or m.assigned_week == A_WEEK))
-    row.append(m.day == WEDNESDAY and (is_weekly or m.assigned_week == B_WEEK))
-    row.append(m.day == SATURDAY and (is_weekly or m.assigned_week == A_WEEK))
-    row.append(m.day == SATURDAY and (is_weekly or m.assigned_week == B_WEEK))
+    row.append(m.day == WEDNESDAY and (m.is_weekly or m.assigned_week == A_WEEK))
+    row.append(m.day == WEDNESDAY and (m.is_weekly or m.assigned_week == B_WEEK))
+    row.append(m.day == SATURDAY and (m.is_weekly or m.assigned_week == A_WEEK))
+    row.append(m.day == SATURDAY and (m.is_weekly or m.assigned_week == B_WEEK))
     row.append(shares.filter(content=VEGETABLES).exists())
     row.append(shares.filter(content=FRUIT).exists())
     row.append(shares.filter(content=EGGS).exists())
