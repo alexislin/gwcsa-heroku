@@ -201,6 +201,7 @@ def workshifts(request):
 
     return render_to_response("admin_workshifts.html",
         RequestContext(request, {
+            "members_without_workshift": get_count_members_without_workshift(),
             "shifts_by_date": shifts_by_date
         })
     )

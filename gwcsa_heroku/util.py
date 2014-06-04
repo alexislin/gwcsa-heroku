@@ -24,6 +24,18 @@ def get_ascii(s):
     except:
         return ""
 
+def get_count_members_without_workshift():
+    cursor = connection.cursor()
+    cursor.execute("""
+        select count(*)
+          from gwcsa_heroku_season sn,
+               gwcsa_heroku_member m
+         where m.season_id = sn.id
+           and sn.name = %s
+           and m.id not in (select member_id from gwcsa_heroku_memberworkshift)
+    """, [CURRENT_SEASON])
+    return cursor.fetchone()[0]
+
 def get_share_count(day):
     cursor = connection.cursor()
     cursor.execute("""
