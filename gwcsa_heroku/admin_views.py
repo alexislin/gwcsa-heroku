@@ -96,22 +96,29 @@ def members(request):
         })
     )
 
+def __shares_contain(shares, content):
+    if len(shares) == 0:
+        return False
+    return reduce(lambda x, y: x or y,
+        [s.content == content and s.quantity > 0 for s in shares])
+
 def __get_export_row(email, first_name, last_name, member):
     m = member
-    shares = Share.objects.filter(member=m,quantity__gt=0)
     row = [email, get_ascii(first_name), get_ascii(last_name), get_ascii(m.name)]
     row.append(m.day == WEDNESDAY and (m.is_weekly or m.assigned_week == A_WEEK))
     row.append(m.day == WEDNESDAY and (m.is_weekly or m.assigned_week == B_WEEK))
     row.append(m.day == SATURDAY and (m.is_weekly or m.assigned_week == A_WEEK))
     row.append(m.day == SATURDAY and (m.is_weekly or m.assigned_week == B_WEEK))
-    row.append(shares.filter(content=VEGETABLES).exists())
-    row.append(shares.filter(content=FRUIT).exists())
-    row.append(shares.filter(content=EGGS).exists())
-    row.append(shares.filter(content=FLOWERS).exists())
-    row.append(shares.filter(content=MEAT).exists())
-    row.append(shares.filter(content=CHEESE).exists())
-    row.append(shares.filter(content=PICKLES_AND_PRESERVES).exists())
-    row.append(shares.filter(content=PLANTS).exists())
+
+    shares = list(Share.objects.filter(member=m,quantity__gt=0))
+    row.append(__shares_contain(shares, VEGETABLES))
+    row.append(__shares_contain(shares, FRUIT))
+    row.append(__shares_contain(shares, EGGS))
+    row.append(__shares_contain(shares, FLOWERS))
+    row.append(__shares_contain(shares, MEAT))
+    row.append(__shares_contain(shares, CHEESE))
+    row.append(__shares_contain(shares, PICKLES_AND_PRESERVES))
+    row.append(__shares_contain(shares, PLANTS))
 
     shifts = MemberWorkShift.objects.filter(member=m)
     [row.append("" if len(shifts) <= i else shifts[i].date.strftime("%-m/%-d/%Y")) \
@@ -197,5 +204,6 @@ def workshifts(request):
             "shifts_by_date": shifts_by_date
         })
     )
+
 
 
