@@ -104,7 +104,7 @@ def __shares_contain(shares, content):
 
 def __get_export_row(email, first_name, last_name, member):
     m = member
-    row = [email, get_ascii(first_name), get_ascii(last_name), get_ascii(m.name)]
+    row = [email, get_ascii(first_name), get_ascii(last_name)]
     row.append(m.day == WEDNESDAY and (m.is_weekly or m.assigned_week == A_WEEK))
     row.append(m.day == WEDNESDAY and (m.is_weekly or m.assigned_week == B_WEEK))
     row.append(m.day == SATURDAY and (m.is_weekly or m.assigned_week == A_WEEK))
@@ -126,6 +126,9 @@ def __get_export_row(email, first_name, last_name, member):
     [row.append("" if len(shifts) <= i else shifts[i]) for i in range(3)]
 
     row.append(m.id)
+    row.append(get_ascii(m.first_name))
+    row.append(get_ascii(m.last_name))
+    row.append(m.email)
     return row
 
 @handle_view_exception
@@ -135,13 +138,13 @@ def members_export(request):
     response['Content-Disposition'] = 'attachment; filename="gwcsa_export.csv"'
 
     writer = csv.writer(response, dialect=csv.excel)
-    writer.writerow(["Email", "Fname", "Lname", "Primary",
+    writer.writerow(["Email", "Fname", "Lname",
         "Week_A_Wed", "Week_B_Wed", "Week_A_Sat", "Week_B_Sat",
         "Vegetables", "Fruit", "Eggs", "Flowers",
         "Meat", "Cheese", "Pickles_Preserves", "Plants",
         "Workshift_Date_1", "Workshift_Date_2", "Workshift_Date_3",
         "Workshift_Details_1", "Workshift_Details_2", "Workshift_Details_3",
-        "MemberID"])
+        "MemberID", "Primary_Fname", "Primary_Lname", "Primary_Email"])
 
     for m in Member.objects.filter(season__name=CURRENT_SEASON):
         writer.writerow(__get_export_row(m.email, m.first_name, m.last_name, m))
