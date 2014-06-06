@@ -240,9 +240,10 @@ class EmailLog(TimestampedModel):
     status_code = models.CharField(max_length=10,null=False)
 
 def log_ab_week_assignment(sender, **kwargs):
-    member = kwargs["instance"]
-    WeekAssignmentLog.objects.create(
-        member=member,assigned_week=member.assigned_week,module_name=__name__)
+    #member = kwargs["instance"]
+    #WeekAssignmentLog.objects.create(
+    #    member=member,assigned_week=member.assigned_week,module_name=__name__)
+    pass
 
 post_save.connect(log_ab_week_assignment, sender=Member)
 
