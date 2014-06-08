@@ -89,7 +89,7 @@ def members(request):
         "meat_count": SHARE_COUNT_QUERY % (MEAT, NOT_APPLICABLE),
         "pickles_count": SHARE_COUNT_QUERY % (PICKLES_AND_PRESERVES, NOT_APPLICABLE),
         "plant_count": SHARE_COUNT_QUERY % (PLANTS, NOT_APPLICABLE),
-    }).order_by("day", "last_name")
+    }).order_by("day", "first_name", "last_name")
     return render_to_response("admin_members.html",
         RequestContext(request, {
             "members": members
