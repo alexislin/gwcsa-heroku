@@ -1,0 +1,34 @@
+{% extends "admin_base.html" %}
+
+{% block nav %}
+  {% include "admin_nav.html" %}
+{% endblock %}
+
+{% block content %}
+  <div class="span-24 last below-8">
+    <span class="title">Share List Maker</span>
+  </div>
+
+  <div class="span-24 last below-8">
+    <form name="sharelist" method="post">
+      {% csrf_token %}
+      <select name="day">
+        {% for code, display in days %}
+          <option value="{{code}}">{{display}}</option>
+        {% endfor %}
+      </select>
+      <select name="week">
+        {% for code, display in weeks %}
+          <option value="{{code}}">{{display}}</option>
+        {% endfor %}
+      </select>
+      <select name="share_type">
+        {% for code, display in share_types %}
+          <option value="{{code}}">{{display}}</option>
+        {% endfor %}
+      </select>
+      <input type="submit" value="submit">
+    </form>
+  </div>
+
+{% endblock %}

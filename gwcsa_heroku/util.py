@@ -24,6 +24,26 @@ def get_ascii(s):
     except:
         return ""
 
+def get_share_list(content, day, week):
+    cursor = connection.cursor()
+    cursor.execute("""
+        select first_name,
+               last_name,
+               sum(s.quantity)
+          from gwcsa_heroku_member m,
+               gwcsa_heroku_share s,
+               gwcsa_heroku_season sn
+         where m.season_id = sn.id
+           and sn.name = %s
+           and m.id = s.member_id
+           and s.content = %s
+           and m.day = %s
+           and m.assigned_week in (%s, 'W')
+      group by first_name, last_name
+      order by first_name, last_name
+    """, [CURRENT_SEASON, content, day, week])
+    return cursor.fetchall()
+
 def get_count_members_without_workshift():
     cursor = connection.cursor()
     cursor.execute("""

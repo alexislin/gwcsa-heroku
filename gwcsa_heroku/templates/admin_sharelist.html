@@ -1,0 +1,33 @@
+<html>
+  <head>
+    <style>
+      body {
+        font-size: 14px;
+        font-family: Calibri, Verdana, Sans-Serif;
+        line-height: 1.5;
+      }
+      td.underline {
+        border-bottom: 1px solid black;
+        width: 200px;
+      }
+    </style>
+  </head>
+  <body>
+
+    <h2>GWCSA {{day}} {{week}} {{share_type}}</h2>
+    <div style="padding-bottom:20px">
+      <table>
+        <tr>
+          <td>Date:</td><td class="underline">&nbsp;</td><td>&nbsp;</td>
+          <td>Coordinator:</td><td class="underline">&nbsp;</td><td>&nbsp;</td>
+          <td>Members:</td><td class="underline">&nbsp;</td><td>&nbsp;</td>
+        </tr>
+      </table>
+    </div>
+    <div>
+      {% for first_name, last_name, count in share_list %}
+        &#x274f; {% if count > 1 %}<strong>({{count}})</strong>{% endif %} {{first_name}} {{last_name}}<br />
+      {% endfor %}
+    </div>
+  </body>
+</html>

@@ -209,5 +209,29 @@ def workshifts(request):
         })
     )
 
+@handle_view_exception
+@login_required
+def share_list(request):
+    if request.method == "POST":
+        day = get_required_parameter(request, "day")
+        week = get_required_parameter(request, "week")
+        share_type = get_required_parameter(request, "share_type")
+
+        return render_to_response("admin_sharelist.html",
+            RequestContext(request, {
+                "day": day,
+                "week": week,
+                "share_type": share_type,
+                "share_list": get_share_list(share_type, day, week)
+            })
+        )
+
+    return render_to_response("admin_sharelistmaker.html",
+        RequestContext(request, {
+            "days": DAYS,
+            "weeks": WEEK[:-1],
+            "share_types": SHARES[:-1],
+        })
+    )
 
 

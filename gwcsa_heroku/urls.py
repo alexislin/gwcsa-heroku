@@ -11,6 +11,7 @@ urlpatterns = patterns('',
     url(r'^admin/member_detail/(?P<id>\d+)$', 'gwcsa_heroku.admin_views.member_detail', name='member_detail'),
     url(r'^admin/members$', 'gwcsa_heroku.admin_views.members', name='members'),
     url(r'^admin/members/export$', 'gwcsa_heroku.admin_views.members_export', name='members_export'),
+    url(r'^admin/sharelist$', 'gwcsa_heroku.admin_views.share_list', name='share_list'),
     url(r'^admin/summaries$', 'gwcsa_heroku.admin_views.summaries', name='summaries'),
     url(r'^admin/workshifts$', 'gwcsa_heroku.admin_views.workshifts', name='workshifts'),
 
