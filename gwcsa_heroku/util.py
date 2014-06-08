@@ -38,7 +38,7 @@ def get_share_list(content, day, week):
            and m.id = s.member_id
            and s.content = %s
            and m.day = %s
-           and m.assigned_week in (%s, 'W')
+           and (m.assigned_week = 'W' or (m.assigned_week = %s and s.frequency = 'B'))
       group by first_name, last_name
       order by first_name, last_name
     """, [CURRENT_SEASON, content, day, week])
