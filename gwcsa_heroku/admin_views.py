@@ -221,9 +221,9 @@ def share_list(request):
 
         return render_to_response("admin_sharelist.html",
             RequestContext(request, {
-                "day": day,
+                "day": [d for c, d in DAYS if day == c][0],
                 "week": week,
-                "share_type": share_type,
+                "share_type": [d for c, d in SHARES if share_type == c][0],
                 "num_shares": sum([x[2] for x in share_list]),
                 "share_list": share_list
             })
