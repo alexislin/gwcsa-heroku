@@ -217,12 +217,15 @@ def share_list(request):
         week = get_required_parameter(request, "week")
         share_type = get_required_parameter(request, "share_type")
 
+        share_list = get_share_list(share_type, day, week)
+
         return render_to_response("admin_sharelist.html",
             RequestContext(request, {
                 "day": day,
                 "week": week,
                 "share_type": share_type,
-                "share_list": get_share_list(share_type, day, week)
+                "num_shares": sum([x[2] for x in share_list])
+                "share_list": share_list
             })
         )
 
