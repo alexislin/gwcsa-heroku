@@ -224,7 +224,7 @@ def share_list(request):
                 "day": day,
                 "week": week,
                 "share_type": share_type,
-                "num_shares": sum([x[2] for x in share_list])
+                "num_shares": sum([x[2] for x in share_list]),
                 "share_list": share_list
             })
         )
