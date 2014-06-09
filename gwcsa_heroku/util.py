@@ -27,8 +27,7 @@ def get_ascii(s):
 def get_share_list(content, day, week):
     cursor = connection.cursor()
     cursor.execute("""
-        select first_name,
-               last_name,
+        select m.id,
                sum(s.quantity)
           from gwcsa_heroku_member m,
                gwcsa_heroku_share s,
@@ -39,8 +38,8 @@ def get_share_list(content, day, week):
            and s.content = %s
            and m.day = %s
            and (s.frequency in ('W', 'N') or m.assigned_week = %s)
-      group by first_name, last_name
-      order by first_name, last_name
+      group by m.id
+      order by m.id
     """, [CURRENT_SEASON, content, day, week])
     return cursor.fetchall()
 

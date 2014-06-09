@@ -17,7 +17,8 @@
     <h2>GWCSA {{day}} {{week}} {{share_type}}</h2>
     <div style="padding-bottom:16px;font-weight:bold">
       # members: {{share_list|length}}<br />
-      # shares: {{num_shares}}
+      # shares: {{num_shares}}<br />
+      ** members without work shifts
     <div>
     <div style="padding-bottom:20px">
       <table>
@@ -29,8 +30,11 @@
       </table>
     </div>
     <div>
-      {% for first_name, last_name, count in share_list %}
-        &#x274f; {% if count > 1 %}<strong>({{count}})</strong>{% endif %} {{first_name}} {{last_name}}<br />
+      {% for member, count in share_list %}
+        &#x274f;
+        {% if count > 1 %}<strong>({{count}})</strong>{% endif %} {{member.first_name}} {{member.last_name}}
+        {% if not member.has_shifts %}**{% endif %}
+        <br />
       {% endfor %}
     </div>
   </body>
