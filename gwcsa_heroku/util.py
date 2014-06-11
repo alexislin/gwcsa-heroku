@@ -39,7 +39,7 @@ def get_share_list(content, day, week):
            and m.day = %s
            and (s.frequency in ('W', 'N') or m.assigned_week = %s)
       group by m.id
-      order by m.id
+      order by m.first_name, m.last_name
     """, [CURRENT_SEASON, content, day, week])
     return cursor.fetchall()
 
