@@ -16,7 +16,7 @@ def get_available_dates_for_shift(request):
     dates = []
     for date in shift.get_available_dates_for_member(member):
         # hack to not show the first two weeks of distribution
-        if "Distribution" in shift.name and date < datetime.date(2014, 6, 16):
+        if "Distribution" in shift.name and date < datetime.date(2014, 6, 22):
             continue
         dates.append(date.strftime("%m%d%Y"))
 
