@@ -22,8 +22,9 @@ SATURDAY = DAYS[1][0]
 
 SEASONS = (
     ('2014', '2014'),
+    ('2015', '2015'),
 )
-CURRENT_SEASON = SEASONS[0][0]
+CURRENT_SEASON = SEASONS[1][0]
 
 class Season(TimestampedModel):
     name = models.CharField(max_length=6,null=False,choices=SEASONS,default=CURRENT_SEASON)

@@ -279,7 +279,7 @@ def init_workshift(request):
         location="Lutheran Church of the Messiah",
         location2="129 Russell St, Greenpoint",
         num_required_per_member=3,
-        timeslots=[(time(19, 45, 0), time(20, 15, 0))],
+        timeslots=[(time(19, 30, 0), time(20, 15, 0))],
         num_members_required=[1, 1],
         note="Must have own car. Soup kitchen is on Milton Street in Greenpoint.",
     )
@@ -310,7 +310,7 @@ def init_workshift(request):
         location="McCarren Park",
         location2="(next to dog run and community garden)",
         num_required_per_member=3,
-        timeslots=[(time(11, 45, 0), time(12, 15, 0))],
+        timeslots=[(time(11, 30, 0), time(12, 15, 0))],
         num_members_required=[1, 1],
         note="Must have own car. Soup kitchen is on Milton Street in Greenpoint.",
     )
