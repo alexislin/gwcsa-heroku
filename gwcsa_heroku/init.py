@@ -168,9 +168,6 @@ def __send_ab_assignment_email(member):
         .aggregate(Max("created_at"))["created_at__max"]
     week_assignment_timestamp = WeekAssignmentLog.objects.filter(member=member)\
         .aggregate(Max("created_at"))["created_at__max"]
-    #TODO: fix this logic... the week assignment timestamp was commented out
-    #because it was filling up the db (adding a row on member change, not only
-    #on week assignment event), so need to find a new solution here
     if not week_assignment_timestamp:
         return True
 

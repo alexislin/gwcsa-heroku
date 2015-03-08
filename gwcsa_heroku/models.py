@@ -1,10 +1,13 @@
+import logging
 import sys
 
 from django.db import models
 from django.db.models import Q
-from django.db.models.signals import post_save
+from django.db.models.signals import pre_save
 
 from gwcsa_heroku.constants import *
+
+logger = logging.getLogger(__name__)
 
 class TimestampedModel(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
@@ -241,12 +244,14 @@ class EmailLog(TimestampedModel):
     status_code = models.CharField(max_length=10,null=False)
 
 def log_ab_week_assignment(sender, **kwargs):
-    #member = kwargs["instance"]
-    #WeekAssignmentLog.objects.create(
-    #    member=member,assigned_week=member.assigned_week,module_name=__name__)
+    member = kwargs["instance"]
+
+    m = Member.objects.filter(id=member.id)
+    if len(m) > 0 and member.assigned_week <> m[0].assigned_week:
+        WeekAssignmentLog.objects.create(member=member,assigned_week=member.assigned_week,module_name=__name__)
     pass
 
-post_save.connect(log_ab_week_assignment, sender=Member)
+pre_save.connect(log_ab_week_assignment, sender=Member)
 
 class WeekAssignmentLog(TimestampedModel):
     member = models.ForeignKey(Member,null=False)
