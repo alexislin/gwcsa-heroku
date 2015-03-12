@@ -176,7 +176,7 @@ def __send_ab_assignment_email(member):
 @login_required
 @handle_view_exception
 def email_assigned_week(request):
-    members = Member.objects.filter(Q(assigned_week=A_WEEK) | Q(assigned_week=B_WEEK))
+    members = Member.objects.filter(season__name=CURRENT_SEASON).filter(Q(assigned_week=A_WEEK) | Q(assigned_week=B_WEEK))
     members = [m for m in members if __send_ab_assignment_email(m)]
 
     if request.method == "POST":
