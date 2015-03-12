@@ -3,6 +3,7 @@ import logging
 
 from datetime import datetime
 
+from django.conf import settings
 from django.http import HttpResponse
 from django.template import RequestContext
 from django.shortcuts import render_to_response
@@ -55,7 +56,7 @@ def workshift_selection(request):
         # ensure workshift selection doesn't fail just because the email
         # doesn't send (can happen when SendGrid credits run out)
         try:
-            if not DEBUG:
+            if not settings.DEBUG:
                 send_workshift_confirmation_email(member)
         except Exception:
             stack_trace = traceback.format_exc()
