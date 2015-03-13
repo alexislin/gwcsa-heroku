@@ -169,7 +169,7 @@ def __send_ab_assignment_email(member):
     week_assignment_timestamp = WeekAssignmentLog.objects.filter(member=member)\
         .aggregate(Max("created_at"))["created_at__max"]
     if not week_assignment_timestamp:
-        return True
+        return False
 
     return week_assignment_timestamp > email_timestamp
 
