@@ -24,8 +24,8 @@ def send_email(to_email, to_name, subject, template_path, template_values, membe
     url = "https://sendgrid.com/api/mail.send.json"
 
     data = {}
-    data["api_user"] = "williamsburgcsa"
-    data["api_key"] = "kohlrabi"
+    data["api_user"] = settings.SENDGRID_API_USER
+    data["api_key"] = settings.SENDGRID_API_KEY
     data["bcc"] = "admin@gwcsa.org" if not settings.DEBUG else "admin+testing@gwcsa.org"
     data["from"] = "info@gwcsa.org"
     data["fromname"] = "Greenpoint Williamsburg CSA"

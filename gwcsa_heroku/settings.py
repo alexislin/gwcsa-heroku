@@ -5,6 +5,9 @@ import dj_database_url
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
+SENDGRID_API_USER = os.environ['SENDGRID_API_USER']
+SENDGRID_API_KEY = os.environ['SENDGRID_API_KEY']
+
 ADMINS = (
     ('Alexis Lin', 'alexislin95@gmail.com'),
     ('Anisha Vasandani', 'anishavasandani@gmail.com'),
