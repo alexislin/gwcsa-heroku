@@ -50,16 +50,17 @@ def send_email(to_email, to_name, subject, template_path, template_values, membe
     headers = {}
     headers["Content-Type"] = "application/x-www-form-urlencoded"
 
-    request = urllib2.Request(url, form_data, headers)
-    result = urllib2.urlopen(request)
-
-    status_code = result.getcode()
-    if status_code <> 200:
-        logger.error("SendGrid email failed with status=%s" % status_code)
-        logger.error(result.geturl())
-        logger.error(result.info())
-    else:
+    status_code = 200
+    try:
+        request = urllib2.Request(url, form_data, headers)
+        result = urllib2.urlopen(request)
         logger.debug("Successfully sent email '%s' to '%s' through SendGrid." % (subject, to_email))
+    except urllib2.HTTPError as e:
+        status_code = e.code
+        logger.error("SendGrid email failed with status=%s" % status_code)
+        logger.error(url)
+        logger.error(data)
+        logger.error(e.read())
 
     if isinstance(to_email, list):
         for i in range(len(to_email)):
