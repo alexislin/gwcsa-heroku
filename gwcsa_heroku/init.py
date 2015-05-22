@@ -33,9 +33,10 @@ def get_diff(t1, t2):
     return sum([abs(x-y) for x, y in zip(*(t1, t2))])
 
 def assign_distribution_week(members):
-    # TODO: this is okay, but doesn't take share counts into account at all
+    # NOTE: this doesn't take share counts into account
     # until the remainder of the members are assigned. It's only looking at
-    # number of members assigned to A vs. B. That needs to change.
+    # number of members assigned to A vs. B. Probably okay given that almost
+    # no one signs up for > 1 veggie share
 
     # initialize our a and b weeks of members
     a_week = [m for m in members if m.assigned_week == A_WEEK or getattr(m, "a_week")]
