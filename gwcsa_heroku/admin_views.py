@@ -88,6 +88,7 @@ def members(request):
         "cheese_count": SHARE_COUNT_QUERY % (CHEESE, NOT_APPLICABLE),
         "meat_count": SHARE_COUNT_QUERY % (MEAT, NOT_APPLICABLE),
         "pickles_count": SHARE_COUNT_QUERY % (PICKLES_AND_PRESERVES, NOT_APPLICABLE),
+        "bread_count": SHARE_COUNT_QUERY % (BREAD, NOT_APPLICABLE),
         "plant_count": SHARE_COUNT_QUERY % (PLANTS, NOT_APPLICABLE),
     }).order_by("day", "first_name", "last_name")
     return render_to_response("admin_members.html",
@@ -118,6 +119,7 @@ def __get_export_row(email, first_name, last_name, member):
     row.append(__shares_contain(shares, MEAT))
     row.append(__shares_contain(shares, CHEESE))
     row.append(__shares_contain(shares, PICKLES_AND_PRESERVES))
+    row.append(__shares_contain(shares, BREAD))
     row.append(__shares_contain(shares, PLANTS))
 
     shifts = MemberWorkShift.objects.filter(member=m)
@@ -141,7 +143,7 @@ def members_export(request):
     writer.writerow(["Email", "Fname", "Lname",
         "Week_A_Wed", "Week_B_Wed", "Week_A_Sat", "Week_B_Sat",
         "Vegetables", "Fruit", "Eggs", "Flowers",
-        "Meat", "Cheese", "Pickles_Preserves", "Plants",
+        "Meat", "Cheese", "Pickles_Preserves", "Bread", "Plants",
         "Workshift_Date_1", "Workshift_Date_2", "Workshift_Date_3",
         "Workshift_Details_1", "Workshift_Details_2", "Workshift_Details_3",
         "MemberID", "Primary_Fname", "Primary_Lname", "Primary_Email"])
@@ -234,7 +236,7 @@ def share_list(request):
         RequestContext(request, {
             "days": DAYS,
             "weeks": WEEK[:-1],
-            "share_types": SHARES[:-1],
+            "share_types": SHARES[:],
         })
     )
 

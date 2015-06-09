@@ -253,6 +253,8 @@ def add_update_member_from_farmigo_csv_entry(line):
             Share.add_or_create_share(member,quantity,NOT_APPLICABLE,MEAT)
         elif re.compile("Pickles", re.IGNORECASE).search(s):
             Share.add_or_create_share(member,quantity,NOT_APPLICABLE,PICKLES_AND_PRESERVES)
+        elif re.compile("Bread", re.IGNORECASE).search(s):
+            Share.add_or_create_share(member,quantity,NOT_APPLICABLE,BREAD)
 
     member.is_weekly = Share.objects.filter(member=member,frequency=WEEKLY).count() > 0
     member.has_biweekly = Share.objects.filter(member=member,frequency=BIWEEKLY).count() > 0

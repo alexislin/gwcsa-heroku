@@ -79,6 +79,7 @@
           <th rowspan="2">C</th>
           <th rowspan="2">M</th>
           <th rowspan="2">P&amp;P</th>
+          <th rowspan="2">B</th>
           <th rowspan="2">P</th>
           <th rowspan="2">Shifts?</th>
           <th rowspan="2">Shift </br>Week</th>
@@ -115,6 +116,7 @@
             <td class="left-border">{{member.cheese_count|default_if_none:" "}}</td>
             <td class="left-border">{{member.meat_count|default_if_none:" "}}</td>
             <td class="left-border">{{member.pickles_count|default_if_none:" "}}</td>
+            <td class="left-border">{{member.bread_count|default_if_none:" "}}</td>
             <td class="left-border">{{member.plant_count|default_if_none:" "}}</td>
             <td class="left-border">{% if member.shift_count > 0 %}<img src="{% static "images/checkmark.gif" %}">{% else %}&nbsp;{% endif %}</td>
             <td class="left-border">
