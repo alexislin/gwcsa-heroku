@@ -75,8 +75,8 @@ $(function() {
   });
 
   $("input[name^='shift-datepicker']").datepicker({
-    minDate: new Date(2015, 5, 1), // June 1st
-    maxDate: new Date(2015, 10, 30), // November 30th
+    minDate: new Date(2016, 5, 1), // June 1st
+    maxDate: new Date(2016, 10, 30), // November 30th
     beforeShow: function(input, inst) {
       var shiftId = getShiftIdFromDatePickerId($(input).attr("id"));
       getAvailableDatesForShift(shiftId);
