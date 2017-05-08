@@ -5,8 +5,6 @@ from django.db import models
 from django.db.models import Q
 from django.db.models.signals import pre_save
 
-from gwcsa_heroku.constants import *
-
 logger = logging.getLogger(__name__)
 
 class TimestampedModel(models.Model):
@@ -63,12 +61,7 @@ class WorkShiftDateTime(TimestampedModel):
     num_members_required = models.PositiveIntegerField(null=False)
 
     def get_week(self):
-        if self.date in WED_A_DATES or self.date in SAT_A_DATES:
-            return A_WEEK
-        elif self.date in WED_B_DATES or self.date in SAT_B_DATES:
-            return B_WEEK
-        else:
-            raise Exception("Could not determine A/B week for date: %s" % self.date)
+        raise Exception("Could not determine A/B week for date: %s" % self.date)
     week = property(get_week)
 
     def is_full(self):

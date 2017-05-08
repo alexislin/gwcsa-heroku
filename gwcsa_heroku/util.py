@@ -6,7 +6,6 @@ import unicodedata
 
 from django.db import connection
 
-from gwcsa_heroku.constants import *
 from gwcsa_heroku.models import *
 
 logger = logging.getLogger(__name__)

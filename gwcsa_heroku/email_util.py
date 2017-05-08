@@ -7,7 +7,6 @@ import traceback
 from django.conf import settings
 from django.template.loader import render_to_string
 
-from gwcsa_heroku.constants import *
 from gwcsa_heroku.models import *
 from gwcsa_heroku.util import get_ascii
 

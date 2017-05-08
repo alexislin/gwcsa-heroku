@@ -8,7 +8,6 @@ from django.http import HttpResponse
 from django.template import RequestContext
 from django.shortcuts import render_to_response
 
-from gwcsa_heroku.constants import *
 from gwcsa_heroku.decorators import *
 from gwcsa_heroku.email_util import *
 from gwcsa_heroku.models import *

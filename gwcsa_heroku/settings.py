@@ -10,7 +10,6 @@ SENDGRID_API_KEY = os.environ['SENDGRID_API_KEY']
 
 ADMINS = (
     ('Alexis Lin', 'alexislin95@gmail.com'),
-    ('Anisha Vasandani', 'anishavasandani@gmail.com'),
 )
 
 MANAGERS = ADMINS
@@ -96,7 +95,6 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     'django.contrib.auth.context_processors.auth',
     'django.contrib.messages.context_processors.messages',
     'django.core.context_processors.static',
-    'gwcsa_heroku.context_processors.constants',
 )
 
 ROOT_URLCONF = 'gwcsa_heroku.urls'
