@@ -84,52 +84,11 @@ def send_exception_email(url, args, stack_trace):
         # that would only make things worse
         logger.error(traceback.format_exc())
 
-def __add_member_workshift_values(member, values):
-    values["member"] = member
-
-    member_shifts = MemberWorkShift.objects.filter(member=member)
-    if len(member_shifts) > 0:
-        values["shift"] = member_shifts[0].workshift_date_time.shift
-        values["date_times"] = [(ms.workshift_date_time.date, ms.workshift_date_time.start_time, ms.week) \
-            for ms in member_shifts]
-    else:
-        values["shift"] = None
-        values["date_times"] = []
-
-    return values
-
-def send_workshift_confirmation_email(member):
-    values = __add_member_workshift_values(member, { "current_season": CURRENT_SEASON })
-
-    subject = "Your %s GWCSA Work Shifts" % CURRENT_SEASON
-    send_email_to_member(member, subject, "email/confirmation.txt", values)
-
 def send_ab_week_assignment_email(member):
     if not member.assigned_week:
         logger.error("Can't send an A/B assignment email if the member isn't assigned.")
         return
 
-    if member.day == WEDNESDAY:
-        if member.is_weekly or member.assigned_week == A_WEEK:
-            first_distribution_date = WED_A_DATES[0]
-        elif member.assigned_week == B_WEEK:
-            first_distribution_date = WED_B_DATES[0]
-    elif member.day == SATURDAY:
-        if member.is_weekly or member.assigned_week == A_WEEK:
-            first_distribution_date = SAT_A_DATES[0]
-        elif member.assigned_week == B_WEEK:
-            first_distribution_date = SAT_B_DATES[0]
+    logger.warning("A/B assignment email disabled.")
 
-    values = {
-        "first_distribution_date" : first_distribution_date.strftime("%A, %B %-d, %Y")
-    }
-    values = __add_member_workshift_values(member, values)
-
-    subject = "GWCSA %s Week Distribution Assignment" % member.assigned_week
-    send_email_to_member(member, subject, "email/ab_week_assignment.txt", values)
-
-def send_correct_workshift_link_email(member):
-    values = { "member": member }
-    subject = "GWCSA - New Workshift Signup Link"
-    send_email_to_member(member, subject, "email/correct_workshift_link.txt", values)
 

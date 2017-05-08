@@ -117,12 +117,11 @@ class Member(TimestampedModel):
     formatted_signup_date = property(get_formatted_signup_date)
 
     def get_workshift_week(self):
-        weeks = [s.week for s in MemberWorkShift.objects.filter(member=self)]
-        return weeks[0] if len(set(weeks)) == 1 else None
+        return ""
     workshift_week = property(get_workshift_week)
 
     def get_has_shifts(self):
-        return MemberWorkShift.objects.filter(member=self).count() > 0
+        return False
     has_shifts = property(get_has_shifts)
 
     def add_share_attributes(self):

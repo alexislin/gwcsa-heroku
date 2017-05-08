@@ -13,22 +13,15 @@ urlpatterns = patterns('',
     url(r'^admin/members/export$', 'gwcsa_heroku.admin_views.members_export', name='members_export'),
     url(r'^admin/sharelist$', 'gwcsa_heroku.admin_views.share_list', name='share_list'),
     url(r'^admin/summaries$', 'gwcsa_heroku.admin_views.summaries', name='summaries'),
-    url(r'^admin/workshifts$', 'gwcsa_heroku.admin_views.workshifts', name='workshifts'),
 
     # index page redirects to admin Members view
     url(r'^$', RedirectView.as_view(url='/admin/members')),
     url(r'^contact$', 'gwcsa_heroku.views.contact', name='contact'),
     url(r'^csv_xform$', 'gwcsa_heroku.views.csv_xform', name='csv_xform'),
     url(r'^signup_quiz$', 'gwcsa_heroku.views.signup_quiz', name='signup_quiz'),
-    url(r'^workshift_selection$', 'gwcsa_heroku.views.workshift_selection', name='workshift_selection'),
-
-    url(r'^ajax/get_available_dates_for_shift$', 'gwcsa_heroku.ajax.get_available_dates_for_shift', name='get_available_dates_for_shift'),
-    url(r'^ajax/get_available_times_for_shift_date$', 'gwcsa_heroku.ajax.get_available_times_for_shift_date', name='get_available_times_for_shift_date'),
 
     url(r'^init/assigned_week$', 'gwcsa_heroku.init.init_assigned_week', name='init_assigned_week'),
     url(r'^email/assigned_week$', 'gwcsa_heroku.init.email_assigned_week', name='email_assigned_week'),
-    url(r'^init/workshift$', 'gwcsa_heroku.init.init_workshift', name='init_workshift'),
-    url(r'^init/workshift_email$', 'gwcsa_heroku.init.send_workshift_link', name='send_workshift_link'),
     url(r'^init/is_weekly$', 'gwcsa_heroku.init.set_is_weekly', name='set_is_weekly'),
 
 

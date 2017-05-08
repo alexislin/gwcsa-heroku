@@ -43,18 +43,6 @@ def get_share_list(content, day, week):
     """, [CURRENT_SEASON, content, day, week])
     return cursor.fetchall()
 
-def get_count_members_without_workshift():
-    cursor = connection.cursor()
-    cursor.execute("""
-        select count(*)
-          from gwcsa_heroku_season sn,
-               gwcsa_heroku_member m
-         where m.season_id = sn.id
-           and sn.name = %s
-           and m.id not in (select member_id from gwcsa_heroku_memberworkshift)
-    """, [CURRENT_SEASON])
-    return cursor.fetchone()[0]
-
 def get_share_count(day):
     cursor = connection.cursor()
     cursor.execute("""
@@ -127,39 +115,6 @@ def get_weekly_count_for_shares():
         ))
 
     return results
-
-def get_distro_dates(day, week=None):
-    if day == WEDNESDAY:
-        if week == A_WEEK:
-            return WED_A_DATES
-        elif week == B_WEEK:
-            return WED_B_DATES
-        elif not week:
-            return sorted(WED_A_DATES + WED_B_DATES)
-        raise Exception("Invalid value for 'week' parameter: %s" % week)
-
-    if day == SATURDAY:
-        if week == A_WEEK:
-            return SAT_A_DATES
-        elif week == B_WEEK:
-            return SAT_B_DATES
-        elif not week:
-            return sorted(SAT_A_DATES + SAT_B_DATES)
-        raise Exception("Invalid value for 'week' parameter: %s" % week)
-
-    raise Exception("Invalid value for 'day' parameter: %s" % day)
-
-def distro_date_is_week(date, week):
-    if type(date) is datetime:
-        date = date.date()
-
-    if week == A_WEEK:
-        return date in (SAT_A_DATES + WED_A_DATES)
-    if week == B_WEEK:
-        return date in (SAT_B_DATES + WED_B_DATES)
-
-    raise Exception("Invalid value for 'week' parameter: %s" % week)
-
 
 # TODO: verify that column headers match expected title so that we're not
 #       mis-processing columns (Farmigo changes the csv export regularly)

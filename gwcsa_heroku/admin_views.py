@@ -41,15 +41,11 @@ def member_detail(request, id):
         if action == "send":
             send_ab_week_assignment_email(member)
 
-    shift_date_times = [s.workshift_date_time for s in MemberWorkShift.objects.filter(member=member)]
-    shift = None if len(shift_date_times) == 0 else shift_date_times[0].shift
     email_log = EmailLog.objects.filter(member=member).order_by("-created_at")
 
     return render_to_response("admin_memberdetail.html",
         RequestContext(request, {
             "member": member,
-            "shift": shift,
-            "shift_date_times": shift_date_times,
             "email_log": email_log,
         })
     )
@@ -74,9 +70,7 @@ def members(request):
                 add_update_member_from_farmigo_csv_entry(line)
 
     # query member data for page
-    members = Member.objects.filter(season__name=CURRENT_SEASON).annotate(
-        shift_count=Count("memberworkshift")
-    ).extra(select={
+    members = Member.objects.filter(season__name=CURRENT_SEASON).extra(select={
         "weekly_veggie_count": SHARE_COUNT_QUERY % (VEGETABLES, WEEKLY),
         "biweekly_veggie_count": SHARE_COUNT_QUERY % (VEGETABLES, BIWEEKLY),
         "weekly_fruit_count": SHARE_COUNT_QUERY % (FRUIT, WEEKLY),
@@ -122,11 +116,6 @@ def __get_export_row(email, first_name, last_name, member):
     row.append(__shares_contain(shares, BREAD))
     row.append(__shares_contain(shares, PLANTS))
 
-    shifts = MemberWorkShift.objects.filter(member=m)
-    [row.append("" if len(shifts) <= i else shifts[i].date.strftime("%-m/%-d/%Y")) \
-        for i in range(3)]
-    [row.append("" if len(shifts) <= i else shifts[i]) for i in range(3)]
-
     row.append(m.id)
     row.append(get_ascii(m.first_name))
     row.append(get_ascii(m.last_name))
@@ -144,8 +133,6 @@ def members_export(request):
         "Week_A_Wed", "Week_B_Wed", "Week_A_Sat", "Week_B_Sat",
         "Vegetables", "Fruit", "Eggs", "Flowers",
         "Meat", "Cheese", "Pickles_Preserves", "Bread", "Plants",
-        "Workshift_Date_1", "Workshift_Date_2", "Workshift_Date_3",
-        "Workshift_Details_1", "Workshift_Details_2", "Workshift_Details_3",
         "MemberID", "Primary_Fname", "Primary_Lname", "Primary_Email"])
 
     for m in Member.objects.filter(season__name=CURRENT_SEASON):
@@ -175,39 +162,6 @@ def summaries(request):
                 .exclude(secondary_email__isnull=True) \
                 .exclude(secondary_email__exact="") \
                 .exclude(secondary_email=F('email')).count(), # at least one member has matching primary and secondary info
-        })
-    )
-
-@handle_view_exception
-@login_required
-def workshifts(request):
-    dates = [o.date for o in WorkShiftDateTime.objects.filter(shift__season__name=CURRENT_SEASON)]
-    dates = sorted(list(set(dates)))
-
-    shifts = WorkShift.objects.filter(season__name=CURRENT_SEASON)
-
-    shifts_by_date = []
-
-    for date in dates:
-        shifts_by_date.append((date,[]))
-
-        for shift in shifts:
-            for wdt in WorkShiftDateTime.objects.filter(date=date,shift=shift).order_by("start_time"):
-                members = [ms.member for ms in \
-                    MemberWorkShift.objects.filter(workshift_date_time=wdt)]
-
-                shifts_by_date[-1][1].append({
-                    "name": shift.name,
-                    "time": wdt.start_time,
-                    "members": members,
-                    "num_members_required": wdt.num_members_required,
-                    "full": len(members) >= wdt.num_members_required
-                })
-
-    return render_to_response("admin_workshifts.html",
-        RequestContext(request, {
-            "members_without_workshift": get_count_members_without_workshift(),
-            "shifts_by_date": shifts_by_date
         })
     )
 
