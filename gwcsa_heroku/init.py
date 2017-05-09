@@ -157,39 +157,6 @@ def init_assigned_week(request):
         RequestContext(request, { })
     )
 
-def __send_ab_assignment_email(member):
-    if not member.assigned_week in (A_WEEK, B_WEEK):
-        return False
-    if not EmailLog.objects.filter(member=member)\
-        .filter(subject__contains="Week Distribution Assignment").exists():
-        return True
-
-    email_timestamp = EmailLog.objects.filter(member=member)\
-        .filter(subject__contains="Week Distribution Assignment")\
-        .aggregate(Max("created_at"))["created_at__max"]
-    week_assignment_timestamp = WeekAssignmentLog.objects.filter(member=member)\
-        .aggregate(Max("created_at"))["created_at__max"]
-    if not week_assignment_timestamp:
-        return False
-
-    return week_assignment_timestamp > email_timestamp
-
-@login_required
-@handle_view_exception
-def email_assigned_week(request):
-    members = Member.objects.filter(season__name=CURRENT_SEASON).filter(Q(assigned_week=A_WEEK) | Q(assigned_week=B_WEEK))
-    members = [m for m in members if __send_ab_assignment_email(m)]
-
-    if request.method == "POST":
-        [send_ab_week_assignment_email(m) for m in members]
-        members = []
-
-    return render_to_response("admin_send_ab_assignment_emails.html",
-        RequestContext(request, {
-            "members": members,
-        })
-    )
-
 @login_required
 @handle_view_exception
 def set_is_weekly(request):
