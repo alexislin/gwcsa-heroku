@@ -194,9 +194,12 @@ SHARES = (
     ('FL', 'Flowers'),
     ('M', 'Meat'),
     ('C', 'Cheese'),
-    ('PP', 'Pickles & Preserves'),
+    ('PP', 'Pickles & Preserves'), #deprecated
     ('P', 'Plants'),
     ('B', 'Bread'),
+    ('BR', 'Beer'),
+    ('PS', 'Personal Size'),
+    ('VS', 'Vegetables - Summer Only'),
 )
 VEGETABLES = SHARES[0][0]
 FRUIT = SHARES[1][0]
@@ -207,6 +210,9 @@ CHEESE = SHARES[5][0]
 PICKLES_AND_PRESERVES = SHARES[6][0]
 PLANTS = SHARES[7][0]
 BREAD = SHARES[8][0]
+BEER = SHARES[9][0]
+PERSONAL_SIZE = SHARES[10][0]
+VEGETABLES_SUMMER_ONLY = SHARES[11][0]
 
 FREQUENCY = (
     ('B', 'Biweekly'),
