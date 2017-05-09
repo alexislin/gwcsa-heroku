@@ -48,11 +48,6 @@
           </select>
           <input type="submit" class="small-button" value="update" />
         </form>
-        <form method="post" id="send-member" name="send-member" style="display:inline">
-          {% csrf_token %}
-          <input type="hidden" id="action" name="action" value="send" />
-          <input type="submit" class="small-button" value="send assignment email" />
-        </form>
       </div>
     {% endif %}
   </div>

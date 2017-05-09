@@ -38,8 +38,6 @@ def member_detail(request, id):
             elif not week or week == "" and member.assigned_week <> None:
                 member.assigned_week = None
                 member.save()
-        if action == "send":
-            send_ab_week_assignment_email(member)
 
     return render_to_response("admin_memberdetail.html",
         RequestContext(request, {
