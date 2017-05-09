@@ -56,23 +56,6 @@
       </div>
     {% endif %}
   </div>
-  <div class="span-24 last below-8">
-    <div class="span-6 label">Shifts</div>
-    <div class="span-12 last value">
-      {% for shift_date_time in shift_date_times %}
-        {% if forloop.first %}
-          <strong>{{shift.get_day_display}} {{shift.name}}</strong><br />
-          {{shift.location}} <br />
-          {{shift.location2}} <br />
-          <ul>
-        {% endif %}
-          <li>{{shift_date_time.date}} - {{shift_date_time.start_time}} [{{shift_date_time.week}} Week]</li>
-        {% if forloop.last %}
-          </ul>
-        {% endif %}
-      {% endfor %}
-    </div>
-  </div>
   <div class="span-24 last below-16">
     <div class="span-6 label">Farmigo Sign Up Date</div><div class="span-17 last value">{% if member.farmigo_signup_date %}{{member.farmigo_signup_date}}{% else %}&nbsp;{% endif %}</div>
     <div class="span-6 label">Farmigo Share Description</div><div class="span-17 last value">{% if member.farmigo_share_description %}{{member.farmigo_share_description}}{% else %}&nbsp;{% endif %}</div>
