@@ -131,27 +131,22 @@ def assign_distribution_week(members):
 @login_required
 @handle_view_exception
 def init_assigned_week(request):
-    sat_biweekly_members = []
-    wed_biweekly_members = []
+    # assign A/B week for members of the current season, location by location
+    for location, description in DAYS:
+        for m in Member.objects.filter(season__name=CURRENT_SEASON,day=location):
+            if not m.has_biweekly:
+                m.assigned_week = WEEKLY
+                m.save()
+            else:
+                biweekly_members = []
+                # only assign A/B weeks to members that have at least one biweekly
+                # share (veggies, fruit, eggs or flowers)
+                m.add_share_attributes()
+                if sum(getattr(m, "biweekly_share_counts")) > 0:
+                    biweekly_members.append(m)
 
-    for m in Member.objects.filter(season__name=CURRENT_SEASON):
-        if not m.has_biweekly:
-            m.assigned_week = WEEKLY
-            m.save()
-        else:
-            # only assign A/B weeks to members that have at least one biweekly
-            # share (veggies, fruit, eggs or flowers)
-            m.add_share_attributes()
-            if sum(getattr(m, "biweekly_share_counts")) > 0:
-                if m.day == WEDNESDAY:
-                    wed_biweekly_members.append(m)
-                if m.day == SATURDAY:
-                    sat_biweekly_members.append(m)
-
-    logger.debug("Assigning Saturday A/B Week")
-    assign_distribution_week(sat_biweekly_members)
-    logger.debug("Assigning Wednesday A/B Week")
-    assign_distribution_week(wed_biweekly_members)
+                logger.debug("Assigning A/B Week - %s" % description)
+                assign_distribution_week(biweekly_members)
 
     return render_to_response("base.html",
         RequestContext(request, { })

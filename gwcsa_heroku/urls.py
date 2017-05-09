@@ -21,7 +21,6 @@ urlpatterns = patterns('',
     url(r'^signup_quiz$', 'gwcsa_heroku.views.signup_quiz', name='signup_quiz'),
 
     url(r'^init/assigned_week$', 'gwcsa_heroku.init.init_assigned_week', name='init_assigned_week'),
-    url(r'^email/assigned_week$', 'gwcsa_heroku.init.email_assigned_week', name='email_assigned_week'),
     url(r'^init/is_weekly$', 'gwcsa_heroku.init.set_is_weekly', name='set_is_weekly'),
 
 
