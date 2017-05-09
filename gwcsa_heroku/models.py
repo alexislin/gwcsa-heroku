@@ -154,10 +154,6 @@ class Member(TimestampedModel):
         return ""
     workshift_week = property(get_workshift_week)
 
-    def get_has_shifts(self):
-        return False
-    has_shifts = property(get_has_shifts)
-
     def add_share_attributes(self):
         setattr(self, "a_week", False)
 

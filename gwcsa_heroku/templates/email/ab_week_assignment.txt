@@ -1,20 +1,7 @@
 Hi {{member.first_name}},
 
 {% if member.is_weekly %}You signed up for both weekly and biweekly shares. {% endif %}You've been assigned to {{member.assigned_week}} week distribution{% if member.is_weekly%} for your biweekly shares{% endif %}. Your first pickup will be on {{first_distribution_date}}. You can view all the {{member.assigned_week}} week distribution dates on our website: http://gwcsa.org/distribution-dates
-{% if member.has_shifts %}{% if not member.is_weekly and member.assigned_week != member.workshift_week %}
-You selected the following work shift(s):
 
-  {{shift.get_day_display}} {{shift.name}}
-  {{shift.location}}
-  {{shift.location2}}
-
-{% for date, time, week in date_times %}  {{date}} - {{time}} [{{week}} Week]
-{% endfor %}
-For your own convenience, you may want to change your work shift(s) to fall on {{member.assigned_week}} week when you'll be picking up your share. You can change your shift using this link: http://gwcsa.herokuapp.com/workshift_selection?firstname={{member.first_name|urlencode:""}}&lastname={{member.last_name|urlencode:""}}&email={{member.email}}.{% endif %}
-{% else %}
-You haven't signed up for a work shift yet. Please take a moment to do this:
-http://gwcsa.herokuapp.com/workshift_selection?firstname={{member.first_name|urlencode:""}}&lastname={{member.last_name|urlencode:""}}&email={{member.email}}
-{% endif %}
 Stay warm through the winter and we'll see you in the spring!
 
 Greenpoint Williamsburg CSA (GWCSA)

@@ -18,7 +18,6 @@
     <div style="padding-bottom:16px;font-weight:bold">
       # members: {{share_list|length}}<br />
       # shares: {{num_shares}}<br />
-      ** members without work shifts
     <div>
     <div style="padding-bottom:20px">
       <table>
@@ -33,7 +32,6 @@
       {% for member, count in share_list %}
         &#x274f;
         {% if count > 1 %}<strong>({{count}})</strong>{% endif %} {{member.first_name}} {{member.last_name}}
-        {% if not member.has_shifts %}**{% endif %}
         <br />
       {% endfor %}
     </div>
