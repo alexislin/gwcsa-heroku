@@ -39,8 +39,6 @@ def get_member(request, member_id_param_name):
         if not first_name or not last_name or not email:
             msg = "Missing info: firstname='%s' lastname='%s' email='%s'."
             msg = msg % (first_name, last_name, email)
-            msg += " To sign up for workshifts, please use the link "
-            msg += "included in your Farmigo sign up confirmation email."
             raise Exception(msg)
         else:
             return Member.get_or_create_member(first_name, last_name, email)

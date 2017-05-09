@@ -72,43 +72,6 @@ CURRENT_SEASON = SEASONS[3][0]
 class Season(TimestampedModel):
     name = models.CharField(max_length=6,null=False,choices=SEASONS,default=CURRENT_SEASON)
 
-class WorkShift(TimestampedModel):
-    season = models.ForeignKey(Season,null=False)
-    day = models.CharField(max_length=2,choices=DAYS,null=False)
-    name = models.CharField(max_length=60,null=False)
-    location = models.CharField(max_length=120,null=False)
-    location2 = models.CharField(max_length=120,null=False,default='')
-    note = models.CharField(max_length=200,null=False,default='')
-    num_required_per_member = models.PositiveIntegerField(null=False)
-
-# TODO: filter out the first two weeks of distro shifts
-    def get_available_dates(self):
-        dates = [s.date for s in WorkShiftDateTime.objects.filter(shift=self) \
-            if not s.is_full()]
-        return sorted(list(set(dates)))
-
-    def get_available_dates_for_member(self, member):
-        dates = self.get_available_dates()
-        dates.extend([ms.workshift_date_time.date for ms in \
-            MemberWorkShift.objects.filter(workshift_date_time__shift=self).filter(member=member)])
-        return sorted(dates)
-
-
-class WorkShiftDateTime(TimestampedModel):
-    shift = models.ForeignKey(WorkShift,null=False)
-    date = models.DateField(null=False)
-    start_time = models.TimeField(null=False)
-    end_time = models.TimeField(null=False)
-    num_members_required = models.PositiveIntegerField(null=False)
-
-    def get_week(self):
-        raise Exception("Could not determine A/B week for date: %s" % self.date)
-    week = property(get_week)
-
-    def is_full(self):
-        n = MemberWorkShift.objects.filter(workshift_date_time=self).count()
-        return n >= self.num_members_required
-
 WEEK = (
     ('A', 'A Week'),
     ('B', 'B Week'),
@@ -195,29 +158,6 @@ class Member(TimestampedModel):
                 email=email
             )
             return member
-
-class MemberWorkShift(TimestampedModel):
-    member = models.ForeignKey(Member,null=False)
-    workshift_date_time = models.ForeignKey(WorkShiftDateTime,null=False)
-
-    def get_week(self):
-        return self.workshift_date_time.week
-    week = property(get_week)
-
-    def get_date(self):
-        return self.workshift_date_time.date
-    date = property(get_date)
-
-    def __str__(self):
-        return "Shift: %s | Date: %s | Day: %s | Time: %s - %s | Location: %s %s" % (
-            self.workshift_date_time.shift.name,
-            self.date.strftime("%-m/%-d/%Y"),
-            self.workshift_date_time.shift.get_day_display(),
-            self.workshift_date_time.start_time.strftime("%-I:%M %p"),
-            self.workshift_date_time.end_time.strftime("%-I:%M %p"),
-            self.workshift_date_time.shift.location,
-            self.workshift_date_time.shift.location2
-        )
 
 SHARES = (
     ('V', 'Vegetables'),
