@@ -15,11 +15,51 @@ class TimestampedModel(models.Model):
         abstract = True
 
 DAYS = (
-    ('W', 'Wednesday'),
-    ('S', 'Saturday'),
+    ('W', 'Wednesday'), #deprecated
+    ('S', 'Saturday'), #deprecated
+    ('BH', 'Brooklyn Heights Sweet Pea CSA, Brooklyn - Wednesday'),
+    ('BP', 'Bayport, Long Island - Wednesday'),
+    ('BR', 'Bayridge/Yellow Hook, Brooklyn - Wednesday'),
+    ('BS', 'Bed Stuy, Brooklyn - Saturday'),
+    ('BW', 'Bushwick, Brooklyn - Wednesday'),
+    ('CG', 'Carroll Gardens, Brookyn - Saturday'),
+    ('FH', 'Forest Hills Farmers Market, Queens - Sunday'),
+    ('GD', 'Glendale, Queens - Saturday'),
+    ('GP', 'Greenpoint, Brooklyn - Wednesday'),
+    ('KG', 'Kew Gardens, Queens - Sunday'),
+    ('KW', 'Kensington/Windsor Terrace, Brooklyn - Saturday'),
+    ('MS', 'Mt Sinai, Long Island - Wednesday'),
+    ('RH', 'Riverhead Farm, Long Island - Wednesday'),
+    ('RN', 'Roslyn/East Hills, Long Island - Wednesday'),
+    ('RS', 'Riverhead Farm, Long Island - Saturday'),
+    ('RW', 'Ridgewood, Queens - Saturday'),
+    ('SB', 'Stony Brook/Avalon Park, Long Island - Wednesday'),
+    ('UW', 'UWS: Ansche Chesed, Manhattan - Wednesday'),
+    ('WB', 'Williamsburg-McCarren Park, Brooklyn - Saturday'),
+    ('WH', 'Westhampton Beach Farmers Market, Long Island - Saturday'),
 )
 WEDNESDAY = DAYS[0][0]
 SATURDAY = DAYS[1][0]
+BROOKLYN_HEIGHTS = DAYS[2][0]
+BAYPORT = DAYS[3][0]
+BAYRIDGE = DAYS[4][0]
+BED_STUY = DAYS[5][0]
+BUSHWICK = DAYS[6][0]
+CARROLL_GARDENS = DAYS[7][0]
+FOREST_HILLS = DAYS[8][0]
+GLENDALE = DAYS[9][0]
+GREENPOINT = DAYS[10][0]
+KEW_GARDENS = DAYS[11][0]
+KENSINGTON = DAYS[12][0]
+MT_SINAI = DAYS[13][0]
+RIVERHEAD_WED = DAYS[14][0]
+ROSLYN = DAYS[15][0]
+RIVERHEAD_SAT = DAYS[16][0]
+RIDGEWOOD = DAYS[17][0]
+STONY_BROOK = DAYS[18][0]
+UWS = DAYS[19][0]
+WILLIAMSBURG = DAYS[20][0]
+WESTHAMPTON_BEACH = DAYS[21][0]
 
 SEASONS = (
     ('2014', '2014'),

@@ -149,7 +149,29 @@ def add_update_member_from_farmigo_csv_entry(line):
         return
 
     # update member
-    member.day = WEDNESDAY if "Greenpoint" in d[LOCATION] else SATURDAY
+    loc = d[LOCATION].lower()
+    if "brooklyn heights" in loc: member.day = BROOKLYN_HEIGHTS
+    elif "bayport" in loc: member.day = BAYPORT
+    elif "bay ridge" in loc: member.day = BAYRIDGE
+    elif "bed stuy" in loc: member.day = BED_STUY
+    elif "bushwick" in loc: member.day = BUSHWICK
+    elif "carroll gardens" in loc: member.day = CARROLL_GARDENS
+    elif "forest hills" in loc: member.day = FOREST_HILLS
+    elif "glendale" in loc: member.day = GLENDALE
+    elif "greenpoint" in loc: member.day = GREENPOINT
+    elif "kew gardens" in loc: member.day = KEW_GARDENS
+    elif "kensington" in loc: member.day = KENSINGTON
+    elif "mt sinai" in loc: member.day = MT_SINAI
+    elif "riverhead" in loc and "wed" in loc: member.day = RIVERHEAD_WED
+    elif "roslyn" in loc: member.day = ROSLYN
+    elif "riverhead" in loc and "sat" in loc: member.day = RIVERHEAD_SAT
+    elif "ridgewood" in loc: member.day = RIDGEWOOD
+    elif "stony brook" in loc: member.day = STONY_BROOK
+    elif "uws" in loc: member.day = UWS
+    elif "williamsburg" in loc: member.day = WILLIAMSBURG
+    elif "westhampton" in loc: member.day = WESTHAMPTON_BEACH
+    else: raise Exception("Unknown location: %s" % d[LOCATION])
+
     member.farmigo_signup_date = datetime.strptime(d[SIGNUP_DATE], "%Y-%m-%d")
     member.farmigo_last_modified_date = datetime.strptime(d[LAST_MODIFIED_DATE], "%Y/%m/%d %H:%M:%S")
     member.farmigo_share_description = re.sub('"', '', re.sub(';', ',', d[SHARE_DESCRIPTION]))
