@@ -150,10 +150,6 @@ class Member(TimestampedModel):
         return self.farmigo_signup_date.strftime("%m/%d/%Y %H:%M")
     formatted_signup_date = property(get_formatted_signup_date)
 
-    def get_workshift_week(self):
-        return ""
-    workshift_week = property(get_workshift_week)
-
     def add_share_attributes(self):
         setattr(self, "a_week", False)
 
