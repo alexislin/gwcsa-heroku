@@ -41,12 +41,9 @@ def member_detail(request, id):
         if action == "send":
             send_ab_week_assignment_email(member)
 
-    email_log = EmailLog.objects.filter(member=member).order_by("-created_at")
-
     return render_to_response("admin_memberdetail.html",
         RequestContext(request, {
             "member": member,
-            "email_log": email_log,
         })
     )
 
