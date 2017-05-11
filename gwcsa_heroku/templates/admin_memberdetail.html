@@ -43,8 +43,8 @@
           <input type="hidden" id="id" name="id" value="{{member.key.id}}" />
           <select id="week" name="week">
             <option value="" {% if not member.assigned_week %}selected{% endif %}>-- select --</option>
-            <option value="A" {% if member.assigned_week == "A" %}selected{% endif %}>A</option>
-            <option value="B" {% if member.assigned_week == "B" %}selected{% endif %}>B</option>
+            <option value="A" {% if member.assigned_week_simplified == "A" %}selected{% endif %}>A</option>
+            <option value="B" {% if member.assigned_week_simplified == "B" %}selected{% endif %}>B</option>
           </select>
           <input type="submit" class="small-button" value="update" />
         </form>

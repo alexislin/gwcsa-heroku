@@ -73,12 +73,17 @@ class Season(TimestampedModel):
     name = models.CharField(max_length=6,null=False,choices=SEASONS,default=CURRENT_SEASON)
 
 WEEK = (
-    ('A', 'A Week'),
-    ('B', 'B Week'),
-    ('W', 'Weekly'),
+    ('A', 'A'),
+    ('B', 'B'),
+    ('X', 'AB/A'),
+    ('Y', 'AB/B'),
+    ('W', 'AB'),
 )
 A_WEEK = WEEK[0][0]
 B_WEEK = WEEK[1][0]
+WEEKLY_PLUS_A = WEEK[2][0]
+WEEKLY_PLUS_B = WEEK[3][0]
+WEEKLY = WEEK[4][0]
 
 class Member(TimestampedModel):
     season = models.ForeignKey(Season,null=False)
@@ -98,6 +103,49 @@ class Member(TimestampedModel):
 
     is_weekly = models.BooleanField()
     has_biweekly = models.BooleanField()
+
+    # returns a simplified representation of assigned_week
+    # 'A' and 'AB/A' return as 'A'
+    # 'B' and 'AB/B' return as 'B'
+    def get_assigned_week_simplified(self):
+        if self.assigned_week in (A_WEEK, WEEKLY_PLUS_A):
+            return A_WEEK
+        elif self.assigned_week in (B_WEEK, WEEKLY_PLUS_B):
+            return B_WEEK
+        elif self.assigned_week == WEEKLY or self.assigned_week is None:
+            return self.assigned_week
+        else:
+            raise Exception("This logic needs to be updated.")
+    assigned_week_simplified = property(get_assigned_week_simplified)
+
+    # returns the long version of the week assignment (for display/export)
+    def get_assigned_week_description(self):
+        if self.assigned_week is None:
+            return None
+        for code, desc in WEEK:
+            if self.assigned_week == code:
+                return desc
+        raise Exception("Didn't find description for WEEK code '%s'" % self.assigned_week)
+    assigned_week_description = property(get_assigned_week_description)
+
+    # ensures that assigned_week is set correctly. This encapsulates
+    # logic that we don't want to repeat all over.
+    def set_assigned_week(self, value):
+        if value in (A_WEEK, WEEKLY_PLUS_A):
+            self.assigned_week = A_WEEK if not self.is_weekly else WEEKLY_PLUS_A
+        elif value in (B_WEEK, WEEKLY_PLUS_B):
+            self.assigned_week = B_WEEK if not self.is_weekly else WEEKLY_PLUS_B
+        elif value == WEEKLY:
+            if self.has_biweekly:
+                raise Exception("Cannot assign 'W' to a member with biweekly shares.")
+            if not self.is_weekly:
+                raise Exception("Cannot assign 'W' to a member without weekly shares.")
+            self.assigned_week = WEEKLY
+        elif value is None:
+            self.assigned_week = None
+        else:
+            raise Exception("Unknown value for week assignment: %s" % value)
+        self.save()
 
     def get_name(self):
         return self.first_name + " " + self.last_name

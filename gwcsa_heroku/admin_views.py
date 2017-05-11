@@ -29,15 +29,12 @@ def member_detail(request, id):
             return redirect("gwcsa_heroku.admin_views.members")
         if action == "update":
             week = get_parameter(request, "week")
-            if week == A_WEEK and not member.assigned_week == A_WEEK:
-                member.assigned_week = A_WEEK
-                member.save()
-            elif week == B_WEEK and not member.assigned_week == B_WEEK:
-                member.assigned_week = B_WEEK
-                member.save()
+            if week in (A_WEEK, B_WEEK):
+                member.set_assigned_week(week)
             elif not week or week == "" and member.assigned_week <> None:
-                member.assigned_week = None
-                member.save()
+                member.set_assigned_week(None)
+            else:
+                raise Exception("Unknown value for 'week' parameter: '%s'" % week)
 
     return render_to_response("admin_memberdetail.html",
         RequestContext(request, {
