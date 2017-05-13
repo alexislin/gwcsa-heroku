@@ -32,121 +32,44 @@ def get_tminus(t, s):
 def get_diff(t1, t2):
     return sum([abs(x-y) for x, y in zip(*(t1, t2))])
 
-def assign_distribution_week(members):
-    # NOTE: this doesn't take share counts into account
-    # until the remainder of the members are assigned. It's only looking at
-    # number of members assigned to A vs. B. Probably okay given that almost
-    # no one signs up for > 1 veggie share
-
-    # initialize our a and b weeks of members
-    a_week = [m for m in members if m.assigned_week == A_WEEK or getattr(m, "a_week")]
-    b_week = [m for m in members if m.assigned_week == B_WEEK]
-    logger.debug("init => a week: %s, b week: %s" % (get_total(a_week), get_total(b_week)))
-
-    # members still awaiting assignment
-    members = [m for m in members \
-        if not getattr(m, "a_week") and not m.assigned_week in (A_WEEK, B_WEEK)]
-
-    # split members into three groups
-    # TODO: NEED TO REFACTOR!! NO WORKSHIFTS ANYMORE!
-    a_week_workshift_members = []
-    b_week_workshift_members = []
-    no_workshift_members = [m for m in members]
-
-    logger.debug("a ws [%s], b ws [%s], no ws [%s]" % \
-        (len(a_week_workshift_members), len(b_week_workshift_members), len(no_workshift_members)))
-
-    # if necessary, extend b_week with b week workshift members
-    if len(b_week) < len(a_week):
-        i = min(len(b_week_workshift_members), len(a_week) - len(b_week))
-        b_week.extend(b_week_workshift_members[:i])
-        b_week_workshift_members = b_week_workshift_members[i:]
-
-    # if we didn't have enough b week workshift members to match mandatory
-    # a week members, then see if we can make up the difference with no workshift
-    # members
-    if len(b_week) < len(a_week):
-        i = min(len(a_week) - len(b_week), len(no_workshift_members))
-        b_week.extend(no_workshift_members[:i])
-        no_workshift_members = no_workshift_members[i:]
-
-        logger.debug("after no workshift => a week: %s, b week: %s" % (get_total(a_week), get_total(b_week)))
-        logger.debug("a ws [%s], b ws [%s], no ws [%s]" % \
-            (len(a_week_workshift_members), len(b_week_workshift_members), len(no_workshift_members)))
-
-    # at this point, one of the following situations is true:
-    # 1) len(a_week) == len(b_week) and we might have non-zero lengths for one or more arrays
-    # 2) len(a_week) > len(b_week) and we have only a week workshift members left
-
-    if len(b_week) == len(a_week):
-        if len(b_week_workshift_members) > 0:
-            # shift equivalent numbers of a and b workshift members into a_week and b_week arrays
-            # this will empty one of these arrays
-            i = min(len(a_week_workshift_members), len(b_week_workshift_members))
-            a_week.extend(a_week_workshift_members[:i])
-            a_week_workshift_members = a_week_workshift_members[i:]
-            b_week.extend(b_week_workshift_members[:i])
-            b_week_workshift_members = b_week_workshift_members[i:]
-
-        # now either a_week_workshift_members or b_week_workshift_members will be empty
-        if len(no_workshift_members) > 0:
-            if len(a_week_workshift_members) > 0 and len(b_week_workshift_members) == 0:
-                i = min(len(a_week_workshift_members), len(no_workshift_members))
-                a_week.extend(a_week_workshift_members[:i])
-                a_week_workshift_members = a_week_workshift_members[i:]
-                b_week.extend(no_workshift_members[:i])
-                no_workshift_members = no_workshift_members[i:]
-            if len(b_week_workshift_members) > 0 and len(a_week_workshift_members) == 0:
-                i = min(len(b_week_workshift_members), len(no_workshift_members))
-                a_week.extend(no_workshift_members[:i])
-                no_workshift_members = no_workshift_members[i:]
-                b_week.extend(b_week_workshift_members[:i])
-                b_week_workshift_members = b_week_workshift_members[i:]
-
-    logger.debug("before remainder => a week: %s, b week: %s" % (get_total(a_week), get_total(b_week)))
-    logger.debug("a ws [%s], b ws [%s], no ws [%s]" % \
-        (len(a_week_workshift_members), len(b_week_workshift_members), len(no_workshift_members)))
-
-    # only one or of these arrays should be non-zero length
-    members = a_week_workshift_members + b_week_workshift_members + no_workshift_members
-    for m in members:
-        diff_a = get_diff(get_total(a_week, m), get_total(b_week))
-        diff_b = get_diff(get_total(a_week), get_total(b_week, m))
-        if diff_a <= diff_b:
-            a_week.append(m)
-        else:
-            b_week.append(m)
-
-    logger.debug("final => a week: %s, b week: %s" % (get_total(a_week), get_total(b_week)))
-
-    for m in a_week:
-        if not m.assigned_week == A_WEEK:
-            m.assigned_week = A_WEEK
-            m.save()
-    for m in b_week:
-        if not m.assigned_week == B_WEEK:
-            m.assigned_week = B_WEEK
-            m.save()
-
+# assign A/B week, location by location
 @login_required
 @handle_view_exception
 def init_assigned_week(request):
-    # assign A/B week for members of the current season, location by location
     for location, description in DAYS:
+        logger.debug("Assigning A/B Week - %s" % description)
+
+        # find biweekly members for this location
+        biweekly_members = []
         for m in Member.objects.filter(season__name=CURRENT_SEASON,day=location):
-            if not m.has_biweekly:
-                m.assigned_week = WEEKLY
-                m.save()
+            if m.is_weekly and not m.has_biweekly:
+                m.set_assigned_week(WEEKLY)
             else:
-                biweekly_members = []
                 # only assign A/B weeks to members that have at least one biweekly
                 # share (veggies, fruit, eggs or flowers)
                 m.add_share_attributes()
                 if sum(getattr(m, "biweekly_share_counts")) > 0:
                     biweekly_members.append(m)
 
-                logger.debug("Assigning A/B Week - %s" % description)
-                assign_distribution_week(biweekly_members)
+        # initialize our a and b weeks of members
+        a_week = [m for m in biweekly_members \
+            if m.get_assigned_week_simplified() == A_WEEK or getattr(m, "a_week")]
+        b_week = [m for m in biweekly_members \
+            if m.get_assigned_week_simplified() == B_WEEK]
+        logger.debug("init => a week: %s, b week: %s" % (get_total(a_week), get_total(b_week)))
+
+        # assign members without a distribution week
+        for m in [m for m in biweekly_members if not m in a_week and not m in b_week]:
+            diff_a = get_diff(get_total(a_week, m), get_total(b_week))
+            diff_b = get_diff(get_total(a_week), get_total(b_week, m))
+            if diff_a <= diff_b:
+                a_week.append(m)
+                m.set_assigned_week(A_WEEK)
+            else:
+                b_week.append(m)
+                m.set_assigned_week(B_WEEK)
+
+        logger.debug("final => a week: %s, b week: %s" % (get_total(a_week), get_total(b_week)))
 
     return render_to_response("base.html",
         RequestContext(request, { })

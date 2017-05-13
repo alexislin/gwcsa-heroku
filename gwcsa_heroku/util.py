@@ -219,6 +219,10 @@ def add_update_member_from_farmigo_csv_entry(line):
             Share.add_or_create_share(member,quantity,WEEKLY,FLOWERS)
         elif re.compile("Personal Size Weekly Share", re.IGNORECASE).search(s):
             Share.add_or_create_share(member,quantity,WEEKLY,PERSONAL_SIZE)
+        elif re.compile("Craft Beer", re.IGNORECASE).search(s):
+            # marked as a WEEKLY share because Eve is allowing people to
+            # buy beer without any other shares (not even veggies)
+            Share.add_or_create_share(member,quantity,WEEKLY,BEER)
         elif re.compile("PLANT Share", re.IGNORECASE).search(s):
             Share.add_or_create_share(member,quantity,NOT_APPLICABLE,PLANTS)
         elif re.compile("Cheese Share", re.IGNORECASE).search(s):
@@ -227,8 +231,6 @@ def add_update_member_from_farmigo_csv_entry(line):
             Share.add_or_create_share(member,quantity,NOT_APPLICABLE,MEAT)
         elif re.compile("Bread", re.IGNORECASE).search(s):
             Share.add_or_create_share(member,quantity,NOT_APPLICABLE,BREAD)
-        elif re.compile("Craft Beer", re.IGNORECASE).search(s):
-            Share.add_or_create_share(member,quantity,NOT_APPLICABLE,BEER)
         elif re.compile("Vegetable Share - SUMMER ONLY", re.IGNORECASE).search(s):
             Share.add_or_create_share(member,quantity,WEEKLY,VEGETABLES_SUMMER_ONLY)
         elif re.compile("Low Income Fund Donation", re.IGNORECASE).search(s):

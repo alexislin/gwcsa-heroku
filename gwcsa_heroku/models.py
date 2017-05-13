@@ -137,9 +137,9 @@ class Member(TimestampedModel):
             self.assigned_week = B_WEEK if not self.is_weekly else WEEKLY_PLUS_B
         elif value == WEEKLY:
             if self.has_biweekly:
-                raise Exception("Cannot assign 'W' to a member with biweekly shares.")
+                raise Exception("Cannot assign 'W' to a member with biweekly shares.id=%s" % self.id)
             if not self.is_weekly:
-                raise Exception("Cannot assign 'W' to a member without weekly shares.")
+                raise Exception("Cannot assign 'W' to a member without weekly shares. id=%s" % self.id)
             self.assigned_week = WEEKLY
         elif value is None:
             self.assigned_week = None
