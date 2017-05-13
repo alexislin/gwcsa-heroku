@@ -50,12 +50,12 @@ def init_assigned_week(request):
                 m.add_share_attributes()
                 if sum(getattr(m, "biweekly_share_counts")) > 0:
                     biweekly_members.append(m)
+                if getattr(m, "a_week") and not m.assigned_week:
+                    m.set_assigned_week(A_WEEK)
 
         # initialize our a and b weeks of members
-        a_week = [m for m in biweekly_members \
-            if m.get_assigned_week_simplified() == A_WEEK or getattr(m, "a_week")]
-        b_week = [m for m in biweekly_members \
-            if m.get_assigned_week_simplified() == B_WEEK]
+        a_week = [m for m in biweekly_members if m.get_assigned_week_simplified() == A_WEEK]
+        b_week = [m for m in biweekly_members if m.get_assigned_week_simplified() == B_WEEK]
         logger.debug("init => a week: %s, b week: %s" % (get_total(a_week), get_total(b_week)))
 
         # assign members without a distribution week
