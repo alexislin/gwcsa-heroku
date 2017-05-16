@@ -19,30 +19,35 @@
   </div>
 
   <div class="span-24 last below-8">
-    <div class="span-6">
+    <div class="span-3">
       <table class="summary">
-        <thead><tr><th># Members</th><th># Secondary Members</th></tr></thead>
+        <thead><tr><th># Members</th></tr></thead>
         <tbody>
-          <tr class="even"><td>{{member_count}}</td><td>{{secondary_member_count}}</td></tr>
+          <tr class="even"><td>{{member_count}}</td></tr>
         </tbody>
       </table>
     </div>
-    <div class="span-5">
+  </div>
+
+  <div class="span-24 last below-8">
+    <div class="span-10">
       <table class="summary">
-        <thead><tr><th colspan="2">Saturday - Total Shares</th></tr></thead>
+        <thead><tr><th colspan="12">Totals by Location and Share Type</th></tr></thead>
+        <thead>
+          <tr>
+            <th>Location</th>
+            <th>V</th><th>Fr</th><th>E</th><th>Fl</th><th>PS</th><th>Vso</th>
+            <th>BR</th><th>C</th><th>M</th><th>BD</th><th>Pl</th>
+          </tr>
+        </thead>
         <tbody>
-          {% for content, quantity in sat_counts %}
-            <tr {% cycle 'class="odd"' 'class="even"' %}><td>{{content}}</td><td>{{quantity}}</td></tr>
-          {% endfor %}
-        </tbody>
-      </table>
-    </div>
-    <div class="span-5">
-      <table class="summary">
-        <thead><tr><th colspan="2">Wednesday - Total Shares</th></tr></thead>
-        <tbody>
-          {% for content, quantity in wed_counts %}
-            <tr {% cycle 'class="odd"' 'class="even"' %}><td>{{content}}</td><td>{{quantity}}</td></tr>
+          {% for location, counts in location_counts %}
+            <tr {% cycle 'class="odd"' 'class="even"' %}>
+              <td>{{location}}</td>
+              {% for count in counts %}
+              <td>{{count}}</td>
+              {% endfor %}
+            </tr>
           {% endfor %}
         </tbody>
       </table>

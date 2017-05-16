@@ -58,7 +58,20 @@ def get_share_count(day):
     """, [CURRENT_SEASON, day])
     r = {c: q for (q, c) in cursor.fetchall()}
 
-    return [(desc, 0 if not code in r else r[code]) for code, desc in SHARES]
+    counts = [0 if not VEGETABLES in r else r[VEGETABLES], \
+        0 if not FRUIT in r else r[FRUIT], \
+        0 if not EGGS in r else r[EGGS], \
+        0 if not FLOWERS in r else r[FLOWERS], \
+        0 if not PERSONAL_SIZE in r else r[PERSONAL_SIZE], \
+        0 if not VEGETABLES_SUMMER_ONLY in r else r[VEGETABLES_SUMMER_ONLY], \
+        0 if not BEER in r else r[BEER], \
+        0 if not CHEESE in r else r[CHEESE], \
+        0 if not MEAT in r else r[MEAT], \
+        0 if not BREAD in r else r[BREAD], \
+        0 if not PLANTS in r else r[PLANTS]]
+    counts = ["{0}".format(str(round(x, 1) if x % 1 else int(x))) for x in counts]
+
+    return counts
 
 def get_ab_count_for_share(content):
     cursor = connection.cursor()

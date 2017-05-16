@@ -141,10 +141,14 @@ def members_export(request):
 @handle_view_exception
 @login_required
 def summaries(request):
+    location_counts = []
+    for location, desc in DAYS:
+        if location not in (WEDNESDAY, SATURDAY):
+            location_counts.append((desc, get_share_count(location)))
+
     return render_to_response("admin_summaries.html",
         RequestContext(request, {
-            "wed_counts": get_share_count(WEDNESDAY),
-            "sat_counts": get_share_count(SATURDAY),
+            "location_counts": location_counts,
             "veggie_counts": get_ab_count_for_share(VEGETABLES),
             "fruit_counts": get_ab_count_for_share(FRUIT),
             "egg_counts": get_ab_count_for_share(EGGS),
