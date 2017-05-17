@@ -59,11 +59,11 @@
     <div class="span-10">
       <table class="summary">
         <thead>
-          <tr><th colspan="6">{{location}}</th></tr>
-          <tr><th>Share</th><th>A</th><th>AB/A</th><th>B</th><th>AB/B</th><th>TBD</th></tr>
+          <tr><th colspan="7">{{location}}</th></tr>
+          <tr><th>Share</th><th>A</th><th>AB/A</th><th>B</th><th>AB/B</th><th>TBD</th><th>W</th></tr>
         </thead>
         <tbody>
-          {% for share, a, aba, b, abb, tbd in ab_counts %}
+          {% for share, a, aba, b, abb, tbd, w in ab_counts %}
             <tr {% cycle 'class="odd"' 'class="even"' %}>
               <td>{{share}}</td>
               <td>{{a|floatformat}}</td>
@@ -71,6 +71,7 @@
               <td>{{b|floatformat}}</td>
               <td>{{abb|floatformat}}</td>
               <td>{{tbd|floatformat}}</td>
+              <td>{{w|floatformat}}</td>
             </tr>
           {% endfor %}
         </tbody>

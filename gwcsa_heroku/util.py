@@ -74,6 +74,7 @@ def get_ab_count_for_location(loc):
     cursor = connection.cursor()
     cursor.execute("""
         SELECT s.content,
+               s.frequency,
                m.assigned_week,
                SUM(s.quantity) AS total
           FROM gwcsa_heroku_share s,
@@ -82,17 +83,34 @@ def get_ab_count_for_location(loc):
          WHERE m.id = s.member_id
            AND m.season_id = sn.id
            AND sn.name = %s
-           AND s.frequency = 'B'
+           AND (s.frequency = %s or s.frequency = %s)
            AND m.day = %s
-      GROUP BY s.content, m.assigned_week
-      ORDER BY s.content, m.assigned_week
-    """, [CURRENT_SEASON, loc])
+      GROUP BY s.content, s.frequency, m.assigned_week
+      ORDER BY s.content, s.frequency, m.assigned_week
+    """, [CURRENT_SEASON, BIWEEKLY, WEEKLY, loc])
     r = {}
-    for c, aw, t in cursor.fetchall():
-        if not c in r:
-            r[c] = {aw: t}
+    for c, f, aw, t in cursor.fetchall():
+        # check for unexpected situations
+        if f == WEEKLY and aw not in (WEEKLY_PLUS_A, WEEKLY_PLUS_B, WEEKLY):
+            raise Exception("Not allowed: f={0}, aw={1}".format(f, aw))
+        if f == BIWEEKLY and aw == WEEKLY:
+            raise Exception("Biweekly share with member assigned 'W' pickup")
+
+        if f == BIWEEKLY:
+            if not c in r:
+                r[c] = {aw: t}
+            else:
+                r[c][aw] = t
+        elif f == WEEKLY:
+            if not c in r:
+                r[c] = {WEEKLY: t}
+            else:
+                if not WEEKLY in r[c]:
+                    r[c][WEEKLY] = t
+                else:
+                    r[c][WEEKLY] += t
         else:
-            r[c][aw] = t
+            raise Exception("unexpected value for f: '{0}'".format(f))
 
     results = []
     for share in [VEGETABLES, FRUIT, EGGS, FLOWERS]:
@@ -100,7 +118,7 @@ def get_ab_count_for_location(loc):
         if not share in r:
             cnts.extend([0] * 4)
         else:
-            for week in [A_WEEK, WEEKLY_PLUS_A, B_WEEK, WEEKLY_PLUS_B, None]:
+            for week in [A_WEEK, WEEKLY_PLUS_A, B_WEEK, WEEKLY_PLUS_B, None, WEEKLY]:
                 cnts.append(0 if not week in r[share] else r[share][week])
         results.append(cnts)
     logger.debug("results: %s" % results)
