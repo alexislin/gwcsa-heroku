@@ -91,7 +91,7 @@ def get_ab_count_for_location(loc):
     r = {}
     for c, f, aw, t in cursor.fetchall():
         # check for unexpected situations
-        if f == WEEKLY and aw not in (WEEKLY_PLUS_A, WEEKLY_PLUS_B, WEEKLY):
+        if f == WEEKLY and aw not in (WEEKLY_PLUS_A, WEEKLY_PLUS_B, WEEKLY, None):
             raise Exception("Not allowed: f={0}, aw={1}".format(f, aw))
         if f == BIWEEKLY and aw == WEEKLY:
             raise Exception("Biweekly share with member assigned 'W' pickup")
