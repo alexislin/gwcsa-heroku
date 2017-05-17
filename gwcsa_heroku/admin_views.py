@@ -142,9 +142,14 @@ def members_export(request):
 @login_required
 def summaries(request):
     location_counts = []
+    totals = [0] * 11
     for location, desc in DAYS:
         if location not in (WEDNESDAY, SATURDAY):
-            location_counts.append((desc, get_share_count(location)))
+            count = get_share_count(location)
+            location_counts.append((desc, count))
+            totals = [x + y for x, y in zip(count, totals)]
+
+    location_counts.append(("Total", totals))
 
     return render_to_response("admin_summaries.html",
         RequestContext(request, {

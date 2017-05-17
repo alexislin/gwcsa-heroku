@@ -45,7 +45,7 @@
             <tr {% cycle 'class="odd"' 'class="even"' %}>
               <td>{{location}}</td>
               {% for count in counts %}
-              <td>{{count}}</td>
+              <td>{{count|floatformat}}</td>
               {% endfor %}
             </tr>
           {% endfor %}
