@@ -70,10 +70,10 @@ def get_share_count(day):
         0 if not BREAD in r else r[BREAD], \
         0 if not PLANTS in r else r[PLANTS]]
 
-def get_ab_count_for_share(content):
+def get_ab_count_for_location(loc):
     cursor = connection.cursor()
     cursor.execute("""
-        SELECT m.day,
+        SELECT s.content,
                m.assigned_week,
                SUM(s.quantity) AS total
           FROM gwcsa_heroku_share s,
@@ -83,47 +83,29 @@ def get_ab_count_for_share(content):
            AND m.season_id = sn.id
            AND sn.name = %s
            AND s.frequency = 'B'
-           AND s.content = %s
-      GROUP BY m.day, m.assigned_week
-      ORDER BY m.day, m.assigned_week
-    """, [CURRENT_SEASON, content])
+           AND m.day = %s
+      GROUP BY s.content, m.assigned_week
+      ORDER BY s.content, m.assigned_week
+    """, [CURRENT_SEASON, loc])
+    r = {}
+    for c, aw, t in cursor.fetchall():
+        if not c in r:
+            r[c] = {aw: t}
+        else:
+            r[c][aw] = t
 
     results = []
-    for day, assigned_week, total in cursor.fetchall():
-        results.append((
-            [desc for code, desc in DAYS if code == day][0],
-            assigned_week,
-            total
-        ))
-
+    for share in [VEGETABLES, FRUIT, EGGS, FLOWERS]:
+        cnts = [share]
+        if not share in r:
+            cnts.extend([0] * 4)
+        else:
+            for week in [A_WEEK, WEEKLY_PLUS_A, B_WEEK, WEEKLY_PLUS_B, None]:
+                cnts.append(0 if not week in r[share] else r[share][week])
+        results.append(cnts)
+    logger.debug("results: %s" % results)
     return results
 
-def get_weekly_count_for_shares():
-    cursor = connection.cursor()
-    cursor.execute("""
-        SELECT m.day,
-               s.content,
-               SUM(s.quantity) AS total
-          FROM gwcsa_heroku_share s,
-               gwcsa_heroku_member m,
-               gwcsa_heroku_season sn
-         WHERE m.id = s.member_id
-           AND m.season_id = sn.id
-           AND sn.name = %s
-           AND s.frequency = 'W'
-      GROUP BY m.day, s.content
-      ORDER BY m.day, s.content desc
-    """, [CURRENT_SEASON])
-
-    results = []
-    for day, content, total in cursor.fetchall():
-        results.append((
-            [desc for code, desc in DAYS if code == day][0],
-            [desc for code, desc in SHARES if code == content][0],
-            total
-        ))
-
-    return results
 
 # TODO: verify that column headers match expected title so that we're not
 #       mis-processing columns (Farmigo changes the csv export regularly)

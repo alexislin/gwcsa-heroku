@@ -141,6 +141,7 @@ def members_export(request):
 @handle_view_exception
 @login_required
 def summaries(request):
+    location_ab_counts = []
     location_counts = []
     totals = [0] * 11
     for location, desc in DAYS:
@@ -149,22 +150,16 @@ def summaries(request):
             location_counts.append((desc, count))
             totals = [x + y for x, y in zip(count, totals)]
 
+            ab_count = get_ab_count_for_location(location)
+            location_ab_counts.append((desc, ab_count))
+
     location_counts.append(("Total", totals))
 
     return render_to_response("admin_summaries.html",
         RequestContext(request, {
             "location_counts": location_counts,
-            "veggie_counts": get_ab_count_for_share(VEGETABLES),
-            "fruit_counts": get_ab_count_for_share(FRUIT),
-            "egg_counts": get_ab_count_for_share(EGGS),
-            "flower_counts": get_ab_count_for_share(FLOWERS),
-            "weekly_counts": get_weekly_count_for_shares(),
+            "location_ab_counts": location_ab_counts,
             "member_count": Member.objects.filter(season__name=CURRENT_SEASON).count(),
-            "secondary_member_count": Member.objects \
-                .filter(season__name=CURRENT_SEASON) \
-                .exclude(secondary_email__isnull=True) \
-                .exclude(secondary_email__exact="") \
-                .exclude(secondary_email=F('email')).count(), # at least one member has matching primary and secondary info
         })
     )
 

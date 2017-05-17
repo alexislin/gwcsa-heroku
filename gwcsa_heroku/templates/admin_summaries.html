@@ -54,73 +54,29 @@
     </div>
   </div>
 
+  {% for location, ab_counts in location_ab_counts %}
   <div class="span-24 last">
-    <div class="span-5">
+    <div class="span-10">
       <table class="summary">
         <thead>
-          <tr><th colspan="3">Veggie A/B Count</th></tr>
-          <tr><th>Day</th><th>Week</th><th>Count</th></tr>
+          <tr><th colspan="6">{{location}}</th></tr>
+          <tr><th>Share</th><th>A</th><th>AB/A</th><th>B</th><th>AB/B</th><th>TBD</th></tr>
         </thead>
         <tbody>
-          {% for day, assigned_week, total in veggie_counts %}
-            <tr {% cycle 'class="odd"' 'class="even"' %}><td>{{day}}</td><td>{{assigned_week|default_if_none:""}}</td><td>{{total}}</td></tr>
+          {% for share, a, aba, b, abb, tbd in ab_counts %}
+            <tr {% cycle 'class="odd"' 'class="even"' %}>
+              <td>{{share}}</td>
+              <td>{{a|floatformat}}</td>
+              <td>{{aba|floatformat}}</td>
+              <td>{{b|floatformat}}</td>
+              <td>{{abb|floatformat}}</td>
+              <td>{{tbd|floatformat}}</td>
+            </tr>
           {% endfor %}
         </tbody>
       </table>
     </div>
-    <div class="span-5">
-      <table class="summary">
-        <thead>
-          <tr><th colspan="3">Fruit A/B Count</th></tr>
-          <tr><th>Day</th><th>Week</th><th>Count</th></tr>
-        </thead>
-        <tbody>
-          {% for day, assigned_week, total in fruit_counts %}
-            <tr {% cycle 'class="odd"' 'class="even"' %}><td>{{day}}</td><td>{{assigned_week|default_if_none:""}}</td><td>{{total}}</td></tr>
-          {% endfor %}
-        </tbody>
-      </table>
-    </div>
-    <div class="span-5">
-      <table class="summary">
-        <thead>
-          <tr><th colspan="3">Egg A/B Count</th></tr>
-          <tr><th>Day</th><th>Week</th><th>Count</th></tr>
-        </thead>
-        <tbody>
-          {% for day, assigned_week, total in egg_counts %}
-            <tr {% cycle 'class="odd"' 'class="even"' %}><td>{{day}}</td><td>{{assigned_week|default_if_none:""}}</td><td>{{total}}</td></tr>
-          {% endfor %}
-        </tbody>
-      </table>
-    </div>
-    <div class="span-5">
-      <table class="summary">
-        <thead>
-          <tr><th colspan="3">Flower A/B Count</th></tr>
-          <tr><th>Day</th><th>Week</th><th>Count</th></tr>
-        </thead>
-        <tbody>
-          {% for day, assigned_week, total in flower_counts %}
-            <tr {% cycle 'class="odd"' 'class="even"' %}><td>{{day}}</td><td>{{assigned_week|default_if_none:""}}</td><td>{{total}}</td></tr>
-          {% endfor %}
-        </tbody>
-      </table>
-    </div>
-    <div class="span-4 last">
-      <table class="summary">
-        <thead>
-          <tr><th colspan="3">Weekly Share Count</th></tr>
-          <tr><th>Day</th><th>Content</th><th>Count</th></tr>
-        </thead>
-        <tbody>
-          {% for day, content, total in weekly_counts %}
-            <tr {% cycle 'class="odd"' 'class="even"' %}><td>{{day}}</td><td>{{content}}</td><td>{{total}}</td></tr>
-          {% endfor %}
-        </tbody>
-      </table>
-    </div>
-
   </div>
+  {% endfor %}
 
 {% endblock %}
