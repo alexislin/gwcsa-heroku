@@ -20,10 +20,6 @@ urlpatterns = patterns('',
     url(r'^csv_xform$', 'gwcsa_heroku.views.csv_xform', name='csv_xform'),
     url(r'^signup_quiz$', 'gwcsa_heroku.views.signup_quiz', name='signup_quiz'),
 
-    url(r'^init/assigned_week$', 'gwcsa_heroku.init.init_assigned_week', name='init_assigned_week'),
-    url(r'^init/is_weekly$', 'gwcsa_heroku.init.set_is_weekly', name='set_is_weekly'),
-
-
     # Examples:
     # url(r'^gwcsa_heroku/', include('gwcsa_heroku.foo.urls')),
 

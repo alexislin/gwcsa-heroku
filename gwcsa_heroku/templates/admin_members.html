@@ -11,6 +11,8 @@
     table.shares { padding-right: 50px; }
       table.shares td.left-border { border-left: 1px #BBB solid; }
       table.shares tr.hover td { background-color: #78515C !important; color: #FFFFFF; }
+
+    .export_button_padding { padding-top: 3px; }
   </style>
 
   <script type="text/javascript">
@@ -46,22 +48,29 @@
       <form enctype="multipart/form-data" method="post">
         {% csrf_token %}
         <label for="csv-file">
-          Import Farmigo subscription CVS file:
+          Import Farmigo CSV File:
           <br />
           <input id="csv-file" name="csv-file" type="file">
         </label>
         <br />
         &nbsp;<br />
-        <input id="upload-button" type="submit" value="upload">
+        <input id="upload-button" name="upload-button" type="submit" value="upload">
       </form>
     </div>
     <div class="prepend-2 span-2 last">
+      <form enctype="multipart/form-data" method="post">
+        {% csrf_token %}
+        <input id="assign-week-button" name="assign-week-button" type="submit" value="Assign A/B">
+      </form>
+      <div class="export_button_padding">
       <form enctype="multipart/form-data" method="post" action="/admin/members/export">
         {% csrf_token %}
         <input id="export-button" type="submit" value="Export...">
       </form>
+      </div>
     </div>
   </div>
+
 
   <div class="span-24 last">
     <table class="shares">

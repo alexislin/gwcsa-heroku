@@ -54,12 +54,15 @@ SHARE_COUNT_QUERY = """
 @login_required
 def members(request):
     if request.method == "POST":
-        csv = request.FILES["csv-file"]
+        if "upload-button" in request.POST:
+            csv = request.FILES["csv-file"]
 
-        lines = csv.read().split("\n")
-        for line in lines[1:]:
-            if len(line.strip()) > 0:
-                add_update_member_from_farmigo_csv_entry(line)
+            lines = csv.read().split("\n")
+            for line in lines[1:]:
+                if len(line.strip()) > 0:
+                    add_update_member_from_farmigo_csv_entry(line)
+        elif "assign-week-button" in request.POST:
+            __assign_weeks()
 
     # query member data for page
     members = Member.objects.filter(season__name=CURRENT_SEASON).extra(select={
@@ -84,6 +87,59 @@ def members(request):
             "members": members
         })
     )
+
+def __get_total(members, member=None):
+    total = [0]*4
+    for m in members:
+        total = __get_tplus(getattr(m, "biweekly_share_counts"), total)
+
+    return total if not member else \
+    __get_tplus(getattr(member, "biweekly_share_counts"), total)
+
+def __get_tplus(t, s):
+    return [sum(c) for c in zip(*(t, s))]
+
+def __get_diff(t1, t2):
+    return sum([abs(x-y) for x, y in zip(*(t1, t2))])
+
+def __assign_weeks():
+    for location, description in DAYS:
+        logger.debug("Assigning A/B Week - %s" % description)
+
+        # find biweekly members for this location
+        biweekly_members = []
+        for m in Member.objects.filter(season__name=CURRENT_SEASON,day=location):
+            if m.is_weekly and not m.has_biweekly:
+                m.set_assigned_week(WEEKLY)
+            else:
+                # only assign A/B weeks to members that have at least one biweekly
+                # share (veggies, fruit, eggs or flowers)
+                m.add_share_attributes()
+                if sum(getattr(m, "biweekly_share_counts")) > 0:
+                    biweekly_members.append(m)
+                if getattr(m, "a_week") and not m.assigned_week:
+                    m.set_assigned_week(A_WEEK)
+
+        # initialize our a and b weeks of members
+        a_week = [m for m in biweekly_members if m.get_assigned_week_simplified() == A_WEEK]
+        b_week = [m for m in biweekly_members if m.get_assigned_week_simplified() == B_WEEK]
+
+        # assign members without a distribution week
+        for m in [m for m in biweekly_members if not m in a_week and not m in b_week]:
+            diff_a = __get_diff(
+                __get_total(a_week, m),
+                __get_total(b_week)
+            )
+            diff_b = __get_diff(
+                __get_total(a_week),
+                __get_total(b_week, m)
+            )
+            if diff_a <= diff_b:
+                a_week.append(m)
+                m.set_assigned_week(A_WEEK)
+            else:
+                b_week.append(m)
+                m.set_assigned_week(B_WEEK)
 
 def __shares_contain(shares, content):
     if len(shares) == 0:
