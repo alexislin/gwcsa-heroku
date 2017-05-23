@@ -1,6 +1,8 @@
 import csv
 import logging
 import sys
+import zipfile
+import StringIO
 
 from django.db.models import Count, F
 from django.contrib.auth.decorators import login_required
@@ -145,17 +147,24 @@ def __assign_weeks():
 @handle_view_exception
 @login_required
 def members_export(request):
-    response = HttpResponse(content_type='text/csv')
-    response['Content-Disposition'] = 'attachment; filename="gwcsa_export.csv"'
+    response = HttpResponse(content_type='application/x-zip-compressed')
+    response['Content-Disposition'] = 'attachment; filename="eve_exports.zip"'
 
-    writer = csv.writer(response, dialect=csv.excel)
+    s = StringIO.StringIO()
+    writer = csv.writer(s, dialect=csv.excel)
     writer.writerow(["First Name", "Last Name", "Signup Date", "Email",
         "Phone", "Week", "V(A)", "V(B)", "V(?)", "Fr(A)", "Fr(B)", "Fr(?)",
         "E(A)", "E(B)", "E(?)", "Fl(A)", "Fl(B)", "Fl(?)", "Vso", "PS",
         "Br", "C", "M", "Bd", "Share Description"])
-
     for m in Member.objects.filter(season__name=CURRENT_SEASON):
         writer.writerow(m.get_export_row())
+
+    zf = zipfile.ZipFile(response, mode="w", compression=zipfile.ZIP_DEFLATED,)
+    try:
+        zf.writestr("locations/my_export.csv", s.getvalue())
+    finally:
+        zf.close()
+
     return response
 
 
