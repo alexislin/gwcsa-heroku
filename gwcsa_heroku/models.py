@@ -121,7 +121,7 @@ class Member(TimestampedModel):
     # returns the long version of the week assignment (for display/export)
     def get_assigned_week_description(self):
         if self.assigned_week is None:
-            return None
+            return "TBD"
         for code, desc in WEEK:
             if self.assigned_week == code:
                 return desc
@@ -158,7 +158,7 @@ class Member(TimestampedModel):
     def get_formatted_signup_date(self):
         if not self.farmigo_signup_date:
             return ""
-        return self.farmigo_signup_date.strftime("%m/%d/%Y %H:%M")
+        return self.farmigo_signup_date.strftime("%m/%d/%Y")
     formatted_signup_date = property(get_formatted_signup_date)
 
     def add_share_attributes(self):
@@ -178,6 +178,37 @@ class Member(TimestampedModel):
 
         setattr(self, "biweekly_share_counts",
             (d[VEGETABLES], d[FRUIT], d[EGGS], d[FLOWERS]))
+
+    def get_export_row(self):
+        indices = { VEGETABLES: 0, FRUIT: 3, EGGS: 6, FLOWERS: 9,
+            VEGETABLES_SUMMER_ONLY: 12, PERSONAL_SIZE: 13,
+            BEER: 14, CHEESE: 15, MEAT: 16, BREAD: 17 }
+        # V(A), V(B), V(?), FR(A), FR(B), FR(?),  0- 5
+        # E(A), E(B), E(?), FL(A), FL(B), FL(?),  6-11
+        # Vso, PS, BR, C, M, BD                  12-17
+        d = [0]*18
+        for s in Share.objects.filter(member=self):
+            if s.content in (VEGETABLES, FRUIT, EGGS, FLOWERS):
+                i = indices[s.content]
+                if s.frequency == WEEKLY:
+                    d[i] += s.quantity
+                    d[i+1] += s.quantity
+                elif s.frequency == BIWEEKLY:
+                    week = self.get_assigned_week_simplified()
+                    if week == A_WEEK:
+                        d[i] += s.quantity
+                    elif week == B_WEEK:
+                        d[i+1] += s.quantity
+                    elif not week:
+                        d[i+2] += s.quantity
+                    else:
+                        raise Exception("weekly member with biweekly shares! id={0}".format(self.id))
+            elif s.content in (VEGETABLES_SUMMER_ONLY, PERSONAL_SIZE, BEER, CHEESE, MEAT, BREAD):
+                d[indices[s.content]] += s.quantity
+
+        return [self.first_name, self.last_name, self.get_formatted_signup_date(),\
+                self.email, self.phone, self.get_assigned_week_description()] \
+            + d + [self.farmigo_share_description]
 
     @staticmethod
     def get_or_create_member(first_name, last_name, email):

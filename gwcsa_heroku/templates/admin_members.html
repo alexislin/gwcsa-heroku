@@ -127,7 +127,7 @@
             <td class="left-border">{{member.meat_count|default_if_none:" "}}</td>
             <td class="left-border">{{member.bread_count|default_if_none:" "}}</td>
             <td class="left-border">{{member.plant_count|default_if_none:" "}}</td>
-            <td class="left-border">{% if member.assigned_week == "W" %}-{% else %}{{member.assigned_week_description|default_if_none:"TBD"}}{% endif %}</td>
+            <td class="left-border">{% if member.assigned_week == "W" %}-{% else %}{{member.assigned_week_description}}{% endif %}</td>
           </tr>
         {% endfor %}
       </tbody>
