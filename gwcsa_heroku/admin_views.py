@@ -1,6 +1,8 @@
 import csv
 import logging
 import sys
+import time
+import traceback
 import zipfile
 import StringIO
 
@@ -150,20 +152,25 @@ def members_export(request):
     response = HttpResponse(content_type='application/x-zip-compressed')
     response['Content-Disposition'] = 'attachment; filename="eve_exports.zip"'
 
-    s = StringIO.StringIO()
-    writer = csv.writer(s, dialect=csv.excel)
-    writer.writerow(["First Name", "Last Name", "Signup Date", "Email",
-        "Phone", "Week", "V(A)", "V(B)", "V(?)", "Fr(A)", "Fr(B)", "Fr(?)",
-        "E(A)", "E(B)", "E(?)", "Fl(A)", "Fl(B)", "Fl(?)", "Vso", "PS",
-        "Br", "C", "M", "Bd", "Share Description"])
-    for m in Member.objects.filter(season__name=CURRENT_SEASON):
-        writer.writerow(m.get_export_row())
+    zip_dir = "locations_{0}".format(time.strftime("%Y%m%d_%H%M"))
 
-    zf = zipfile.ZipFile(response, mode="w", compression=zipfile.ZIP_DEFLATED,)
+    z = zipfile.ZipFile(response, mode="w", compression=zipfile.ZIP_DEFLATED,)
     try:
-        zf.writestr("locations/my_export.csv", s.getvalue())
+        for loc, desc in [(l, d) for l, d in DAYS if l not in (WEDNESDAY, SATURDAY)]:
+            s = StringIO.StringIO()
+            writer = csv.writer(s, dialect=csv.excel)
+            writer.writerow(["First Name", "Last Name", "Signup Date", "Email",
+                "Phone", "Week", "V(A)", "V(B)", "V(?)", "Fr(A)", "Fr(B)", "Fr(?)",
+                "E(A)", "E(B)", "E(?)", "Fl(A)", "Fl(B)", "Fl(?)", "Vso", "PS",
+                "Br", "C", "M", "Bd", "Share Description"])
+            for m in Member.objects.filter(season__name=CURRENT_SEASON,day=loc):
+                writer.writerow(m.get_export_row())
+            z.writestr("{0}/{1}.csv".format(zip_dir, loc), s.getvalue())
+    except Exception as error:
+        logger.error(traceback.format_exc())
+        return render_to_response("error.html", RequestContext(request, { "error_message" : error }))
     finally:
-        zf.close()
+        z.close()
 
     return response
 
