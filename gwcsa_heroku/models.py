@@ -179,8 +179,10 @@ class Member(TimestampedModel):
         setattr(self, "biweekly_share_counts",
             (d[VEGETABLES], d[FRUIT], d[EGGS], d[FLOWERS]))
 
-    def get_export_row(self):
-        indices = { VEGETABLES: 0, FRUIT: 3, EGGS: 6, FLOWERS: 9,
+    # returns all the share information if export_week not in (A_WEEK, B_WEEK),
+    # otherwise returns packing list info only for specified week
+    def get_export_row(self, export_week=None):
+        idx = { VEGETABLES: 0, FRUIT: 3, EGGS: 6, FLOWERS: 9,
             VEGETABLES_SUMMER_ONLY: 12, PERSONAL_SIZE: 13,
             BEER: 14, CHEESE: 15, MEAT: 16, BREAD: 17 }
         # V(A), V(B), V(?), FR(A), FR(B), FR(?),  0- 5
@@ -189,7 +191,7 @@ class Member(TimestampedModel):
         d = [0]*18
         for s in Share.objects.filter(member=self):
             if s.content in (VEGETABLES, FRUIT, EGGS, FLOWERS):
-                i = indices[s.content]
+                i = idx[s.content]
                 if s.frequency == WEEKLY:
                     d[i] += s.quantity
                     d[i+1] += s.quantity
@@ -204,11 +206,24 @@ class Member(TimestampedModel):
                     else:
                         raise Exception("weekly member with biweekly shares! id={0}".format(self.id))
             elif s.content in (VEGETABLES_SUMMER_ONLY, PERSONAL_SIZE, BEER, CHEESE, MEAT, BREAD):
-                d[indices[s.content]] += s.quantity
+                d[idx[s.content]] += s.quantity
 
-        return [self.first_name, self.last_name, self.get_formatted_signup_date(),\
-                self.email, self.phone, self.get_assigned_week_description()] \
-            + d + [self.farmigo_share_description]
+        member_info = [self.first_name, self.last_name, self.get_formatted_signup_date(),\
+                self.email, self.phone, self.get_assigned_week_description()]
+
+        share_cnts = []
+        if export_week == A_WEEK:
+            share_cnts = [d[idx[VEGETABLES]], d[idx[FRUIT]], d[idx[EGGS]], \
+                d[idx[FLOWERS]]] + d[idx[VEGETABLES_SUMMER_ONLY]:]
+        elif export_week == B_WEEK:
+            share_cnts = [d[idx[VEGETABLES]+1], d[idx[FRUIT]+1], \
+                d[idx[EGGS]+1], d[idx[FLOWERS]+1], \
+                d[idx[VEGETABLES_SUMMER_ONLY]], d[idx[PERSONAL_SIZE]]]
+        else:
+            share_cnts = d
+
+        # concatenate arrays of member info
+        return member_info + share_cnts + [self.farmigo_share_description]
 
     @staticmethod
     def get_or_create_member(first_name, last_name, email):

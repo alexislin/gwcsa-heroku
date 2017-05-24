@@ -157,6 +157,7 @@ def members_export(request):
     z = zipfile.ZipFile(response, mode="w", compression=zipfile.ZIP_DEFLATED,)
     try:
         for loc, desc in [(l, d) for l, d in DAYS if l not in (WEDNESDAY, SATURDAY)]:
+            # export all share info for this location
             s = StringIO.StringIO()
             writer = csv.writer(s, dialect=csv.excel)
             writer.writerow(["First Name", "Last Name", "Signup Date", "Email",
@@ -166,6 +167,28 @@ def members_export(request):
             for m in Member.objects.filter(season__name=CURRENT_SEASON,day=loc):
                 writer.writerow(m.get_export_row())
             z.writestr("{0}/{1}.csv".format(zip_dir, loc), s.getvalue())
+
+            # export packing list for week A
+            s = StringIO.StringIO()
+            writer = csv.writer(s, dialect=csv.excel)
+            writer.writerow(["First Name", "Last Name", "Signup Date", "Email",
+                "Phone", "Week", "V", "Fr", "E", "Fl", "Vso", "PS",
+                "Br", "C", "M", "Bd", "Share Description"])
+            for m in Member.objects.filter(season__name=CURRENT_SEASON,day=loc):
+                if m.assigned_week != B_WEEK: # don't include B week only
+                    writer.writerow(m.get_export_row(A_WEEK))
+            z.writestr("{0}/{1}_PACKING_LIST_A.csv".format(zip_dir, loc), s.getvalue())
+
+            # export packing list for week B
+            s = StringIO.StringIO()
+            writer = csv.writer(s, dialect=csv.excel)
+            writer.writerow(["First Name", "Last Name", "Signup Date", "Email",
+                "Phone", "Week", "V", "Fr", "E", "Fl", "Vso", "PS", "Share Description"])
+            for m in Member.objects.filter(season__name=CURRENT_SEASON,day=loc):
+                if m.assigned_week != A_WEEK: # don't include A week only
+                    writer.writerow(m.get_export_row(B_WEEK))
+            z.writestr("{0}/{1}_PACKING_LIST_B.csv".format(zip_dir, loc), s.getvalue())
+
     except Exception as error:
         logger.error(traceback.format_exc())
         return render_to_response("error.html", RequestContext(request, { "error_message" : error }))
