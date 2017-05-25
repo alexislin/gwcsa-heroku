@@ -157,6 +157,9 @@ def members_export(request):
     z = zipfile.ZipFile(response, mode="w", compression=zipfile.ZIP_DEFLATED,)
     try:
         for loc, desc in [(l, d) for l, d in DAYS if l not in (WEDNESDAY, SATURDAY)]:
+            members = Member.objects.filter(season__name=CURRENT_SEASON,day=loc)\
+                .order_by("farmigo_signup_date")
+
             # export all share info for this location
             s = StringIO.StringIO()
             writer = csv.writer(s, dialect=csv.excel)
@@ -164,7 +167,7 @@ def members_export(request):
                 "Phone", "Week", "V(A)", "V(B)", "V(?)", "Fr(A)", "Fr(B)", "Fr(?)",
                 "E(A)", "E(B)", "E(?)", "Fl(A)", "Fl(B)", "Fl(?)", "Vso", "PS",
                 "Br", "C", "M", "Bd", "Share Description"])
-            for m in Member.objects.filter(season__name=CURRENT_SEASON,day=loc):
+            for m in members:
                 writer.writerow(m.get_export_row())
             z.writestr("{0}/{1}.csv".format(zip_dir, loc), s.getvalue())
 
@@ -174,7 +177,7 @@ def members_export(request):
             writer.writerow(["First Name", "Last Name", "Signup Date", "Email",
                 "Phone", "Week", "V", "Fr", "E", "Fl", "Vso", "PS",
                 "Br", "C", "M", "Bd", "Share Description"])
-            for m in Member.objects.filter(season__name=CURRENT_SEASON,day=loc):
+            for m in members:
                 if m.assigned_week != B_WEEK: # don't include B week only
                     writer.writerow(m.get_export_row(A_WEEK))
             z.writestr("{0}/{1}_PACKING_LIST_A.csv".format(zip_dir, loc), s.getvalue())
@@ -184,7 +187,7 @@ def members_export(request):
             writer = csv.writer(s, dialect=csv.excel)
             writer.writerow(["First Name", "Last Name", "Signup Date", "Email",
                 "Phone", "Week", "V", "Fr", "E", "Fl", "Vso", "PS", "Share Description"])
-            for m in Member.objects.filter(season__name=CURRENT_SEASON,day=loc):
+            for m in members:
                 if m.assigned_week != A_WEEK: # don't include A week only
                     writer.writerow(m.get_export_row(B_WEEK))
             z.writestr("{0}/{1}_PACKING_LIST_B.csv".format(zip_dir, loc), s.getvalue())
