@@ -168,7 +168,7 @@ class Member(TimestampedModel):
         for s in Share.objects.filter(member=self):
             if s.frequency == BIWEEKLY:
                 d[s.content] += s.quantity
-            if s.content in [MEAT, CHEESE, PICKLES_AND_PRESERVES] and s.quantity > 0:
+            if s.content in [MEAT, CHEESE, BEER, BREAD] and s.quantity > 0:
                 setattr(self, "a_week", True)
 
         # if this member has any weekly shares, then they're coming every week

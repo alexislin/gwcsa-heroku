@@ -91,7 +91,7 @@ def get_ab_count_for_location(loc):
     r = {}
     for c, f, aw, t in cursor.fetchall():
         # check for unexpected situations
-        if f == WEEKLY and aw not in (WEEKLY_PLUS_A, WEEKLY_PLUS_B, WEEKLY, None):
+        if c != BEER and f == WEEKLY and aw not in (WEEKLY_PLUS_A, WEEKLY_PLUS_B, WEEKLY, None):
             raise Exception("Not allowed: f={0}, aw={1}".format(f, aw))
         if f == BIWEEKLY and aw == WEEKLY:
             raise Exception("Biweekly share with member assigned 'W' pickup")
@@ -248,7 +248,11 @@ def add_update_member_from_farmigo_csv_entry(line):
         else:
             raise Exception("Unknown share type: %s" % s)
 
-    member.is_weekly = Share.objects.filter(member=member,frequency=WEEKLY).count() > 0
-    member.has_biweekly = Share.objects.filter(member=member,frequency=BIWEEKLY).count() > 0
+    member.is_weekly = Share.objects.filter(
+            member=member,frequency=WEEKLY
+        ).exclude(content=BEER).count() > 0
+    member.has_biweekly = Share.objects.filter(
+            member=member,frequency=BIWEEKLY
+        ).count() > 0
     member.save()
 
