@@ -156,6 +156,14 @@ def members_export(request):
 
     z = zipfile.ZipFile(response, mode="w", compression=zipfile.ZIP_DEFLATED,)
     try:
+        # csv writer for our summary file with all members included
+        ss = StringIO.StringIO()
+        ws = csv.writer(ss, dialect=csv.excel)
+        ws.writerow(["Location", "First Name", "Last Name", "Signup Date", "Email",
+            "Phone", "Week", "V(A)", "V(B)", "V(?)", "Fr(A)", "Fr(B)", "Fr(?)",
+            "E(A)", "E(B)", "E(?)", "Fl(A)", "Fl(B)", "Fl(?)", "Vso", "PS",
+            "Br", "C", "M", "Bd", "Share Description"])
+
         for loc, desc in [(l, d) for l, d in DAYS if l not in (WEDNESDAY, SATURDAY)]:
             members = Member.objects.filter(season__name=CURRENT_SEASON,day=loc)\
                 .order_by("farmigo_signup_date")
@@ -168,7 +176,9 @@ def members_export(request):
                 "E(A)", "E(B)", "E(?)", "Fl(A)", "Fl(B)", "Fl(?)", "Vso", "PS",
                 "Br", "C", "M", "Bd", "Share Description"])
             for m in members:
-                writer.writerow(m.get_export_row())
+                export_row = m.get_export_row()
+                writer.writerow(export_row)
+                ws.writerow([loc] + export_row)
             z.writestr("{0}/{1}.csv".format(zip_dir, loc), s.getvalue())
 
             # export packing list for week A
@@ -192,6 +202,8 @@ def members_export(request):
                     writer.writerow(m.get_export_row(B_WEEK))
             z.writestr("{0}/{1}_PACKING_LIST_B.csv".format(zip_dir, loc), s.getvalue())
 
+        # export the summary csv
+        z.writestr("{0}/summary.csv".format(zip_dir, loc), ss.getvalue())
     except Exception as error:
         logger.error(traceback.format_exc())
         return render_to_response("error.html", RequestContext(request, { "error_message" : error }))
