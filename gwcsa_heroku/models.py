@@ -37,6 +37,7 @@ DAYS = (
     ('UW', 'UWS: Ansche Chesed, Manhattan - Wednesday'),
     ('WB', 'Williamsburg-McCarren Park, Brooklyn - Saturday'),
     ('WH', 'Westhampton Beach Farmers Market, Long Island - Saturday'),
+    ('KN', 'Kensington/Windsor Terrace, Brooklyn - Wednesday'),
 )
 WEDNESDAY = DAYS[0][0]
 SATURDAY = DAYS[1][0]
@@ -50,7 +51,7 @@ FOREST_HILLS = DAYS[8][0]
 GLENDALE = DAYS[9][0]
 GREENPOINT = DAYS[10][0]
 KEW_GARDENS = DAYS[11][0]
-KENSINGTON = DAYS[12][0]
+KENSINGTON_SAT = DAYS[12][0]
 MT_SINAI = DAYS[13][0]
 RIVERHEAD_WED = DAYS[14][0]
 ROSLYN = DAYS[15][0]
@@ -60,6 +61,7 @@ STONY_BROOK = DAYS[18][0]
 UWS = DAYS[19][0]
 WILLIAMSBURG = DAYS[20][0]
 WESTHAMPTON_BEACH = DAYS[21][0]
+KENSINGTON_WED = DAYS[22][0]
 
 SEASONS = (
     ('2014', '2014'),
