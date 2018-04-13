@@ -68,8 +68,9 @@ SEASONS = (
     ('2015', '2015'),
     ('2016', '2016'),
     ('2017', '2017'),
+    ('2018', '2018'),
 )
-CURRENT_SEASON = SEASONS[3][0]
+CURRENT_SEASON = SEASONS[4][0]
 
 class Season(TimestampedModel):
     name = models.CharField(max_length=6,null=False,choices=SEASONS,default=CURRENT_SEASON)
