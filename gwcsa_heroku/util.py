@@ -77,7 +77,6 @@ def get_share_count(day):
         0 if not FRUIT in r else r[FRUIT], \
         0 if not EGGS in r else r[EGGS], \
         0 if not FLOWERS in r else r[FLOWERS], \
-        0 if not VEGETABLES_SUMMER_ONLY in r else r[VEGETABLES_SUMMER_ONLY], \
         0 if not BEER in r else r[BEER], \
         0 if not CHEESE in r else r[CHEESE], \
         0 if not MEAT in r else r[MEAT], \
