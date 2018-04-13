@@ -77,7 +77,6 @@ def get_share_count(day):
         0 if not FRUIT in r else r[FRUIT], \
         0 if not EGGS in r else r[EGGS], \
         0 if not FLOWERS in r else r[FLOWERS], \
-        0 if not PERSONAL_SIZE in r else r[PERSONAL_SIZE], \
         0 if not VEGETABLES_SUMMER_ONLY in r else r[VEGETABLES_SUMMER_ONLY], \
         0 if not BEER in r else r[BEER], \
         0 if not CHEESE in r else r[CHEESE], \
@@ -245,8 +244,6 @@ def add_update_member_from_farmigo_csv_entry(line):
             Share.add_or_create_share(member,quantity,WEEKLY,FRUIT)
             Share.add_or_create_share(member,quantity,WEEKLY,EGGS)
             Share.add_or_create_share(member,quantity,WEEKLY,FLOWERS)
-        elif re.compile("Personal Size Weekly Share", re.IGNORECASE).search(s):
-            Share.add_or_create_share(member,quantity,WEEKLY,PERSONAL_SIZE)
         elif re.compile("Craft Beer", re.IGNORECASE).search(s):
             # marked as a WEEKLY share because Eve is allowing people to
             # buy beer without any other shares (not even veggies)

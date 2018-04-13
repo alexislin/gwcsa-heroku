@@ -186,12 +186,12 @@ class Member(TimestampedModel):
     # otherwise returns packing list info only for specified week
     def get_export_row(self, export_week=None):
         idx = { VEGETABLES: 0, FRUIT: 3, EGGS: 6, FLOWERS: 9,
-            VEGETABLES_SUMMER_ONLY: 12, PERSONAL_SIZE: 13,
-            BEER: 14, CHEESE: 15, MEAT: 16, BREAD: 17 }
+            VEGETABLES_SUMMER_ONLY: 12,
+            BEER: 13, CHEESE: 14, MEAT: 15, BREAD: 16 }
         # V(A), V(B), V(?), FR(A), FR(B), FR(?),  0- 5
         # E(A), E(B), E(?), FL(A), FL(B), FL(?),  6-11
-        # Vso, PS, BR, C, M, BD                  12-17
-        d = [0]*18
+        # Vso, BR, C, M, BD                  12-16
+        d = [0]*17
         for s in Share.objects.filter(member=self):
             if s.content in (VEGETABLES, FRUIT, EGGS, FLOWERS):
                 i = idx[s.content]
@@ -208,7 +208,7 @@ class Member(TimestampedModel):
                         d[i+2] += s.quantity
                     else:
                         raise Exception("weekly member with biweekly shares! id={0}".format(self.id))
-            elif s.content in (VEGETABLES_SUMMER_ONLY, PERSONAL_SIZE, BEER, CHEESE, MEAT, BREAD):
+            elif s.content in (VEGETABLES_SUMMER_ONLY, BEER, CHEESE, MEAT, BREAD):
                 d[idx[s.content]] += s.quantity
 
         member_info = [self.first_name, self.last_name, self.get_formatted_signup_date(),\
@@ -221,7 +221,7 @@ class Member(TimestampedModel):
         elif export_week == B_WEEK:
             share_cnts = [d[idx[VEGETABLES]+1], d[idx[FRUIT]+1], \
                 d[idx[EGGS]+1], d[idx[FLOWERS]+1], \
-                d[idx[VEGETABLES_SUMMER_ONLY]], d[idx[PERSONAL_SIZE]]]
+                d[idx[VEGETABLES_SUMMER_ONLY]]]
         else:
             share_cnts = d
 
@@ -280,7 +280,7 @@ PICKLES_AND_PRESERVES = SHARES[6][0]
 PLANTS = SHARES[7][0]
 BREAD = SHARES[8][0]
 BEER = SHARES[9][0]
-PERSONAL_SIZE = SHARES[10][0]
+PERSONAL_SIZE = SHARES[10][0] # deprecated 04/13/2018
 VEGETABLES_SUMMER_ONLY = SHARES[11][0]
 
 FREQUENCY = (

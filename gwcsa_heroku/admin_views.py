@@ -79,7 +79,6 @@ def members(request):
         "weekly_flower_count": SHARE_COUNT_QUERY % (FLOWERS, WEEKLY),
         "biweekly_flower_count": SHARE_COUNT_QUERY % (FLOWERS, BIWEEKLY),
         "veggie_summer_only_count": SHARE_COUNT_QUERY % (VEGETABLES_SUMMER_ONLY, WEEKLY),
-        "personal_size_count": SHARE_COUNT_QUERY % (PERSONAL_SIZE, WEEKLY),
         "beer_count": SHARE_COUNT_QUERY % (BEER, NOT_APPLICABLE),
         "cheese_count": SHARE_COUNT_QUERY % (CHEESE, NOT_APPLICABLE),
         "meat_count": SHARE_COUNT_QUERY % (MEAT, NOT_APPLICABLE),
@@ -164,7 +163,7 @@ def members_export(request):
         ws = csv.writer(ss, dialect=csv.excel)
         ws.writerow(["Location", "First Name", "Last Name", "Signup Date", "Email",
             "Phone", "Week", "V(A)", "V(B)", "V(?)", "Fr(A)", "Fr(B)", "Fr(?)",
-            "E(A)", "E(B)", "E(?)", "Fl(A)", "Fl(B)", "Fl(?)", "Vso", "PS",
+            "E(A)", "E(B)", "E(?)", "Fl(A)", "Fl(B)", "Fl(?)", "Vso",
             "Br", "C", "M", "Bd", "Share Description"])
 
         for loc, desc in [(l, d) for l, d in DAYS if l not in (WEDNESDAY, SATURDAY)]:
@@ -176,7 +175,7 @@ def members_export(request):
             writer = csv.writer(s, dialect=csv.excel)
             writer.writerow(["First Name", "Last Name", "Signup Date", "Email",
                 "Phone", "Week", "V(A)", "V(B)", "V(?)", "Fr(A)", "Fr(B)", "Fr(?)",
-                "E(A)", "E(B)", "E(?)", "Fl(A)", "Fl(B)", "Fl(?)", "Vso", "PS",
+                "E(A)", "E(B)", "E(?)", "Fl(A)", "Fl(B)", "Fl(?)", "Vso",
                 "Br", "C", "M", "Bd", "Share Description"])
             for m in members:
                 export_row = m.get_export_row()
@@ -188,7 +187,7 @@ def members_export(request):
             s = StringIO.StringIO()
             writer = csv.writer(s, dialect=csv.excel)
             writer.writerow(["First Name", "Last Name", "Signup Date", "Email",
-                "Phone", "Week", "V", "Fr", "E", "Fl", "Vso", "PS",
+                "Phone", "Week", "V", "Fr", "E", "Fl", "Vso",
                 "Br", "C", "M", "Bd", "Share Description"])
             for m in members:
                 if m.assigned_week != B_WEEK: # don't include B week only
@@ -199,7 +198,7 @@ def members_export(request):
             s = StringIO.StringIO()
             writer = csv.writer(s, dialect=csv.excel)
             writer.writerow(["First Name", "Last Name", "Signup Date", "Email",
-                "Phone", "Week", "V", "Fr", "E", "Fl", "Vso", "PS", "Share Description"])
+                "Phone", "Week", "V", "Fr", "E", "Fl", "Vso", "Share Description"])
             for m in members:
                 if m.assigned_week != A_WEEK: # don't include A week only
                     writer.writerow(m.get_export_row(B_WEEK))
