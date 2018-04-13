@@ -23,6 +23,21 @@ def get_ascii(s):
     except:
         return ""
 
+def have_unassigned_members():
+    cursor = connection.cursor()
+    cursor.execute("""
+        select count(*)
+          from gwcsa_heroku_member m,
+               gwcsa_heroku_season sn
+         where m.season_id = sn.id
+           and sn.name = %s
+           and (m.has_biweekly = True or m.is_weekly = True)
+           and m.assigned_week is null
+    """, [CURRENT_SEASON])
+    row = cursor.fetchone()
+    logger.debug("unassigned_member_count is {0}".format(row[0]))
+    return row[0] > 0
+
 def get_share_list(content, day, week):
     cursor = connection.cursor()
     cursor.execute("""

@@ -152,6 +152,9 @@ def members_export(request):
     response = HttpResponse(content_type='application/x-zip-compressed')
     response['Content-Disposition'] = 'attachment; filename="eve_exports.zip"'
 
+    # never used...change was never completed
+    # include_unassigned_columns = have_unassigned_members()
+
     zip_dir = "locations_{0}".format(time.strftime("%Y%m%d_%H%M"))
 
     z = zipfile.ZipFile(response, mode="w", compression=zipfile.ZIP_DEFLATED,)
