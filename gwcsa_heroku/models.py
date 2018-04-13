@@ -281,7 +281,7 @@ PLANTS = SHARES[7][0]
 BREAD = SHARES[8][0]
 BEER = SHARES[9][0]
 PERSONAL_SIZE = SHARES[10][0] # deprecated 04/13/2018
-VEGETABLES_SUMMER_ONLY = SHARES[11][0]
+VEGETABLES_SUMMER_ONLY = SHARES[11][0] # deprecated 04/13/2018, now counted as weekly veggie
 
 FREQUENCY = (
     ('B', 'Biweekly'),

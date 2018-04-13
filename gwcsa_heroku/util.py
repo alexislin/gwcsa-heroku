@@ -257,7 +257,7 @@ def add_update_member_from_farmigo_csv_entry(line):
         elif re.compile("Bread", re.IGNORECASE).search(s):
             Share.add_or_create_share(member,quantity,NOT_APPLICABLE,BREAD)
         elif re.compile("Vegetable Share - SUMMER ONLY", re.IGNORECASE).search(s):
-            Share.add_or_create_share(member,quantity,WEEKLY,VEGETABLES_SUMMER_ONLY)
+            Share.add_or_create_share(member,quantity,WEEKLY,VEGETABLES)
         elif re.compile("Low Income Fund Donation", re.IGNORECASE).search(s):
             pass
         else:
