@@ -5,6 +5,8 @@ from django.db import models
 from django.db.models import Q
 from django.db.models.signals import pre_save
 
+from gwcsa_heroku.string_util import get_ascii
+
 logger = logging.getLogger(__name__)
 
 class TimestampedModel(models.Model):
@@ -212,7 +214,8 @@ class Member(TimestampedModel):
             elif s.content in (BEER, CHEESE, MEAT, BREAD):
                 d[idx[s.content]] += s.quantity
 
-        member_info = [self.first_name, self.last_name, self.get_formatted_signup_date(),\
+        member_info = [get_ascii(self.first_name), get_ascii(self.last_name),\
+                self.get_formatted_signup_date(),\
                 self.email, self.phone, self.get_assigned_week_description()]
 
         share_cnts = []

@@ -8,7 +8,7 @@ from django.conf import settings
 from django.template.loader import render_to_string
 
 from gwcsa_heroku.models import *
-from gwcsa_heroku.util import get_ascii
+from gwcsa_heroku.string_util import get_ascii
 
 logger = logging.getLogger(__name__)
 
