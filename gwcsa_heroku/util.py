@@ -182,6 +182,7 @@ def add_update_member_from_farmigo_csv_entry(line):
     elif "bushwick" in loc: member.day = BUSHWICK
     elif "carroll gardens" in loc: member.day = CARROLL_GARDENS
     elif "forest hills" in loc: member.day = FOREST_HILLS
+    elif "garden world flushing" in loc: member.day = FLUSHING_GW
     elif "glendale" in loc: member.day = GLENDALE
     elif "greenpoint" in loc: member.day = GREENPOINT
     elif "kew gardens" in loc: member.day = KEW_GARDENS

@@ -38,6 +38,7 @@ DAYS = (
     ('WB', 'Williamsburg-McCarren Park, Brooklyn - Saturday'),
     ('WH', 'Westhampton Beach Farmers Market, Long Island - Saturday'),
     ('KN', 'Kensington/Windsor Terrace, Brooklyn - Wednesday'),
+    ('GW', 'Garden World, Flushing - Saturday'),
 )
 WEDNESDAY = DAYS[0][0]
 SATURDAY = DAYS[1][0]
@@ -62,6 +63,7 @@ UWS = DAYS[19][0]
 WILLIAMSBURG = DAYS[20][0]
 WESTHAMPTON_BEACH = DAYS[21][0]
 KENSINGTON_WED = DAYS[22][0]
+FLUSHING_GW = DAYS[23][0]
 
 SEASONS = (
     ('2014', '2014'),
