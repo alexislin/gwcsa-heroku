@@ -5,7 +5,7 @@ from django.db import models
 from django.db.models import Q
 from django.db.models.signals import pre_save
 
-from gwcsa_heroku.string_util import get_ascii
+from gwcsa_heroku.str_util import get_ascii
 
 logger = logging.getLogger(__name__)
 
