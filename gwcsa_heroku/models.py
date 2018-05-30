@@ -317,20 +317,4 @@ class EmailLog(TimestampedModel):
     subject = models.CharField(max_length=350,null=False)
     status_code = models.CharField(max_length=10,null=False)
 
-def log_ab_week_assignment(sender, **kwargs):
-    member = kwargs["instance"]
-
-    m = Member.objects.filter(id=member.id)
-    if len(m) > 0 and member.assigned_week <> m[0].assigned_week:
-        WeekAssignmentLog.objects.create(member=member,assigned_week=member.assigned_week,module_name=__name__)
-    pass
-
-pre_save.connect(log_ab_week_assignment, sender=Member)
-
-class WeekAssignmentLog(TimestampedModel):
-    member = models.ForeignKey(Member,null=False)
-    assigned_week = models.CharField(max_length=1,choices=WEEK,null=True)
-    # TODO: remove the module_name - this isn't useful anymore now
-    # that we're using signals
-    module_name = models.CharField(max_length=50, null=False)
 
